@@ -11,6 +11,7 @@ typedef struct Node Node;
 struct Node {
 	Node* next;
 	char* string;
+	SlimList* list;
 };
 
 struct SlimList {
@@ -34,6 +35,10 @@ void SlimList_Destroy(SlimList* self)
 	{
 		if (node->string) 
 			free(node->string);
+		
+		if (node->list)
+			SlimList_Destroy(node->list);
+			
 		next = node->next;
 		free(node);
 	}
@@ -55,25 +60,31 @@ char* SlimList_serialize(SlimList* self)
 	return buf;
 }
 
+void insertNode(SlimList* self, Node* node)
+{
+	if (self->length == 0)
+	{
+		self->head = node;
+	}
+	else
+	{
+		self->tail->next = node;
+	}
+	self->tail = node;	
+	self->length++;
+}
+
 void SlimList_addBuffer(SlimList* self, char* buffer, int length) 
 {
 	Node* newNode = malloc(sizeof(Node));
 	newNode->next = 0;
+	newNode->list = 0;
 	
-	if (self->length == 0)
-	{
-		self->head = newNode;
-	}
-	else
-	{
-		self->tail->next = newNode;
-	}
-	self->tail = newNode;	
+	insertNode(self, newNode);
 	
 	newNode->string = malloc(length+1);
 	strncpy(newNode->string, buffer, length);
 	newNode->string[length] = 0;
-	self->length++;
 }
 
 void SlimList_addString(SlimList* self, char* string) 
@@ -164,3 +175,37 @@ int SlimList_equals(SlimList* self, SlimList* other){
 	return 1;
 }
 
+Node * SlimList_getNodeAt(SlimList* self, int index)
+{
+	int i;
+	Node* node = self->head;
+
+	if (index >= self->length)
+		return 0;
+
+	for (i = 0; i < index; i++)
+	{
+		node = node->next;
+	}
+	return node;
+}
+
+
+SlimList * SlimList_getListAt(SlimList* self, int index)
+{
+	Node * node = SlimList_getNodeAt(self, index);
+	if (node)
+	{
+		if (node->list == 0)
+			node->list = SlimList_deserialize(node->string);	
+	}
+	return node->list;
+}
+
+char * SlimList_getStringAt(SlimList* self, int index)
+{
+	Node* node = SlimList_getNodeAt(self, index);
+	if(node == 0)
+		return 0;
+	return node->string;
+}

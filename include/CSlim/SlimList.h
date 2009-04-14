@@ -18,4 +18,7 @@ int SlimList_serializedLength(SlimList*);
 SlimList* SlimList_deserialize(char*);
 int SlimList_getLength(SlimList*);
 int SlimList_equals(SlimList* self, SlimList* other);
+SlimList * SlimList_getListAt(SlimList* self, int index);
+char * SlimList_getStringAt(SlimList* self, int index);
+
 #endif  // D_SlimList_H

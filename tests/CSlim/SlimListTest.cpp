@@ -198,3 +198,49 @@ TEST(SlimList, canDeSerializeListWithTwoElements)
 	CHECK(deserializedList != 0);
 	check_lists_equal(slimList, deserializedList);
 }
+
+TEST(SlimList, canAddSubList)
+{
+	SlimList* embeddedList;
+	embeddedList = SlimList_Create();
+	SlimList_addString(embeddedList, "element");
+	SlimList_addList(slimList, embeddedList);
+	serializedList = SlimList_serialize(slimList);	
+	deserializedList = SlimList_deserialize(serializedList);
+	SlimList * subList = SlimList_getListAt(deserializedList, 0);
+	subList = SlimList_getListAt(deserializedList, 0);
+	check_lists_equal(embeddedList, subList);
+	
+	SlimList_Destroy(embeddedList);	
+}
+
+TEST(SlimList, canGetElements)
+{
+	SlimList_addString(slimList, "element1");
+	SlimList_addString(slimList, "element2");
+	STRCMP_EQUAL("element1", SlimList_getStringAt(slimList, 0));
+	STRCMP_EQUAL("element2", SlimList_getStringAt(slimList, 1));
+}
+
+TEST(SlimList, cannotGetElementThatAreNotThere)
+{
+	SlimList_addString(slimList, "element1");
+	SlimList_addString(slimList, "element2");
+	POINTERS_EQUAL(0, SlimList_getStringAt(slimList, 3));
+}
+
+TEST(SlimList, getStringWhereThereIsAList)
+{
+	SlimList* embeddedList;
+	embeddedList = SlimList_Create();
+	SlimList_addString(embeddedList, "element");
+	SlimList_addList(slimList, embeddedList);
+	serializedList = SlimList_serialize(slimList);	
+	deserializedList = SlimList_deserialize(serializedList);
+	char * string = SlimList_getStringAt(deserializedList, 0);
+
+	STRCMP_EQUAL("[000001:000007:element:]", string);
+	// POINTERS_EQUAL(0, string); ?????????????????????????????????????
+	
+	SlimList_Destroy(embeddedList);	
+}
