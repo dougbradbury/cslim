@@ -1,0 +1,6 @@
+*.d
+*.gcda
+*.gcno
+*.o
+CSlim_tests
+libCSlim.a
