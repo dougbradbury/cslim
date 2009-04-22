@@ -24,7 +24,9 @@ GCOVFLAGS = -fprofile-arcs -ftest-coverage
 #to be included in main to force them to be linked in.  By convention
 #put them into an AllTests.h file in each directory
 SRC_DIRS = \
-	src/CSlim
+	src/CSlim \
+	src/Com \
+	src/Main
 
 #TEST_SRC_DIRS is a list of directories including 
 # - A test main (AllTests.cpp by conventin)
@@ -33,12 +35,14 @@ SRC_DIRS = \
 # - 
 TEST_SRC_DIRS = \
 	tests \
-	tests/CSlim
+	tests/CSlim \
+	tests/Com
 
 #includes for all compiles	
 INCLUDES =\
   -I.\
   -Iinclude/CSlim\
+  -Iinclude/Com\
   -I$(CPPUTEST_HOME)/include/\
   -I$(CPPUTEST_HOME)/include/Platforms/$(CPP_PLATFORM)\
 

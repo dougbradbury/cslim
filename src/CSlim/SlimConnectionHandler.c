@@ -42,17 +42,9 @@ int read_size(SlimConnectionHandler* self)
 	char colon;		
 	memset(size, 0, 7);
 	
-	if (self->recvFunc(self->comLink, size, 6) != 6) 
+	if (self->recvFunc(self->comLink, size, 6) == 6) 
 	{
-	    printf("Error reading size\n");
-	}
-	else
-	{
-		if ((self->recvFunc(self->comLink, &colon, 1)) != 1 || colon != ':') 
-		{
-		    printf("error reading colon\n");
-		}
-		else
+		if ((self->recvFunc(self->comLink, &colon, 1)) == 1 && colon == ':') 
 		{
 			size_i = atoi(size);
 		}
