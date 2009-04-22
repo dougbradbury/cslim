@@ -31,7 +31,6 @@ extern "C"
 	char sentSlimMessage[32];
 	char * mock_handle_slim_message(char * message)
 	{
-		printf("**Handling %s, returning %s", message, slimResponse);
 		strcpy(sentSlimMessage, message);
 		return slimResponse;
 	}
