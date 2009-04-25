@@ -4,7 +4,7 @@
 #include <sys/socket.h>
 
 //static local variables
-typedef struct TcpComLink
+struct TcpComLink
 {
     int socket;
 };
@@ -26,7 +26,7 @@ void TcpComLink_Destroy(TcpComLink* self)
 int TcpComLink_send(void * voidSelf, char * msg, int length)
 {
 	TcpComLink * self = (TcpComLink *)voidSelf;
-	send(self->socket, msg, length, 0);
+	return send(self->socket, msg, length, 0);
 }
 int TcpComLink_recv(void * voidSelf, char * buffer, int length)
 {

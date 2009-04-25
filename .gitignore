@@ -3,4 +3,9 @@
 *.gcno
 *.o
 CSlim_tests
+CSlim_demo
 libCSlim.a
+*.gcov
+gcov_*.txt*
+CSlim_tests.txt
+CSlim.tmproj

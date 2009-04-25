@@ -70,7 +70,7 @@ TEST(SlimConnectionHandler, ShouldReadMessageAndCallSlimHandler)
 	comLink.recvStream = "000006:abcdef000003:bye";
 	comLink.recvPtr = comLink.recvStream;
 	
-	slimResponse = cpputest_malloc(8);
+	slimResponse = (char*)cpputest_malloc(8);
 	strcpy(slimResponse, "ghijklm");
 	
 	SlimConnectionHandler_run(slimConnectionHandler);

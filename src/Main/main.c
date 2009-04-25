@@ -3,8 +3,10 @@
 #include "TcpComLink.h"
 #include <stdlib.h>
 #include <string.h>
+#include "SlimList.h"
 
 char * temp_handle_slim_message(char * message);
+//SlimExecutor executor;
 
 int connection_handler(int socket)
 {
@@ -23,12 +25,14 @@ int connection_handler(int socket)
 
 int main(int ac, char** av)
 {
+//	executor = SlimExecutor_Create();
 	SocketServer* server = SocketServer_Create();
 	SocketServer_register_handler(server, &connection_handler);
 		
 	int result = SocketServer_Run(server, av[1]);
 	
 	SocketServer_Destroy(server);
+//	SlimExecutor_Destroy(executor);
 	
 	return result;
 }
@@ -37,7 +41,15 @@ int main(int ac, char** av)
 
 char * temp_handle_slim_message(char * message)
 {
-	char * response = malloc(32);
+	SlimList* instructions = SlimList_deserialize(message);
+//	SlimList results = SlimExecutor_execute(executor, instructions);
+//	char * response = SlimList_serialize(results);
+//	SlimListDestroy(results);
+	SlimList_Destroy(instructions);
+		
+	
+	char * response = (char *)malloc(32);
 	strcpy(response, "[000000:]");
+	
 	return response;
 }
