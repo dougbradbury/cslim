@@ -1,4 +1,5 @@
 #include "SlimList.h"
+#include "SlimUtil.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
@@ -19,6 +20,7 @@ struct SlimList {
 	Node* head;	
 	Node* tail;
 };
+
 
 SlimList* SlimList_Create(void)
 {
@@ -81,11 +83,10 @@ void SlimList_addBuffer(SlimList* self, char* buffer, int length)
 	newNode->list = 0;
 	
 	insertNode(self, newNode);
-	
-	newNode->string = malloc(length+1);
-	strncpy(newNode->string, buffer, length);
-	newNode->string[length] = 0;
+
+	newNode->string = buyBuf(buffer, length);
 }
+
 
 void SlimList_addString(SlimList* self, char* string) 
 {
@@ -208,4 +209,16 @@ char * SlimList_getStringAt(SlimList* self, int index)
 	if(node == 0)
 		return 0;
 	return node->string;
+}
+
+void SlimList_replaceAt(SlimList* self, int index, char * replacementString)
+{
+	Node* node = SlimList_getNodeAt(self, index);
+	if(node->list != 0){
+		SlimList_Destroy(node->list);
+		node->list = 0;
+	}
+	char * newString = buyString(replacementString);
+	free(node->string);
+	node->string = newString;
 }

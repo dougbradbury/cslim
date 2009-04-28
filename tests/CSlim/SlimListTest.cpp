@@ -78,6 +78,27 @@ TEST(SlimList, ListCopysItsString)
 	STRCMP_EQUAL("[000001:000005:Hello:]", serializedList);
 }
 
+TEST(SlimList, canCopyAList)
+{
+	SlimList_addString(slimList, "123456");
+	SlimList_addString(slimList, "987654");
+
+	SlimList* copy = SlimList_Create();
+	int i;
+	for (i=0; i<SlimList_getLength(slimList); i++) {
+		char* string = SlimList_getStringAt(slimList, i);
+		SlimList_addString(copy, string);
+	}
+	char * serialCopy = SlimList_serialize(copy);
+	char * serialSlimList = SlimList_serialize(slimList);
+	STRCMP_EQUAL(serialCopy, serialSlimList);
+	
+	SlimList_Destroy(copy);
+	cpputest_free(serialSlimList);
+	cpputest_free(serialCopy);
+	
+}
+
 TEST(SlimList, SerializeNestedList)
 {
 	SlimList* embeddedList;
@@ -243,4 +264,12 @@ TEST(SlimList, getStringWhereThereIsAList)
 	// POINTERS_EQUAL(0, string); ?????????????????????????????????????
 	
 	SlimList_Destroy(embeddedList);	
+}
+
+TEST(SlimList, canReplaceString)
+{
+	SlimList_addString(slimList, "replaceMe");
+	SlimList_replaceAt(slimList, 0, "WithMe");
+	
+	STRCMP_EQUAL("WithMe", SlimList_getStringAt(slimList, 0));
 }

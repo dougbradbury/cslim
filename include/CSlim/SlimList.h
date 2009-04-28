@@ -20,5 +20,6 @@ int SlimList_getLength(SlimList*);
 int SlimList_equals(SlimList* self, SlimList* other);
 SlimList * SlimList_getListAt(SlimList* self, int index);
 char * SlimList_getStringAt(SlimList* self, int index);
+void SlimList_replaceAt(SlimList* self, int index, char * replacementString);
 
 #endif  // D_SlimList_H
