@@ -16,7 +16,7 @@ TEST_GROUP(StatementExecutor)
 
     void setup()
     {
-		statementExecutor = StatementExecutor_Create();
+		statementExecutor = StatementExecutor_create();
 		StatementExecutor_addFixture(statementExecutor, TestSlim_Register);
 		StatementExecutor_make(statementExecutor, "test_slim", "TestSlim");
 		args = SlimList_create();
@@ -25,7 +25,7 @@ TEST_GROUP(StatementExecutor)
     
     void teardown()
     {
-		StatementExecutor_Destroy(statementExecutor);
+		StatementExecutor_destroy(statementExecutor);
 		SlimList_destroy(args);
 		SlimList_destroy(empty);
     }
@@ -83,7 +83,7 @@ TEST(StatementExecutor, canCallaMethodThatTakesASlimList)
 
 	SlimList_addString(args, "hello world");
 	
-	char* result = StatementExecutor_call(statementExecutor, "test_slim", "oneArg", args);
+	char* result = StatementExecutor_call(statementExecutor, "test_slim", "echo", args);
 	STRCMP_EQUAL("hello world", result);
 }
 
@@ -123,5 +123,13 @@ TEST(StatementExecutor, canReplaceSymbolsWithTheirValue)
 {
 	StatementExecutor_setSymbol(statementExecutor, "v", "bob");
 	SlimList_addString(args, "hi $v.");
-    STRCMP_EQUAL("hi bob.", StatementExecutor_call(statementExecutor, "test_slim", "oneArg", args))   
+    STRCMP_EQUAL("hi bob.", StatementExecutor_call(statementExecutor, "test_slim", "echo", args))   
+}
+
+TEST(StatementExecutor, canReplaceMultipleSymbolsWithTheirValue)
+{
+	StatementExecutor_setSymbol(statementExecutor, "v", "bob");
+	StatementExecutor_setSymbol(statementExecutor, "e", "doug");
+	SlimList_addString(args, "hi $v. from $e.  Cost:  $12.32");
+    STRCMP_EQUAL("hi bob. from doug.  Cost:  $12.32", StatementExecutor_call(statementExecutor, "test_slim", "echo", args))   
 }

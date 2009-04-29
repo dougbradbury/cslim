@@ -53,14 +53,14 @@ char* getArg(void* self, SlimList* args) {
 
 void TestSlim_Register(StatementExecutor* executor)
 {
-	StatementExecutor_RegisterFixture(executor, "TestSlim", TestSlim_Create, TestSlim_Destroy);
-	StatementExecutor_RegisterMethod(executor, "TestSlim", "returnValue", returnValue);	
-	StatementExecutor_RegisterMethod(executor, "TestSlim", "noArgs", noArgs);
-	StatementExecutor_RegisterMethod(executor, "TestSlim", "oneArg", oneArg);
-	StatementExecutor_RegisterMethod(executor, "TestSlim", "setArg", setArg);
-	StatementExecutor_RegisterMethod(executor, "TestSlim", "getArg", getArg);
+	StatementExecutor_registerFixture(executor, "TestSlim", TestSlim_Create, TestSlim_Destroy);
+	StatementExecutor_registerMethod(executor, "TestSlim", "returnValue", returnValue);	
+	StatementExecutor_registerMethod(executor, "TestSlim", "noArgs", noArgs);
+	StatementExecutor_registerMethod(executor, "TestSlim", "echo", oneArg);
+	StatementExecutor_registerMethod(executor, "TestSlim", "setArg", setArg);
+	StatementExecutor_registerMethod(executor, "TestSlim", "getArg", getArg);
 	
-	StatementExecutor_RegisterFixture(executor, "TestSlimAgain", TestSlim_Create, TestSlim_Destroy);
-	StatementExecutor_RegisterMethod(executor, "TestSlimAgain", "setArgAgain", setArg);
-	StatementExecutor_RegisterMethod(executor, "TestSlimAgain", "getArgAgain", getArg);
+	StatementExecutor_registerFixture(executor, "TestSlimAgain", TestSlim_Create, TestSlim_Destroy);
+	StatementExecutor_registerMethod(executor, "TestSlimAgain", "setArgAgain", setArg);
+	StatementExecutor_registerMethod(executor, "TestSlimAgain", "getArgAgain", getArg);
 }

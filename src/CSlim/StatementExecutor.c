@@ -52,7 +52,7 @@ static char* replaceString(SymbolNode*, char*);
 static int lengthOfSymbol(char *);
 
 
-StatementExecutor* StatementExecutor_Create(void)
+StatementExecutor* StatementExecutor_create(void)
 {
      StatementExecutor* self = malloc(sizeof(StatementExecutor));
      memset(self, 0, sizeof(StatementExecutor));
@@ -70,7 +70,7 @@ InstanceNode* GetInstanceNode(StatementExecutor* executor, char * instanceName)
 	return NULL;
 }
 
-void StatementExecutor_Destroy(StatementExecutor* self)
+void StatementExecutor_destroy(StatementExecutor* self)
 {
 	destroyInstances(self->instances);
 	destroyFixtures(self->fixtures);
@@ -219,7 +219,7 @@ void StatementExecutor_addFixture(StatementExecutor* executor, Fixture fixture) 
 	fixture(executor);
 }
 
-void StatementExecutor_RegisterFixture(StatementExecutor* executor, char * className, Constructor constructor, Destructor destructor){
+void StatementExecutor_registerFixture(StatementExecutor* executor, char * className, Constructor constructor, Destructor destructor){
 	FixtureNode* fixtureNode = malloc(sizeof(FixtureNode));
 	fixtureNode->next = executor->fixtures;
 	executor->fixtures = fixtureNode;
@@ -228,7 +228,7 @@ void StatementExecutor_RegisterFixture(StatementExecutor* executor, char * class
 	fixtureNode->destructor = destructor;
 	fixtureNode->methods = NULL;
 }
-void StatementExecutor_RegisterMethod(StatementExecutor* executor, char * className, char * methodName, Method method){
+void StatementExecutor_registerMethod(StatementExecutor* executor, char * className, char * methodName, Method method){
 	FixtureNode* fixtureNode;
 	for (fixtureNode = executor->fixtures; fixtureNode; fixtureNode = fixtureNode->next) {
 		if (strcmp(fixtureNode->name, className) == 0) {
