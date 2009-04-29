@@ -19,15 +19,15 @@ TEST_GROUP(StatementExecutor)
 		statementExecutor = StatementExecutor_Create();
 		StatementExecutor_addFixture(statementExecutor, TestSlim_Register);
 		StatementExecutor_make(statementExecutor, "test_slim", "TestSlim");
-		args = SlimList_Create();
-		empty = SlimList_Create();
+		args = SlimList_create();
+		empty = SlimList_create();
     }
     
     void teardown()
     {
 		StatementExecutor_Destroy(statementExecutor);
-		SlimList_Destroy(args);
-		SlimList_Destroy(empty);
+		SlimList_destroy(args);
+		SlimList_destroy(empty);
     }
 };
 
@@ -89,7 +89,7 @@ TEST(StatementExecutor, canCallaMethodThatTakesASlimList)
 
 TEST(StatementExecutor, canCallTwoInstancesOfTheSameFixture)
 {
-	SlimList* args2 = SlimList_Create();
+	SlimList* args2 = SlimList_create();
 	SlimList_addString(args, "one");
 	SlimList_addString(args2, "two");
 	
@@ -100,12 +100,12 @@ TEST(StatementExecutor, canCallTwoInstancesOfTheSameFixture)
 	char* two = StatementExecutor_call(statementExecutor, "test_slim2", "getArg", empty);
 	STRCMP_EQUAL("one", one);
 	STRCMP_EQUAL("two", two);
-	SlimList_Destroy(args2);
+	SlimList_destroy(args2);
 }
 
 TEST(StatementExecutor, canCreateTwoDifferentFixtures)
 {
-	SlimList* args2 = SlimList_Create();
+	SlimList* args2 = SlimList_create();
 	SlimList_addString(args, "one");
 	SlimList_addString(args2, "two");
 	
@@ -116,7 +116,7 @@ TEST(StatementExecutor, canCreateTwoDifferentFixtures)
 	char* two = StatementExecutor_call(statementExecutor, "test_slim2", "getArgAgain", empty);
 	STRCMP_EQUAL("one", one);
 	STRCMP_EQUAL("two", two);
-	SlimList_Destroy(args2);
+	SlimList_destroy(args2);
 }
 
 TEST(StatementExecutor, canReplaceSymbolsWithTheirValue)

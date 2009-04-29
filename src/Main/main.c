@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "SlimList.h"
+#include "SlimListDeserializer.h"
 
 char * temp_handle_slim_message(char * message);
 //SlimExecutor executor;
@@ -45,7 +46,7 @@ char * temp_handle_slim_message(char * message)
 //	SlimList results = SlimExecutor_execute(executor, instructions);
 //	char * response = SlimList_serialize(results);
 //	SlimListDestroy(results);
-	SlimList_Destroy(instructions);
+	SlimList_destroy(instructions);
 		
 	
 	char * response = (char *)malloc(32);

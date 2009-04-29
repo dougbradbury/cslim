@@ -3,16 +3,10 @@
 #include <memory.h>
 #include <iostream>
 
-static int fakeRan = 0;
-
 extern "C"
 {
 #include "SlimList.h"
 #include "CppUTest/TestHarness_c.h"
-    void virtualFunction_renameThis_fake(SlimList*)
-    {
-        fakeRan = 1;
-    }
 }
 
 TEST_GROUP(SlimList)
@@ -23,18 +17,17 @@ TEST_GROUP(SlimList)
 
     void setup()
     {
-		slimList  = SlimList_Create();
-		fakeRan   = 0;
+		slimList  = SlimList_create();
 		serializedList = 0;
 		deserializedList = 0;
     }
     
     void teardown()
     {
-		SlimList_Destroy(slimList);
+		SlimList_destroy(slimList);
 
 		if (deserializedList)
-			SlimList_Destroy(deserializedList);
+			SlimList_destroy(deserializedList);
 			
 		if (serializedList != 0)
 			cpputest_free(serializedList);
@@ -46,194 +39,54 @@ TEST_GROUP(SlimList)
 	
 };
 
-TEST(SlimList, SerializeAListWithNoElements)
-{
-	serializedList = SlimList_serialize(slimList);
-	STRCMP_EQUAL("[000000:]", serializedList);
-}
-
-TEST(SlimList, SerializeAListWithOneElements)
-{
-	SlimList_addString(slimList, "hello");
-	serializedList = SlimList_serialize(slimList);
-	STRCMP_EQUAL("[000001:000005:hello:]", serializedList);
-}
-
-TEST(SlimList, SerializeAListWithTwoElements)
-{
-	SlimList_addString(slimList, "hello");
-	SlimList_addString(slimList, "world");
-	
-	serializedList = SlimList_serialize(slimList);
-
-	STRCMP_EQUAL("[000002:000005:hello:000005:world:]", serializedList);
-}
-
-TEST(SlimList, ListCopysItsString)
-{
-	char string[12] = "Hello";
-	SlimList_addString(slimList, string);
-	strcpy(string, "Goodbye");
-	serializedList = SlimList_serialize(slimList);
-	STRCMP_EQUAL("[000001:000005:Hello:]", serializedList);
-}
-
-TEST(SlimList, canCopyAList)
-{
-	SlimList_addString(slimList, "123456");
-	SlimList_addString(slimList, "987654");
-
-	SlimList* copy = SlimList_Create();
-	int i;
-	for (i=0; i<SlimList_getLength(slimList); i++) {
-		char* string = SlimList_getStringAt(slimList, i);
-		SlimList_addString(copy, string);
-	}
-	char * serialCopy = SlimList_serialize(copy);
-	char * serialSlimList = SlimList_serialize(slimList);
-	STRCMP_EQUAL(serialCopy, serialSlimList);
-	
-	SlimList_Destroy(copy);
-	cpputest_free(serialSlimList);
-	cpputest_free(serialCopy);
-	
-}
-
-TEST(SlimList, SerializeNestedList)
-{
-	SlimList* embeddedList;
-	embeddedList = SlimList_Create();
-	SlimList_addString(embeddedList, "element");
-	SlimList_addList(slimList, embeddedList);
-	serializedList = SlimList_serialize(slimList);
-	STRCMP_EQUAL("[000001:000024:[000001:000007:element:]:]", serializedList);
-	SlimList_Destroy(embeddedList);
-}
-
-TEST(SlimList, serializedLength)
-{
-	SlimList_addString(slimList, "12345");
-	LONGS_EQUAL(5 + 17, SlimList_serializedLength(slimList));
-	SlimList_addString(slimList, "123456");
-	LONGS_EQUAL(9 + (5+8) + (6+8), SlimList_serializedLength(slimList));
-	serializedList = SlimList_serialize(slimList);
-	LONGS_EQUAL(9 + (5+8) + (6+8), strlen(serializedList));
-}
-
 TEST(SlimList, twoEmptyListsAreEqual)
 {
-	SlimList* list = SlimList_Create();
+	SlimList* list = SlimList_create();
 	check_lists_equal(slimList, list);
-	SlimList_Destroy(list);	
+	SlimList_destroy(list);	
 }
 
 TEST(SlimList, twoDifferentLenghtListsAreNotEqual)
 {
-	SlimList* list = SlimList_Create();
+	SlimList* list = SlimList_create();
 	SlimList_addString(slimList, "hello");
 	CHECK(!SlimList_equals(slimList, list));
-	SlimList_Destroy(list);	
+	SlimList_destroy(list);	
 }
 
 TEST(SlimList, twoSingleElementListsWithDifferentElmementsAreNotEqual)
 {
-	SlimList* list = SlimList_Create();
+	SlimList* list = SlimList_create();
 	SlimList_addString(slimList, "hello");
 	SlimList_addString(list, "goodbye");
 	CHECK(!SlimList_equals(slimList, list));
-	SlimList_Destroy(list);	
+	SlimList_destroy(list);	
 }
 
 
 TEST(SlimList, twoIdenticalMultipleElementListsElmementsAreEqual)
 {
-	SlimList* list = SlimList_Create();
+	SlimList* list = SlimList_create();
 	SlimList_addString(slimList, "hello");
 	SlimList_addString(slimList, "goodbye");
 	SlimList_addString(list, "hello");
 	SlimList_addString(list, "goodbye");
 	CHECK(SlimList_equals(slimList, list));
-	SlimList_Destroy(list);	
+	SlimList_destroy(list);	
 }
 
 
 TEST(SlimList, twoNonIdenticalMultipleElementListsElmementsAreNotEqual)
 {
-	SlimList* list = SlimList_Create();
+	SlimList* list = SlimList_create();
 	SlimList_addString(slimList, "hello");
 	SlimList_addString(slimList, "hello");
 	SlimList_addString(list, "hello");
 	SlimList_addString(list, "goodbye");
 	CHECK(!SlimList_equals(slimList, list));
-	SlimList_Destroy(list);	
+	SlimList_destroy(list);	
 }
 
-
-TEST(SlimList, deserializeEmptyList)
-{
-	deserializedList = SlimList_deserialize("[000000:]");
-	CHECK(deserializedList != 0);
-	LONGS_EQUAL(0, SlimList_getLength(deserializedList));
-}
-
-TEST(SlimList, deserializeNull)
-{
-	SlimList* list = SlimList_deserialize(0);
-	POINTERS_EQUAL(0, list);
-}
-
-TEST(SlimList, deserializeEmptyString)
-{
-	SlimList* list = SlimList_deserialize("");
-	POINTERS_EQUAL(0, list);
-}
-
-TEST(SlimList, MissingOpenBracketReturnsNull)
-{
-	SlimList* list = SlimList_deserialize("hello");
-	POINTERS_EQUAL(0, list);	
-}
-
-TEST(SlimList, MissingClosingBracketReturnsNull)
-{
-	SlimList* list = SlimList_deserialize("[000000:");
-	POINTERS_EQUAL(0, list);	
-}
-
-
-TEST(SlimList, canDeSerializeListWithOneElement)
-{
-	SlimList_addString(slimList, "hello");
-	serializedList = SlimList_serialize(slimList);	
-	deserializedList = SlimList_deserialize(serializedList);
-	CHECK(deserializedList != 0);
-	check_lists_equal(slimList, deserializedList);
-}
-
-TEST(SlimList, canDeSerializeListWithTwoElements)
-{
-	SlimList_addString(slimList, "hello");
-	SlimList_addString(slimList, "bob");
-	serializedList = SlimList_serialize(slimList);	
-	deserializedList = SlimList_deserialize(serializedList);
-	CHECK(deserializedList != 0);
-	check_lists_equal(slimList, deserializedList);
-}
-
-TEST(SlimList, canAddSubList)
-{
-	SlimList* embeddedList;
-	embeddedList = SlimList_Create();
-	SlimList_addString(embeddedList, "element");
-	SlimList_addList(slimList, embeddedList);
-	serializedList = SlimList_serialize(slimList);	
-	deserializedList = SlimList_deserialize(serializedList);
-	SlimList * subList = SlimList_getListAt(deserializedList, 0);
-	subList = SlimList_getListAt(deserializedList, 0);
-	check_lists_equal(embeddedList, subList);
-	
-	SlimList_Destroy(embeddedList);	
-}
 
 TEST(SlimList, canGetElements)
 {
@@ -248,22 +101,6 @@ TEST(SlimList, cannotGetElementThatAreNotThere)
 	SlimList_addString(slimList, "element1");
 	SlimList_addString(slimList, "element2");
 	POINTERS_EQUAL(0, SlimList_getStringAt(slimList, 3));
-}
-
-TEST(SlimList, getStringWhereThereIsAList)
-{
-	SlimList* embeddedList;
-	embeddedList = SlimList_Create();
-	SlimList_addString(embeddedList, "element");
-	SlimList_addList(slimList, embeddedList);
-	serializedList = SlimList_serialize(slimList);	
-	deserializedList = SlimList_deserialize(serializedList);
-	char * string = SlimList_getStringAt(deserializedList, 0);
-
-	STRCMP_EQUAL("[000001:000007:element:]", string);
-	// POINTERS_EQUAL(0, string); ?????????????????????????????????????
-	
-	SlimList_Destroy(embeddedList);	
 }
 
 TEST(SlimList, canReplaceString)

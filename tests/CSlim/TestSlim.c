@@ -43,6 +43,7 @@ char* oneArg(void* self, SlimList* args) {
 char* setArg(void* self, SlimList* args) {
 	TestSlim* me = (TestSlim*)self;
 	me->arg = SlimList_getStringAt(args, 0);
+	return "/__VOID__/";
 }
 
 char* getArg(void* self, SlimList* args) {

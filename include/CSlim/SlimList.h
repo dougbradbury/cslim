@@ -9,17 +9,15 @@
 
 typedef struct SlimList SlimList;
 
-SlimList* SlimList_Create(void);
-void SlimList_Destroy(SlimList*);
-char* SlimList_serialize(SlimList*);
+SlimList* SlimList_create(void);
+void SlimList_destroy(SlimList*);
 void SlimList_addString(SlimList*, char*);
 void SlimList_addList(SlimList* self, SlimList* element);
-int SlimList_serializedLength(SlimList*);
-SlimList* SlimList_deserialize(char*);
 int SlimList_getLength(SlimList*);
 int SlimList_equals(SlimList* self, SlimList* other);
 SlimList * SlimList_getListAt(SlimList* self, int index);
 char * SlimList_getStringAt(SlimList* self, int index);
 void SlimList_replaceAt(SlimList* self, int index, char * replacementString);
+void SlimList_addBuffer(SlimList* self, char* buffer, int length);
 
 #endif  // D_SlimList_H

@@ -49,6 +49,7 @@ static void destroySymbols(SymbolNode*);
 static void destroyMethods(MethodNode*);
 void replaceSymbols(SymbolNode*, SlimList*);
 static char* replaceString(SymbolNode*, char*);
+static int lengthOfSymbol(char *);
 
 
 StatementExecutor* StatementExecutor_Create(void)
@@ -176,7 +177,7 @@ char * findSymbol(SymbolNode* symbols, char * name, int length)
 	}
 	return NULL;
 }
-int lengthOfSymbol(char *);
+
 static char* replaceString(SymbolNode* symbols, char* string) {
 	char * dollarSign = strpbrk(string, "$");
 	if (dollarSign)
@@ -195,7 +196,7 @@ static char* replaceString(SymbolNode* symbols, char* string) {
 	return buyString(string);
 }
 
-int lengthOfSymbol(char * start)
+static int lengthOfSymbol(char * start)
 {
 	int length = 0;
 	while(*start != '.')
