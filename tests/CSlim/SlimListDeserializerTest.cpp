@@ -73,6 +73,16 @@ TEST(SlimListDeserializer, MissingClosingBracketReturnsNull)
 	POINTERS_EQUAL(0, list);	
 }
 
+TEST(SlimListDeserializer, canDeserializeCanonicalListWithOneElement) 
+{
+	char* canonicalList = "[000001:000008:Hi doug.:]";
+	SlimList* deserializedList = SlimList_deserialize(canonicalList);
+	CHECK(deserializedList != NULL);
+	LONGS_EQUAL(1, SlimList_getLength(deserializedList));
+	STRCMP_EQUAL("Hi doug.", SlimList_getStringAt(deserializedList, 0));
+	SlimList_destroy(deserializedList);
+}
+
 
 TEST(SlimListDeserializer, canDeSerializeListWithOneElement)
 {

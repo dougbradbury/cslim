@@ -152,9 +152,18 @@ void replaceSymbols(SymbolTable* symbolTable, SlimList* list) {
 	int i;
 	for (i=0; i<SlimList_getLength(list); i++) {
 		char* string = SlimList_getStringAt(list, i);
-		char* replacedString = replaceString(symbolTable, string);
-		SlimList_replaceAt(list, i, replacedString);
-		free(replacedString);
+		SlimList* embeddedList = SlimList_deserialize(string);
+		if (embeddedList == NULL) {
+			char* replacedString = replaceString(symbolTable, string);
+			SlimList_replaceAt(list, i, replacedString);
+			free(replacedString);
+		} else {
+			replaceSymbols(symbolTable, embeddedList);
+			char* serializedReplacedList = SlimList_serialize(embeddedList);
+			SlimList_replaceAt(list, i, serializedReplacedList);
+			SlimList_destroy(embeddedList);
+			free(serializedReplacedList);
+		}
 	}
 }
 

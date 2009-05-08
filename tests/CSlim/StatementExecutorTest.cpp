@@ -5,6 +5,7 @@ extern "C"
 #include "StatementExecutor.h"
 #include "TestSlim.h"
 #include "SlimList.h"
+#include "SlimListDeserializer.h"
 #include <string.h>
 }
 
@@ -162,3 +163,47 @@ TEST(StatementExecutor, canHandleDollarSignAtTheEndOfTheString)
 	SlimList_addString(args, "hi $v2$");
 	STRCMP_EQUAL("hi doug$", StatementExecutor_call(statementExecutor, "test_slim", "echo", args))
 }
+
+TEST(StatementExecutor, canReplaceSymbolsInSubLists) 
+{
+	StatementExecutor_setSymbol(statementExecutor, "v2", "doug");
+	SlimList* subList = SlimList_create();
+	SlimList_addString(subList, "Hi $v2.");
+	SlimList_addList(args, subList);
+	char* result = StatementExecutor_call(statementExecutor, "test_slim", "echo", args);
+	CHECK(result != NULL);
+	SlimList* returnedList = SlimList_deserialize(result);
+	CHECK(NULL != returnedList);
+	LONGS_EQUAL(1, SlimList_getLength(returnedList));
+	char* element = SlimList_getStringAt(returnedList, 0);
+	STRCMP_EQUAL("Hi doug.", element);
+	SlimList_destroy(subList);	
+	SlimList_destroy(returnedList);
+}
+
+TEST(StatementExecutor, canReplaceSymbolsInSubSubLists) 
+{
+	StatementExecutor_setSymbol(statementExecutor, "v2", "doug");
+	SlimList* subList = SlimList_create();
+	SlimList* subSubList = SlimList_create();
+	SlimList_addString(subSubList, "Hi $v2.");
+	SlimList_addList(subList, subSubList);
+	SlimList_addList(args, subList);
+	char* result = StatementExecutor_call(statementExecutor, "test_slim", "echo", args);
+	CHECK(result != NULL);
+	SlimList* returnedSubList = SlimList_deserialize(result);
+	CHECK(NULL != returnedSubList);
+	LONGS_EQUAL(1, SlimList_getLength(returnedSubList));
+	SlimList* returnedSubSubList = SlimList_getListAt(returnedSubList, 0);
+	CHECK(NULL != returnedSubSubList);
+	LONGS_EQUAL(1, SlimList_getLength(returnedSubSubList));	
+	char* element = SlimList_getStringAt(returnedSubSubList, 0);
+	CHECK(NULL != element);
+	STRCMP_EQUAL("Hi doug.", element);
+	SlimList_destroy(subSubList);
+	SlimList_destroy(subList);	
+	SlimList_destroy(returnedSubList);
+}
+
+
+
