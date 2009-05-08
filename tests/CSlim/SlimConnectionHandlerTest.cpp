@@ -46,7 +46,7 @@ TEST_GROUP(SlimConnectionHandler)
 		slimConnectionHandler = SlimConnectionHandler_Create(&mock_send_func, &mock_recv_func, (void*)&comLink);
 		memset(comLink.lastSendMsg, 0, 32);
 		
-		SlimConnectionHandler_registerSlimMessageHandler(slimConnectionHandler, &mock_handle_slim_message);
+		SlimConnectionHandler_RegisterSlimMessageHandler(slimConnectionHandler, &mock_handle_slim_message);
     }
     
     void teardown()
@@ -60,7 +60,7 @@ TEST(SlimConnectionHandler, ShouldSendVersion)
 	comLink.recvStream = "000003:bye";
 	comLink.recvPtr = comLink.recvStream;
 
-	SlimConnectionHandler_run(slimConnectionHandler);
+	SlimConnectionHandler_Run(slimConnectionHandler);
 	
 	STRCMP_EQUAL("Slim -- V0.0\n", comLink.lastSendMsg);
 }
@@ -73,7 +73,7 @@ TEST(SlimConnectionHandler, ShouldReadMessageAndCallSlimHandler)
 	slimResponse = (char*)cpputest_malloc(8);
 	strcpy(slimResponse, "ghijklm");
 	
-	SlimConnectionHandler_run(slimConnectionHandler);
+	SlimConnectionHandler_Run(slimConnectionHandler);
 	
 	STRCMP_EQUAL("000007:ghijklm", comLink.lastSendMsg);
 	STRCMP_EQUAL("abcdef", sentSlimMessage);

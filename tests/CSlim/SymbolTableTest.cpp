@@ -35,11 +35,11 @@ TEST(SymbolTable, findSymbolShouldReturnSymbol)
 TEST(SymbolTable, CanGetLengthOfSymbol)
 {
 	SymbolTable_SetSymbol(symbolTable, "Hey", "1234567890");
-	LONGS_EQUAL(10, SymbolTable_getSymbolLength(symbolTable, "Hey", 3));
+	LONGS_EQUAL(10, SymbolTable_GetSymbolLength(symbolTable, "Hey", 3));
 }
 
 TEST(SymbolTable, CanGetLengthOfNonExistentSymbol)
 {
-	LONGS_EQUAL(-1, SymbolTable_getSymbolLength(symbolTable, "Hey", 3));
+	LONGS_EQUAL(-1, SymbolTable_GetSymbolLength(symbolTable, "Hey", 3));
 }
 

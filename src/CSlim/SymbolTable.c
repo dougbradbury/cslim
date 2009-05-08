@@ -52,7 +52,7 @@ void SymbolTable_SetSymbol(SymbolTable* self, char* symbol, char* value) {
 	self->head = symbolNode;
 }
 
-int SymbolTable_getSymbolLength(SymbolTable* self, char* symbol, int length)
+int SymbolTable_GetSymbolLength(SymbolTable* self, char* symbol, int length)
 {
 	char * symbolValue = SymbolTable_FindSymbol(self, symbol, length);
 	if (symbolValue == NULL)

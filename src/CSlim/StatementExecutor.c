@@ -1,5 +1,7 @@
 #include "StatementExecutor.h"
 #include "SlimList.h"
+#include "SlimListDeserializer.h"
+#include "SlimListSerializer.h"
 #include <stdlib.h>
 #include <memory.h>
 #include <stdio.h>
@@ -7,6 +9,7 @@
 #include <regex.h>
 #include "SymbolTable.h"
 #include "assert.h"
+
 
 typedef struct methodNode {
 	struct methodNode* next;
@@ -41,6 +44,7 @@ struct StatementExecutor
 	InstanceNode* instances;	
 	SymbolTable * symbolTable;
 	char message[120];
+	char* userMessage;
 };
 
 
@@ -52,8 +56,12 @@ void replaceSymbols(SymbolTable*, SlimList*);
 static char* replaceString(SymbolTable*, char*);
 static char* replaceStringFrom(SymbolTable*, char*, char*);
 static int lengthOfSymbol(char *);
+static FixtureNode * findFixture(StatementExecutor* executor, char * className);
+static void Null_Destroy(void* self);
+static void* Null_Create(StatementExecutor* executor, SlimList* args);
 
-StatementExecutor* StatementExecutor_create(void)
+
+StatementExecutor* StatementExecutor_Create(void)
 {
 	StatementExecutor* self = malloc(sizeof(StatementExecutor));
 	memset(self, 0, sizeof(StatementExecutor));
@@ -72,7 +80,7 @@ InstanceNode* GetInstanceNode(StatementExecutor* executor, char * instanceName)
 	return NULL;
 }
 
-void StatementExecutor_destroy(StatementExecutor* self)
+void StatementExecutor_Destroy(StatementExecutor* self)
 {
 	destroyInstances(self->instances);
 	destroyFixtures(self->fixtures);
@@ -109,7 +117,7 @@ static void destroyMethods(MethodNode* head) {
 	}
 }
 
-char* StatementExecutor_make(StatementExecutor* executor, char* instanceName, char* className){
+char* StatementExecutor_Make(StatementExecutor* executor, char* instanceName, char* className, SlimList* args){
 	FixtureNode* fixtureNode;
 	for (fixtureNode = executor->fixtures; fixtureNode; fixtureNode = fixtureNode->next) {
 		if (strcmp(fixtureNode->name, className) == 0) {
@@ -118,8 +126,16 @@ char* StatementExecutor_make(StatementExecutor* executor, char* instanceName, ch
 			executor->instances = instanceNode;
 			instanceNode->name = instanceName;
 			instanceNode->fixture = fixtureNode;
-			instanceNode->instance = (fixtureNode->constructor)();	
-			return "OK";
+			replaceSymbols(executor->symbolTable, args);
+			executor->userMessage = NULL;
+			instanceNode->instance = (fixtureNode->constructor)(executor, args);
+			if (instanceNode->instance != NULL) {	
+				return "OK";
+			} else {
+				char * formatString = "__EXCEPTION__:message:<<COULD_NOT_INVOKE_CONSTRUCTOR %.32s %.32s.>>";
+				snprintf(executor->message, 120, formatString, className, executor->userMessage ? executor->userMessage : "");	
+				return executor->message;	
+			}
 		}
 	}
 	char * formatString = "__EXCEPTION__:message:<<NO_CLASS %.32s.>>";
@@ -127,7 +143,7 @@ char* StatementExecutor_make(StatementExecutor* executor, char* instanceName, ch
 	return executor->message;	
 }
 
-char* StatementExecutor_call(StatementExecutor* executor, char* instanceName, char* methodName, SlimList* args){
+char* StatementExecutor_Call(StatementExecutor* executor, char* instanceName, char* methodName, SlimList* args){
 	InstanceNode* instanceNode = GetInstanceNode(executor, instanceName);
 	if (instanceNode)
 	{
@@ -140,7 +156,7 @@ char* StatementExecutor_call(StatementExecutor* executor, char* instanceName, ch
 			}
 		}
 		char * formatString = "__EXCEPTION__:message:<<NO_METHOD_IN_CLASS %.32s[%d] %.32s.>>";
-		snprintf(executor->message, 120, formatString, methodName, SlimList_getLength(args), instanceNode->fixture->name);
+		snprintf(executor->message, 120, formatString, methodName, SlimList_GetLength(args), instanceNode->fixture->name);
 		return executor->message;
 	}
 	char * formatString = "__EXCEPTION__:message:<<NO_INSTANCE %.32s.>>";
@@ -150,18 +166,18 @@ char* StatementExecutor_call(StatementExecutor* executor, char* instanceName, ch
 
 void replaceSymbols(SymbolTable* symbolTable, SlimList* list) {
 	int i;
-	for (i=0; i<SlimList_getLength(list); i++) {
-		char* string = SlimList_getStringAt(list, i);
-		SlimList* embeddedList = SlimList_deserialize(string);
+	for (i=0; i<SlimList_GetLength(list); i++) {
+		char* string = SlimList_GetStringAt(list, i);
+		SlimList* embeddedList = SlimList_Deserialize(string);
 		if (embeddedList == NULL) {
 			char* replacedString = replaceString(symbolTable, string);
-			SlimList_replaceAt(list, i, replacedString);
+			SlimList_ReplaceAt(list, i, replacedString);
 			free(replacedString);
 		} else {
 			replaceSymbols(symbolTable, embeddedList);
-			char* serializedReplacedList = SlimList_serialize(embeddedList);
-			SlimList_replaceAt(list, i, serializedReplacedList);
-			SlimList_destroy(embeddedList);
+			char* serializedReplacedList = SlimList_Serialize(embeddedList);
+			SlimList_ReplaceAt(list, i, serializedReplacedList);
+			SlimList_Destroy(embeddedList);
 			free(serializedReplacedList);
 		}
 	}
@@ -217,7 +233,7 @@ static int lengthOfSymbol(char * start)
 	return length;
 }
 
-void* StatementExecutor_instance(StatementExecutor* executor, char* instanceName){
+void* StatementExecutor_Instance(StatementExecutor* executor, char* instanceName){
 	
 	InstanceNode* instanceNode = GetInstanceNode(executor, instanceName);
 	if (instanceNode)
@@ -225,35 +241,73 @@ void* StatementExecutor_instance(StatementExecutor* executor, char* instanceName
 	return NULL;
 }
 
-void StatementExecutor_addFixture(StatementExecutor* executor, Fixture fixture) {
+void StatementExecutor_AddFixture(StatementExecutor* executor, Fixture fixture) {
 	fixture(executor);
 }
 
-void StatementExecutor_registerFixture(StatementExecutor* executor, char * className, Constructor constructor, Destructor destructor){
-	FixtureNode* fixtureNode = malloc(sizeof(FixtureNode));
-	fixtureNode->next = executor->fixtures;
-	executor->fixtures = fixtureNode;
-	fixtureNode->name = className;
+void StatementExecutor_RegisterFixture(StatementExecutor* executor, char * className, Constructor constructor, Destructor destructor){
+	FixtureNode* fixtureNode = findFixture(executor, className);
+	if (!fixtureNode)
+	{
+		fixtureNode = malloc(sizeof(FixtureNode));
+		fixtureNode->next = executor->fixtures;
+		executor->fixtures = fixtureNode;
+		fixtureNode->name = className;		
+		fixtureNode->methods = NULL;
+	}
+		
 	fixtureNode->constructor = constructor;
 	fixtureNode->destructor = destructor;
-	fixtureNode->methods = NULL;
-}
-void StatementExecutor_registerMethod(StatementExecutor* executor, char * className, char * methodName, Method method){
-	FixtureNode* fixtureNode;
-	for (fixtureNode = executor->fixtures; fixtureNode; fixtureNode = fixtureNode->next) {
-		if (strcmp(fixtureNode->name, className) == 0) {
-			MethodNode* node = malloc(sizeof(MethodNode));
-			node->name = methodName;
-			node->method = method;
-			node->next = fixtureNode->methods;
-			fixtureNode->methods = node;
-			return;			
-		}	
-	}
-	//TODO let fixture writer know he forgot to add the fixture
 }
 
-void StatementExecutor_setSymbol(StatementExecutor* self, char* symbol, char* value) {
+static FixtureNode * findFixture(StatementExecutor* executor, char * className)
+{
+	FixtureNode* fixtureNode = NULL;
+	for (fixtureNode = executor->fixtures; fixtureNode; fixtureNode = fixtureNode->next) {
+		if (strcmp(fixtureNode->name, className) == 0) {
+			break;
+		}
+	}
+	return fixtureNode;
+}
+
+void StatementExecutor_RegisterMethod(StatementExecutor* executor, char * className, char * methodName, Method method){
+	FixtureNode* fixtureNode = findFixture(executor, className);
+	if (fixtureNode == NULL) {
+		StatementExecutor_RegisterFixture(executor, className, Null_Create, Null_Destroy);
+		fixtureNode = findFixture(executor, className);
+	}
+		
+	MethodNode* node = malloc(sizeof(MethodNode));
+	node->name = methodName;
+	node->method = method;
+	node->next = fixtureNode->methods;
+	fixtureNode->methods = node;
+	return;			
+}
+
+void StatementExecutor_SetSymbol(StatementExecutor* self, char* symbol, char* value) {
 	SymbolTable_SetSymbol(self->symbolTable, symbol, value);
 }
+
+void StatementExecutor_ConstructorError(StatementExecutor* executor, char* message) {
+	executor->userMessage = message;	
+}
+
+char* StatementExecutor_FixtureError(char* message) {
+	static char buffer[128];
+	char * formatString = "__EXCEPTION__:message:<<%.100s.>>";
+	snprintf(buffer, 128, formatString, message);	
+	return buffer;	
+}
+
+static void* Null_Create(StatementExecutor* executor, SlimList* args)
+{
+	return NULL;
+}
+
+static void Null_Destroy(void* self)
+{
+}
+
 

@@ -1,6 +1,6 @@
 #ifndef SlimList_Deserialize_H
 #define SlimList_Deserialize_H
 
-SlimList* SlimList_deserialize(char*);
+SlimList* SlimList_Deserialize(char*);
 
 #endif

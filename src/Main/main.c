@@ -14,9 +14,9 @@ int connection_handler(int socket)
 	int result = 0;
 	TcpComLink * comLink = TcpComLink_Create(socket);
 	SlimConnectionHandler* connection = SlimConnectionHandler_Create(&TcpComLink_send, &TcpComLink_recv, (void*)comLink);
-	SlimConnectionHandler_registerSlimMessageHandler(connection, &temp_handle_slim_message);
+	SlimConnectionHandler_RegisterSlimMessageHandler(connection, &temp_handle_slim_message);
 
-	result = SlimConnectionHandler_run(connection);
+	result = SlimConnectionHandler_Run(connection);
 
 	SlimConnectionHandler_Destroy(connection);
 	TcpComLink_Destroy(comLink);
@@ -42,11 +42,11 @@ int main(int ac, char** av)
 
 char * temp_handle_slim_message(char * message)
 {
-	SlimList* instructions = SlimList_deserialize(message);
+	SlimList* instructions = SlimList_Deserialize(message);
 //	SlimList results = SlimExecutor_execute(executor, instructions);
-//	char * response = SlimList_serialize(results);
+//	char * response = SlimList_Serialize(results);
 //	SlimListDestroy(results);
-	SlimList_destroy(instructions);
+	SlimList_Destroy(instructions);
 		
 	
 	char * response = (char *)malloc(32);

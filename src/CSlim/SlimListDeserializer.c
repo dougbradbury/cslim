@@ -5,7 +5,7 @@
 #define SKIP(a) \
 if (*current != (a))\
 {\
-	SlimList_destroy(list); \
+	SlimList_Destroy(list); \
 	return 0;\
 }\
 current++;
@@ -17,7 +17,7 @@ int readLength(char** readPtr)
 	return length;
 }
 
-SlimList* SlimList_deserialize(char* serializedList)
+SlimList* SlimList_Deserialize(char* serializedList)
 {
 	int listLength;
 	SlimList * list = 0;
@@ -27,7 +27,7 @@ SlimList* SlimList_deserialize(char* serializedList)
 		return 0;
 	
 	current = serializedList;
-	list = SlimList_create();
+	list = SlimList_Create();
 
 	SKIP('[')
 	
@@ -39,7 +39,7 @@ SlimList* SlimList_deserialize(char* serializedList)
 	{
 		int elementLength = readLength(&current);
 		SKIP(':')
-		SlimList_addBuffer(list, current, elementLength);
+		SlimList_AddBuffer(list, current, elementLength);
 		current += elementLength;
 		SKIP(':')
 	}

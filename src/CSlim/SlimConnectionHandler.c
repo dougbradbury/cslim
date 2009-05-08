@@ -30,7 +30,7 @@ void SlimConnectionHandler_Destroy(SlimConnectionHandler* self)
     free(self);
 }
 
-void SlimConnectionHandler_registerSlimMessageHandler(SlimConnectionHandler* self, char * (*handler)(char *) )
+void SlimConnectionHandler_RegisterSlimMessageHandler(SlimConnectionHandler* self, char * (*handler)(char *) )
 {
 	self->slimHandler = handler;
 }
@@ -53,7 +53,7 @@ int read_size(SlimConnectionHandler* self)
 }
 
 
-int SlimConnectionHandler_run(SlimConnectionHandler* self)
+int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 {
 	char * message = malloc(3);
 	message[0] = 0;

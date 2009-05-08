@@ -10,20 +10,23 @@
 
 typedef struct StatementExecutor StatementExecutor;
 typedef void(*Fixture)(StatementExecutor*);
-typedef void*(*Constructor)();
+typedef void*(*Constructor)(StatementExecutor*, SlimList*);
 typedef void(*Destructor)(void *);
 typedef char*(*Method)(void *, SlimList*);
 
-StatementExecutor* StatementExecutor_create(void);
-void StatementExecutor_destroy(StatementExecutor*);
+StatementExecutor* StatementExecutor_Create(void);
+void StatementExecutor_Destroy(StatementExecutor*);
 
-void StatementExecutor_addFixture(StatementExecutor* executor, Fixture);
-void StatementExecutor_registerFixture(StatementExecutor*, char * className, Constructor, Destructor);
-void StatementExecutor_registerMethod(StatementExecutor*, char * className, char * methodName, Method);
+void StatementExecutor_AddFixture(StatementExecutor* executor, Fixture);
+void StatementExecutor_RegisterFixture(StatementExecutor*, char * className, Constructor, Destructor);
+void StatementExecutor_RegisterMethod(StatementExecutor*, char * className, char * methodName, Method);
 
-char* StatementExecutor_make(StatementExecutor*, char* instanceName, char* className);
-char* StatementExecutor_call(StatementExecutor*, char* instanceName, char* methodName, SlimList*);
-void* StatementExecutor_instance(StatementExecutor*, char* instanceName);
-void StatementExecutor_setSymbol(StatementExecutor*, char* symbol, char* value);
+char* StatementExecutor_Make(StatementExecutor*, char* instanceName, char* className, SlimList* args);
+char* StatementExecutor_Call(StatementExecutor*, char* instanceName, char* methodName, SlimList*);
+void* StatementExecutor_Instance(StatementExecutor*, char* instanceName);
+void StatementExecutor_SetSymbol(StatementExecutor*, char* symbol, char* value);
+
+void StatementExecutor_ConstructorError(StatementExecutor* executor, char* message);
+char* StatementExecutor_FixtureError(char* message);
 
 #endif  // D_StatementExecutor_H

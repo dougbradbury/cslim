@@ -8,8 +8,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 typedef struct TestSlim TestSlim;
 #include "StatementExecutor.h"
+#include "SlimList.h"
 
-void* TestSlim_Create(void);
+void* TestSlim_Create(StatementExecutor* executor, SlimList* args);
 void TestSlim_Destroy(void*);
 void TestSlim_Register(StatementExecutor*);
 

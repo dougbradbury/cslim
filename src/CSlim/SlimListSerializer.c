@@ -5,29 +5,29 @@
 #include <stdio.h>
 
 enum {LIST_OVERHEAD=9, ELEMENT_OVERHEAD=8};
-int SlimList_serializedLength(SlimList* self)
+int SlimList_SerializedLength(SlimList* self)
 {
 	int length = LIST_OVERHEAD;
 	int i;
-	for(i = 0; i < SlimList_getLength(self); i++)
+	for(i = 0; i < SlimList_GetLength(self); i++)
 	{
-		length += strlen(SlimList_getStringAt(self, i)) + ELEMENT_OVERHEAD;
+		length += strlen(SlimList_GetStringAt(self, i)) + ELEMENT_OVERHEAD;
 	}
 	return length;
 }
 
-char* SlimList_serialize(SlimList* self)
+char* SlimList_Serialize(SlimList* self)
 {
-	char* buf = malloc(SlimList_serializedLength(self)+1);
+	char* buf = malloc(SlimList_SerializedLength(self)+1);
 	char* write_ptr = buf;
-	int listLength = SlimList_getLength(self);
+	int listLength = SlimList_GetLength(self);
 	int i;
 		
 	write_ptr += sprintf(write_ptr, "[%06d:", listLength);
 
 	for(i = 0; i < listLength; i++)
 	{
-		char * nodeString = SlimList_getStringAt(self, i);
+		char * nodeString = SlimList_GetStringAt(self, i);
 		write_ptr += sprintf(write_ptr, "%06ld:%s:", strlen(nodeString), nodeString);
 	}
 	strcpy(write_ptr, "]");

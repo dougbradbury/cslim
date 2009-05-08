@@ -19,24 +19,24 @@ TEST_GROUP(SlimListDeserializer)
 
     void setup()
     {
-		slimList  = SlimList_create();
+		slimList  = SlimList_Create();
 		serializedList = 0;
 		deserializedList = 0;
     }
     
     void teardown()
     {
-		SlimList_destroy(slimList);
+		SlimList_Destroy(slimList);
 
 		if (deserializedList)
-			SlimList_destroy(deserializedList);
+			SlimList_Destroy(deserializedList);
 			
 		if (serializedList != 0)
 			cpputest_free(serializedList);
     }
 
 	void check_lists_equal(SlimList* expected, SlimList* actual) {
-		CHECK(SlimList_equals(expected, actual));	
+		CHECK(SlimList_Equals(expected, actual));	
 	}
 	
 };
@@ -44,61 +44,61 @@ TEST_GROUP(SlimListDeserializer)
 
 TEST(SlimListDeserializer, deserializeEmptyList)
 {
-	deserializedList = SlimList_deserialize("[000000:]");
+	deserializedList = SlimList_Deserialize("[000000:]");
 	CHECK(deserializedList != 0);
-	LONGS_EQUAL(0, SlimList_getLength(deserializedList));
+	LONGS_EQUAL(0, SlimList_GetLength(deserializedList));
 }
 
 TEST(SlimListDeserializer, deserializeNull)
 {
-	SlimList* list = SlimList_deserialize(0);
+	SlimList* list = SlimList_Deserialize(0);
 	POINTERS_EQUAL(0, list);
 }
 
 TEST(SlimListDeserializer, deserializeEmptyString)
 {
-	SlimList* list = SlimList_deserialize("");
+	SlimList* list = SlimList_Deserialize("");
 	POINTERS_EQUAL(0, list);
 }
 
 TEST(SlimListDeserializer, MissingOpenBracketReturnsNull)
 {
-	SlimList* list = SlimList_deserialize("hello");
+	SlimList* list = SlimList_Deserialize("hello");
 	POINTERS_EQUAL(0, list);	
 }
 
 TEST(SlimListDeserializer, MissingClosingBracketReturnsNull)
 {
-	SlimList* list = SlimList_deserialize("[000000:");
+	SlimList* list = SlimList_Deserialize("[000000:");
 	POINTERS_EQUAL(0, list);	
 }
 
 TEST(SlimListDeserializer, canDeserializeCanonicalListWithOneElement) 
 {
 	char* canonicalList = "[000001:000008:Hi doug.:]";
-	SlimList* deserializedList = SlimList_deserialize(canonicalList);
+	SlimList* deserializedList = SlimList_Deserialize(canonicalList);
 	CHECK(deserializedList != NULL);
-	LONGS_EQUAL(1, SlimList_getLength(deserializedList));
-	STRCMP_EQUAL("Hi doug.", SlimList_getStringAt(deserializedList, 0));
-	SlimList_destroy(deserializedList);
+	LONGS_EQUAL(1, SlimList_GetLength(deserializedList));
+	STRCMP_EQUAL("Hi doug.", SlimList_GetStringAt(deserializedList, 0));
+	SlimList_Destroy(deserializedList);
 }
 
 
 TEST(SlimListDeserializer, canDeSerializeListWithOneElement)
 {
-	SlimList_addString(slimList, "hello");
-	serializedList = SlimList_serialize(slimList);	
-	deserializedList = SlimList_deserialize(serializedList);
+	SlimList_AddString(slimList, "hello");
+	serializedList = SlimList_Serialize(slimList);	
+	deserializedList = SlimList_Deserialize(serializedList);
 	CHECK(deserializedList != 0);
 	check_lists_equal(slimList, deserializedList);
 }
 
 TEST(SlimListDeserializer, canDeSerializeListWithTwoElements)
 {
-	SlimList_addString(slimList, "hello");
-	SlimList_addString(slimList, "bob");
-	serializedList = SlimList_serialize(slimList);	
-	deserializedList = SlimList_deserialize(serializedList);
+	SlimList_AddString(slimList, "hello");
+	SlimList_AddString(slimList, "bob");
+	serializedList = SlimList_Serialize(slimList);	
+	deserializedList = SlimList_Deserialize(serializedList);
 	CHECK(deserializedList != 0);
 	check_lists_equal(slimList, deserializedList);
 }
@@ -106,30 +106,30 @@ TEST(SlimListDeserializer, canDeSerializeListWithTwoElements)
 TEST(SlimListDeserializer, canAddSubList)
 {
 	SlimList* embeddedList;
-	embeddedList = SlimList_create();
-	SlimList_addString(embeddedList, "element");
-	SlimList_addList(slimList, embeddedList);
-	serializedList = SlimList_serialize(slimList);	
-	deserializedList = SlimList_deserialize(serializedList);
-	SlimList * subList = SlimList_getListAt(deserializedList, 0);
-	subList = SlimList_getListAt(deserializedList, 0);
+	embeddedList = SlimList_Create();
+	SlimList_AddString(embeddedList, "element");
+	SlimList_AddList(slimList, embeddedList);
+	serializedList = SlimList_Serialize(slimList);	
+	deserializedList = SlimList_Deserialize(serializedList);
+	SlimList * subList = SlimList_GetListAt(deserializedList, 0);
+	subList = SlimList_GetListAt(deserializedList, 0);
 	check_lists_equal(embeddedList, subList);
 	
-	SlimList_destroy(embeddedList);	
+	SlimList_Destroy(embeddedList);	
 }
 
 TEST(SlimListDeserializer, getStringWhereThereIsAList)
 {
 	SlimList* embeddedList;
-	embeddedList = SlimList_create();
-	SlimList_addString(embeddedList, "element");
-	SlimList_addList(slimList, embeddedList);
-	serializedList = SlimList_serialize(slimList);	
-	deserializedList = SlimList_deserialize(serializedList);
-	char * string = SlimList_getStringAt(deserializedList, 0);
+	embeddedList = SlimList_Create();
+	SlimList_AddString(embeddedList, "element");
+	SlimList_AddList(slimList, embeddedList);
+	serializedList = SlimList_Serialize(slimList);	
+	deserializedList = SlimList_Deserialize(serializedList);
+	char * string = SlimList_GetStringAt(deserializedList, 0);
 
 	STRCMP_EQUAL("[000001:000007:element:]", string);
 	// POINTERS_EQUAL(0, string); ?????????????????????????????????????
 	
-	SlimList_destroy(embeddedList);	
+	SlimList_Destroy(embeddedList);	
 }

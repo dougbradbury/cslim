@@ -23,14 +23,14 @@ struct SlimList {
 
 static void insertNode(SlimList* self, Node* node);
 
-SlimList* SlimList_create(void)
+SlimList* SlimList_Create(void)
 {
      SlimList* self = malloc(sizeof(SlimList));
      memset(self, 0, sizeof(SlimList));
      return self;
 }
 
-void SlimList_destroy(SlimList* self)
+void SlimList_Destroy(SlimList* self)
 {
 	Node * node;
 	Node * next;
@@ -40,7 +40,7 @@ void SlimList_destroy(SlimList* self)
 			free(node->string);
 		
 		if (node->list)
-			SlimList_destroy(node->list);
+			SlimList_Destroy(node->list);
 			
 		next = node->next;
 		free(node);
@@ -48,7 +48,7 @@ void SlimList_destroy(SlimList* self)
     free(self);
 }
 
-void SlimList_addBuffer(SlimList* self, char* buffer, int length) 
+void SlimList_AddBuffer(SlimList* self, char* buffer, int length) 
 {
 	Node* newNode = malloc(sizeof(Node));
 	newNode->next = 0;
@@ -60,25 +60,25 @@ void SlimList_addBuffer(SlimList* self, char* buffer, int length)
 }
 
 
-void SlimList_addString(SlimList* self, char* string) 
+void SlimList_AddString(SlimList* self, char* string) 
 {
-	SlimList_addBuffer(self, string, strlen(string));
+	SlimList_AddBuffer(self, string, strlen(string));
 }
 
-void SlimList_addList(SlimList* self, SlimList* element)
+void SlimList_AddList(SlimList* self, SlimList* element)
 {
-	char * embedded = SlimList_serialize(element);
-	SlimList_addString(self, embedded);
+	char * embedded = SlimList_Serialize(element);
+	SlimList_AddString(self, embedded);
 	free(embedded);
 }
 
-int SlimList_getLength(SlimList* self)
+int SlimList_GetLength(SlimList* self)
 {
 	return self->length;
 }
 
 
-int SlimList_equals(SlimList* self, SlimList* other){
+int SlimList_Equals(SlimList* self, SlimList* other){
 	Node *p, *q;
 	if (self->length != other->length)
 		return 0;
@@ -92,7 +92,7 @@ int SlimList_equals(SlimList* self, SlimList* other){
 	return 1;
 }
 
-Node * SlimList_getNodeAt(SlimList* self, int index)
+Node * SlimList_GetNodeAt(SlimList* self, int index)
 {
 	int i;
 	Node* node = self->head;
@@ -107,30 +107,30 @@ Node * SlimList_getNodeAt(SlimList* self, int index)
 	return node;
 }
 
-SlimList * SlimList_getListAt(SlimList* self, int index)
+SlimList * SlimList_GetListAt(SlimList* self, int index)
 {
-	Node * node = SlimList_getNodeAt(self, index);
+	Node * node = SlimList_GetNodeAt(self, index);
 	if (node)
 	{
 		if (node->list == 0)
-			node->list = SlimList_deserialize(node->string);	
+			node->list = SlimList_Deserialize(node->string);	
 	}
 	return node->list;
 }
 
-char * SlimList_getStringAt(SlimList* self, int index)
+char * SlimList_GetStringAt(SlimList* self, int index)
 {
-	Node* node = SlimList_getNodeAt(self, index);
+	Node* node = SlimList_GetNodeAt(self, index);
 	if(node == 0)
 		return 0;
 	return node->string;
 }
 
-void SlimList_replaceAt(SlimList* self, int index, char * replacementString)
+void SlimList_ReplaceAt(SlimList* self, int index, char * replacementString)
 {
-	Node* node = SlimList_getNodeAt(self, index);
+	Node* node = SlimList_GetNodeAt(self, index);
 	if(node->list != 0){
-		SlimList_destroy(node->list);
+		SlimList_Destroy(node->list);
 		node->list = 0;
 	}
 	char * newString = buyString(replacementString);
