@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include "SlimUtil.h"
 #include <regex.h>
+#include "SymbolTable.h"
+#include "assert.h"
 
 typedef struct methodNode {
 	struct methodNode* next;
@@ -37,7 +39,7 @@ struct StatementExecutor
 {
 	FixtureNode* fixtures;
 	InstanceNode* instances;	
-	SymbolNode * symbols;
+	SymbolTable * symbolTable;
 	char message[120];
 };
 
@@ -45,18 +47,18 @@ struct StatementExecutor
 
 static void destroyInstances(InstanceNode*);
 static void destroyFixtures(FixtureNode*);
-static void destroySymbols(SymbolNode*);
 static void destroyMethods(MethodNode*);
-void replaceSymbols(SymbolNode*, SlimList*);
-static char* replaceString(SymbolNode*, char*);
+void replaceSymbols(SymbolTable*, SlimList*);
+static char* replaceString(SymbolTable*, char*);
+static char* replaceStringFrom(SymbolTable*, char*, char*);
 static int lengthOfSymbol(char *);
-
 
 StatementExecutor* StatementExecutor_create(void)
 {
-     StatementExecutor* self = malloc(sizeof(StatementExecutor));
-     memset(self, 0, sizeof(StatementExecutor));
-     return self;
+	StatementExecutor* self = malloc(sizeof(StatementExecutor));
+	memset(self, 0, sizeof(StatementExecutor));
+	self->symbolTable = SymbolTable_Create();
+	return self;
 }
 
 InstanceNode* GetInstanceNode(StatementExecutor* executor, char * instanceName)
@@ -74,21 +76,10 @@ void StatementExecutor_destroy(StatementExecutor* self)
 {
 	destroyInstances(self->instances);
 	destroyFixtures(self->fixtures);
-	destroySymbols(self->symbols);
+	SymbolTable_Destroy(self->symbolTable);
     free(self);
 }
-static void destroySymbols(SymbolNode* head)
-{
-	SymbolNode* node;
-	for (node = head; node;) {
-		SymbolNode* nextSymbolNode = node->next;
-		free(node->name);
-		free(node->value);
-		free(node);
-		node = nextSymbolNode;
-	}
-	
-}
+
 static void destroyInstances(InstanceNode* head) {
 	InstanceNode* instanceNode;
 	for (instanceNode = head; instanceNode;) {
@@ -143,7 +134,7 @@ char* StatementExecutor_call(StatementExecutor* executor, char* instanceName, ch
 		MethodNode* node;
 		for (node = instanceNode->fixture->methods; node; node = node->next) {
 			if (strcmp(methodName, node->name) == 0) {
-				replaceSymbols(executor->symbols, args);
+				replaceSymbols(executor->symbolTable, args);
 				char* retval =  node->method(instanceNode->instance, args);
 				return retval;
 			}
@@ -157,51 +148,61 @@ char* StatementExecutor_call(StatementExecutor* executor, char* instanceName, ch
 	return executor->message;
 }
 
-void replaceSymbols(SymbolNode* symbols, SlimList* list) {
+void replaceSymbols(SymbolTable* symbolTable, SlimList* list) {
 	int i;
 	for (i=0; i<SlimList_getLength(list); i++) {
 		char* string = SlimList_getStringAt(list, i);
-		char* replacedString = replaceString(symbols, string);
+		char* replacedString = replaceString(symbolTable, string);
 		SlimList_replaceAt(list, i, replacedString);
 		free(replacedString);
 	}
 }
 
-char * findSymbol(SymbolNode* symbols, char * name, int length)
-{
-	SymbolNode* node;
-	for (node = symbols; node; node = node->next)
-	{
-		if (strncmp(node->name, name, length) == 0)
-			return node->value;
-	}
-	return NULL;
+static char* replaceString(SymbolTable* symbolTable, char* string) {
+	return replaceStringFrom(symbolTable, string, string);
 }
 
-static char* replaceString(SymbolNode* symbols, char* string) {
-	char * dollarSign = strpbrk(string, "$");
+static char* replaceStringFrom(SymbolTable* symbolTable, char* string, char* from) {
+	char * dollarSign = strpbrk(from, "$");
 	if (dollarSign)
 	{
 		int length = lengthOfSymbol(dollarSign + 1);
-		char * symbol = findSymbol(symbols, dollarSign + 1, length);
-		if (symbol)
+		char * symbolValue = SymbolTable_FindSymbol(symbolTable, dollarSign + 1, length);
+		if (symbolValue)
 		{
-			char * newString = malloc(128);
+			int valueLength = strlen(symbolValue);
+			int bufferLength = strlen(string)+valueLength-(length+1) + 1;
+			char * newString = malloc(bufferLength);
+			memset(newString, 0, bufferLength);
 			strncat(newString, string, (dollarSign - string));
-			strcat(newString, symbol);
+			strcat(newString, symbolValue);
 			strcat(newString, dollarSign + 1 + length);
-			return (newString);
+
+			assert(bufferLength == strlen(newString) + 1);
+
+			char* recursedString = replaceStringFrom(symbolTable, newString, newString);
+			free(newString);
+			return recursedString;
+		}
+		else
+		{
+			if (*(dollarSign+1) == 0)
+				return buyString(string);
+				
+			return replaceStringFrom(symbolTable, string, dollarSign+1);
 		}
 	}
 	return buyString(string);
 }
 
+#include <ctype.h>
+
 static int lengthOfSymbol(char * start)
 {
 	int length = 0;
-	while(*start != '.')
+	while(isalnum(*start))
 	{
-		start = start + 1;
+		start++;
 		length ++;
 	}
 	return length;
@@ -244,10 +245,6 @@ void StatementExecutor_registerMethod(StatementExecutor* executor, char * classN
 }
 
 void StatementExecutor_setSymbol(StatementExecutor* self, char* symbol, char* value) {
-	SymbolNode * symbolNode = malloc(sizeof(SymbolNode));
-	symbolNode->name = buyString(symbol);
-	symbolNode->value = buyString(value);
-	symbolNode->next = self->symbols;
-	self->symbols = symbolNode;
+	SymbolTable_SetSymbol(self->symbolTable, symbol, value);
 }
 

@@ -118,18 +118,47 @@ TEST(StatementExecutor, canCreateTwoDifferentFixtures)
 	STRCMP_EQUAL("two", two);
 	SlimList_destroy(args2);
 }
-
 TEST(StatementExecutor, canReplaceSymbolsWithTheirValue)
 {
 	StatementExecutor_setSymbol(statementExecutor, "v", "bob");
 	SlimList_addString(args, "hi $v.");
-    STRCMP_EQUAL("hi bob.", StatementExecutor_call(statementExecutor, "test_slim", "echo", args))   
+	char * result = StatementExecutor_call(statementExecutor, "test_slim", "echo", args);
+	LONGS_EQUAL(strlen("hi bob."), strlen(result))
+    STRCMP_EQUAL("hi bob.", result)   
+}
+
+TEST(StatementExecutor, canReplaceSymbolsInTheMiddle)
+{
+	StatementExecutor_setSymbol(statementExecutor, "v", "bob");
+	SlimList_addString(args, "hi $v whats up.");
+	STRCMP_EQUAL("hi bob whats up.", StatementExecutor_call(statementExecutor, "test_slim", "echo", args))
+}
+
+TEST(StatementExecutor, canReplaceSymbolsWithOtherNonAlphaNumeric)
+{
+	StatementExecutor_setSymbol(statementExecutor, "v2", "bob");
+	SlimList_addString(args, "$v2=why");
+	STRCMP_EQUAL("bob=why", StatementExecutor_call(statementExecutor, "test_slim", "echo", args))
 }
 
 TEST(StatementExecutor, canReplaceMultipleSymbolsWithTheirValue)
 {
 	StatementExecutor_setSymbol(statementExecutor, "v", "bob");
 	StatementExecutor_setSymbol(statementExecutor, "e", "doug");
-	SlimList_addString(args, "hi $v. from $e.  Cost:  $12.32");
-    STRCMP_EQUAL("hi bob. from doug.  Cost:  $12.32", StatementExecutor_call(statementExecutor, "test_slim", "echo", args))   
+	SlimList_addString(args, "hi $v. Cost:  $12.32 from $e.");
+    STRCMP_EQUAL("hi bob. Cost:  $12.32 from doug.", StatementExecutor_call(statementExecutor, "test_slim", "echo", args))   
+}
+
+TEST(StatementExecutor, canHandlestringWithJustADollarSign)
+{
+	StatementExecutor_setSymbol(statementExecutor, "v2", "bob");
+	SlimList_addString(args, "$");
+	STRCMP_EQUAL("$", StatementExecutor_call(statementExecutor, "test_slim", "echo", args))
+}
+
+TEST(StatementExecutor, canHandleDollarSignAtTheEndOfTheString)
+{
+	StatementExecutor_setSymbol(statementExecutor, "v2", "doug");
+	SlimList_addString(args, "hi $v2$");
+	STRCMP_EQUAL("hi doug$", StatementExecutor_call(statementExecutor, "test_slim", "echo", args))
 }
