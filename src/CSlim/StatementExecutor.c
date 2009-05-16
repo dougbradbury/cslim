@@ -118,24 +118,22 @@ static void destroyMethods(MethodNode* head) {
 }
 
 char* StatementExecutor_Make(StatementExecutor* executor, char* instanceName, char* className, SlimList* args){
-	FixtureNode* fixtureNode;
-	for (fixtureNode = executor->fixtures; fixtureNode; fixtureNode = fixtureNode->next) {
-		if (strcmp(fixtureNode->name, className) == 0) {
-			InstanceNode* instanceNode = malloc(sizeof(InstanceNode));
-			instanceNode->next = executor->instances;
-			executor->instances = instanceNode;
-			instanceNode->name = instanceName;
-			instanceNode->fixture = fixtureNode;
-			replaceSymbols(executor->symbolTable, args);
-			executor->userMessage = NULL;
-			instanceNode->instance = (fixtureNode->constructor)(executor, args);
-			if (instanceNode->instance != NULL) {	
-				return "OK";
-			} else {
-				char * formatString = "__EXCEPTION__:message:<<COULD_NOT_INVOKE_CONSTRUCTOR %.32s %.32s.>>";
-				snprintf(executor->message, 120, formatString, className, executor->userMessage ? executor->userMessage : "");	
-				return executor->message;	
-			}
+	FixtureNode* fixtureNode = findFixture(executor, className);
+	if (fixtureNode) {
+		InstanceNode* instanceNode = malloc(sizeof(InstanceNode));
+		instanceNode->next = executor->instances;
+		executor->instances = instanceNode;
+		instanceNode->name = instanceName;
+		instanceNode->fixture = fixtureNode;
+		replaceSymbols(executor->symbolTable, args);
+		executor->userMessage = NULL;
+		instanceNode->instance = (fixtureNode->constructor)(executor, args);
+		if (instanceNode->instance != NULL) {	
+			return "OK";
+		} else {
+			char * formatString = "__EXCEPTION__:message:<<COULD_NOT_INVOKE_CONSTRUCTOR %.32s %.32s.>>";
+			snprintf(executor->message, 120, formatString, className, executor->userMessage ? executor->userMessage : "");	
+			return executor->message;	
 		}
 	}
 	char * formatString = "__EXCEPTION__:message:<<NO_CLASS %.32s.>>";
@@ -219,8 +217,6 @@ static char* replaceStringFrom(SymbolTable* symbolTable, char* string, char* fro
 	}
 	return buyString(string);
 }
-
-#include <ctype.h>
 
 static int lengthOfSymbol(char * start)
 {

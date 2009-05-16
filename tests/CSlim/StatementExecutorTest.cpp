@@ -275,6 +275,3 @@ TEST(StatementExecutor, canCallFixtureNotDeclared)
 	char* result = StatementExecutor_Call(statementExecutor, "undeclaredTestSlim", "echo", args);
 	STRCMP_EQUAL("hi doug", result);
 }
-
-
-
