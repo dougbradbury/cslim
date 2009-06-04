@@ -5,6 +5,13 @@
 #include <string.h>
 #include "SlimList.h"
 #include "SlimListDeserializer.h"
+#include "StatementExecutor.h"
+#include "ListExecutor.h"
+#include "TestSlim.h"
+#include "SlimListSerializer.h"
+extern void Division_Register(StatementExecutor* executor);
+extern void Count_Register(StatementExecutor* executor);
+extern void EmployeePayRecordsRow_Register(StatementExecutor* executor);
 
 char * temp_handle_slim_message(char * message);
 //SlimExecutor executor;
@@ -24,17 +31,26 @@ int connection_handler(int socket)
 	return result;
 }
 
+static StatementExecutor * statementExecutor;
+static ListExecutor * listExecutor;
 int main(int ac, char** av)
 {
-//	executor = SlimExecutor_Create();
+	statementExecutor = StatementExecutor_Create();
+	StatementExecutor_AddFixture(statementExecutor, TestSlim_Register);
+	StatementExecutor_AddFixture(statementExecutor, Division_Register);
+	StatementExecutor_AddFixture(statementExecutor, Count_Register);
+	StatementExecutor_AddFixture(statementExecutor, EmployeePayRecordsRow_Register);
+	
+	listExecutor = ListExecutor_Create(statementExecutor);
+	
 	SocketServer* server = SocketServer_Create();
 	SocketServer_register_handler(server, &connection_handler);
 		
 	int result = SocketServer_Run(server, av[1]);
 	
 	SocketServer_Destroy(server);
-//	SlimExecutor_Destroy(executor);
-	
+	ListExecutor_Destroy(listExecutor);
+	StatementExecutor_Destroy(statementExecutor);
 	return result;
 }
 
@@ -43,14 +59,9 @@ int main(int ac, char** av)
 char * temp_handle_slim_message(char * message)
 {
 	SlimList* instructions = SlimList_Deserialize(message);
-//	SlimList results = SlimExecutor_execute(executor, instructions);
-//	char * response = SlimList_Serialize(results);
-//	SlimListDestroy(results);
+	SlimList* results = ListExecutor_Execute(listExecutor, instructions);
+	char * response = SlimList_Serialize(results);
+	SlimList_Destroy(results);
 	SlimList_Destroy(instructions);
-		
-	
-	char * response = (char *)malloc(32);
-	strcpy(response, "[000000:]");
-	
 	return response;
 }

@@ -2,6 +2,7 @@
 #include <memory.h>
 #include "StatementExecutor.h"
 #include "SlimList.h"
+#include "SlimListSerializer.h"
 #include <stdio.h>
 
 void EmployeePayRecordsRow_Register(StatementExecutor*);
@@ -49,5 +50,5 @@ static char* query(void* void_self, SlimList* args) {
 void EmployeePayRecordsRow_Register(StatementExecutor* executor)
 {
   StatementExecutor_RegisterFixture(executor, "EmployeePayRecordsRow", EmployeePayRecordsRow_Create, EmployeePayRecordsRow_Destroy);
-  StatementExecutor_RegisterMethod(executor, "TestSlim", "query", query); 
+  StatementExecutor_RegisterMethod(executor, "EmployeePayRecordsRow", "query", query); 
 }

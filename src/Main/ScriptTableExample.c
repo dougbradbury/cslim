@@ -41,6 +41,6 @@ static char* Count_counter(void* void_self, SlimList* args) {
 void Count_Register(StatementExecutor* executor)
 {
 	StatementExecutor_RegisterFixture(executor, "Count", Count_Create, Count_Destroy);
-	StatementExecutor_RegisterMethod(executor, "TestSlim", "count", Count_count);	
-	StatementExecutor_RegisterMethod(executor, "TestSlim", "counter", Count_counter);	
+	StatementExecutor_RegisterMethod(executor, "Count", "count", Count_count);	
+	StatementExecutor_RegisterMethod(executor, "Count", "counter", Count_counter);	
 }

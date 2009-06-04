@@ -38,7 +38,7 @@ static char* setDenominator(void* void_self, SlimList* args) {
 	return "OK";
 }
 
-static char* getQuotient(void* void_self, SlimList* args) {
+static char* Quotient(void* void_self, SlimList* args) {
 	Division* self = (Division*)void_self;
   float quotient = self->numerator / self->denominator;
   snprintf(self->result, 32, "%f", quotient);
@@ -48,6 +48,7 @@ static char* getQuotient(void* void_self, SlimList* args) {
 void Division_Register(StatementExecutor* executor)
 {
 	StatementExecutor_RegisterFixture(executor, "Division", Division_Create, Division_Destroy);
-	StatementExecutor_RegisterMethod(executor, "TestSlim", "setNumerator", setNumerator);	
-	StatementExecutor_RegisterMethod(executor, "TestSlim", "setdenominator", setDenominator);
+	StatementExecutor_RegisterMethod(executor, "Division", "setNumerator", setNumerator);	
+	StatementExecutor_RegisterMethod(executor, "Division", "setDenominator", setDenominator);
+	StatementExecutor_RegisterMethod(executor, "Division", "Quotient", Quotient);
 }

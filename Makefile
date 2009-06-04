@@ -44,7 +44,11 @@ TEST_SRC_DIRS = \
 	tests/Com
 
 DEMO_MAIN = \
-	src/Main/main.o
+	src/Main/main.o \
+	src/Main/DecisionTableExample.o \
+	src/Main/ScriptTableExample.o \
+	src/Main/QueryTableExample.o \
+	tests/CSlim/TestSlim.o
 
 #includes for all compiles	
 INCLUDES =\
