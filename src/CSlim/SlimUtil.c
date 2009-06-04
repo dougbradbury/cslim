@@ -2,6 +2,9 @@
 #include <stdlib.h>
 char * buyBuf(char* buffer, int length)
 {
+	if (buffer == NULL)
+		return NULL;
+		
 	char * purchase = malloc(length+1);
 	strncpy(purchase, buffer, length);
 	purchase[length] = 0;
@@ -9,5 +12,7 @@ char * buyBuf(char* buffer, int length)
 }
 char * buyString(char* string)
 {
+	if (string == NULL)
+		return NULL;
 	return buyBuf(string, strlen(string));
 }

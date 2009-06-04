@@ -62,7 +62,7 @@ void SlimList_AddBuffer(SlimList* self, char* buffer, int length)
 
 void SlimList_AddString(SlimList* self, char* string) 
 {
-	SlimList_AddBuffer(self, string, strlen(string));
+	SlimList_AddBuffer(self, string, string ? strlen(string) : 0);
 }
 
 void SlimList_AddList(SlimList* self, SlimList* element)
@@ -150,4 +150,39 @@ static void insertNode(SlimList* self, Node* node)
 	}
 	self->tail = node;	
 	self->length++;
+}
+
+SlimList* SlimList_GetTailAt(SlimList* self, int index)
+{
+	SlimList * tail = SlimList_Create();
+	int length = SlimList_GetLength(self);
+	for(;index < length; index++) {
+		SlimList_AddString(tail, SlimList_GetStringAt(self, index));
+	}
+	return tail;
+}
+
+char* SlimList_ToString(SlimList* self) {
+	static char string[128];
+	char buf[128];
+	buf[0] = '\0';
+	strncat(buf, "[", 128);
+	int length = SlimList_GetLength(self);
+	int i;
+	for (i = 0; i<length; i++) {
+		SlimList* sublist = SlimList_GetListAt(self, i);
+		if (sublist != NULL) {
+			strncat(buf, SlimList_ToString(sublist), 128);
+		} else {
+			strncat(buf, "\"", 128);
+			strncat(buf, SlimList_GetStringAt(self, i), 128);
+			strncat(buf, "\"", 128);
+		}
+		if (i != (length-1)) {
+			strncat(buf, ", ", 128);
+		}	
+	}
+	strncat(buf, "]", 128);
+	strncpy(string, buf, 128);
+	return string;	
 }

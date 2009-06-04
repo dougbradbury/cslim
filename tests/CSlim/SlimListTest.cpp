@@ -110,3 +110,36 @@ TEST(SlimList, canReplaceString)
 	
 	STRCMP_EQUAL("WithMe", SlimList_GetStringAt(slimList, 0));
 }
+
+TEST(SlimList, canGetTail)
+{
+  SlimList_AddString(slimList, "1");
+  SlimList_AddString(slimList, "2");
+  SlimList_AddString(slimList, "3");
+  SlimList_AddString(slimList, "4");
+
+  SlimList* expected = SlimList_Create();
+  SlimList_AddString(expected, "3");
+  SlimList_AddString(expected, "4");
+  
+  SlimList* tail = SlimList_GetTailAt(slimList, 2);
+  CHECK(SlimList_Equals(expected, tail));
+  SlimList_Destroy(tail);
+  SlimList_Destroy(expected);
+}
+
+TEST(SlimList, recursiveToString) 
+{
+ 	SlimList_AddString(slimList, "a");
+	SlimList_AddString(slimList, "b"); 
+	
+  SlimList* sublist = SlimList_Create();
+  SlimList_AddString(sublist, "3");
+  SlimList_AddString(sublist, "4");
+  
+  SlimList_AddList(slimList, sublist);
+  
+  STRCMP_EQUAL("[\"a\", \"b\", [\"3\", \"4\"]]", SlimList_ToString(slimList));
+  
+  SlimList_Destroy(sublist);
+}

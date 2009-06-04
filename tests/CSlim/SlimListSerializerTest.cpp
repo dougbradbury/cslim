@@ -106,3 +106,11 @@ TEST(SlimListSerializer, serializedLength)
 	LONGS_EQUAL(9 + (5+8) + (6+8), strlen(serializedList));
 }
 
+TEST(SlimListSerializer, serializeNull)
+{
+  SlimList_AddString(slimList, NULL);
+	serializedList = SlimList_Serialize(slimList);
+	STRCMP_EQUAL("[000001:000004:null:]", serializedList);
+  
+}
+

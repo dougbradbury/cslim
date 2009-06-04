@@ -19,5 +19,7 @@ SlimList * SlimList_GetListAt(SlimList* self, int index);
 char * SlimList_GetStringAt(SlimList* self, int index);
 void SlimList_ReplaceAt(SlimList* self, int index, char * replacementString);
 void SlimList_AddBuffer(SlimList* self, char* buffer, int length);
+SlimList* SlimList_GetTailAt(SlimList*, int);
+char* SlimList_ToString(SlimList*);
 
 #endif  // D_SlimList_H

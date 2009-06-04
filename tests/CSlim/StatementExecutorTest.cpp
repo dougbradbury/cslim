@@ -7,17 +7,18 @@ extern "C"
 #include "SlimList.h"
 #include "SlimListDeserializer.h"
 #include <string.h>
+#include <stdio.h>
 }
 
 TEST_GROUP(StatementExecutor)
 {
-    StatementExecutor* statementExecutor;
+  StatementExecutor* statementExecutor;
 	SlimList* args;
 	SlimList* empty;
 
-    void setup()
+  void setup()
   {
-  		args = SlimList_Create();
+  	args = SlimList_Create();
 		empty = SlimList_Create();
 		statementExecutor = StatementExecutor_Create();
 		StatementExecutor_AddFixture(statementExecutor, TestSlim_Register);
@@ -274,4 +275,10 @@ TEST(StatementExecutor, canCallFixtureNotDeclared)
 	SlimList_AddString(args, "hi doug");
 	char* result = StatementExecutor_Call(statementExecutor, "undeclaredTestSlim", "echo", args);
 	STRCMP_EQUAL("hi doug", result);
+}
+
+TEST(StatementExecutor, canHaveNullResult)
+{
+	char* result = StatementExecutor_Call(statementExecutor, "test_slim", "null", args);
+	POINTERS_EQUAL(0, result);  
 }

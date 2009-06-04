@@ -1,14 +1,15 @@
 #include "TestSlim.h"
 #include <stdlib.h>
 #include <memory.h>
-
+#include <stdio.h>
 
 //static local variables
 struct TestSlim
 {
     int noArgsCalled;
 	char* arg;
-	SlimList* constructionArgs;
+	char constructionArg[50];
+	char echoBuf[50];
 };
 
 void* TestSlim_Create(StatementExecutor* executor, SlimList* args)
@@ -17,10 +18,13 @@ void* TestSlim_Create(StatementExecutor* executor, SlimList* args)
 		StatementExecutor_ConstructorError(executor, "xxx");
 		return NULL;
 	}
-
+	
 	TestSlim* self = malloc(sizeof(TestSlim));
 	memset(self, 0, sizeof(TestSlim));
-	self->constructionArgs = args;
+	
+	if (SlimList_GetLength(args) == 1)
+		strncpy(self->constructionArg, SlimList_GetStringAt(args, 0), 50);
+		
 	return self;
 }
 
@@ -47,6 +51,16 @@ static char* oneArg(void* self, SlimList* args) {
 	return SlimList_GetStringAt(args, 0);
 }
 
+static char* add(void* self, SlimList* args) {
+	static char buf[50];	
+	snprintf(buf, 50, "%s%s", SlimList_GetStringAt(args, 0), SlimList_GetStringAt(args, 1));
+	return buf;
+}
+
+static char* null(void* self, SlimList* args) {
+	return NULL;
+}
+
 static char* setArg(void* self, SlimList* args) {
 	TestSlim* me = (TestSlim*)self;
 	me->arg = SlimList_GetStringAt(args, 0);
@@ -60,7 +74,7 @@ static char* getArg(void* self, SlimList* args) {
 
 static char* getConstructionArg(void* self, SlimList* args) {
 	TestSlim* me = (TestSlim*)self;	
-	return SlimList_GetStringAt(me->constructionArgs, 0);
+	return me->constructionArg;
 }
 
 static char* returnError(void* self, SlimList* args) {
@@ -73,6 +87,8 @@ void TestSlim_Register(StatementExecutor* executor)
 	StatementExecutor_RegisterMethod(executor, "TestSlim", "returnValue", returnValue);	
 	StatementExecutor_RegisterMethod(executor, "TestSlim", "noArgs", noArgs);
 	StatementExecutor_RegisterMethod(executor, "TestSlim", "echo", oneArg);
+	StatementExecutor_RegisterMethod(executor, "TestSlim", "add", add);
+	StatementExecutor_RegisterMethod(executor, "TestSlim", "null", null);
 	StatementExecutor_RegisterMethod(executor, "TestSlim", "setArg", setArg);
 	StatementExecutor_RegisterMethod(executor, "TestSlim", "getArg", getArg);
 	StatementExecutor_RegisterMethod(executor, "TestSlim", "getConstructionArg", getConstructionArg);
