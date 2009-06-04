@@ -9,9 +9,9 @@ void Division_Register(StatementExecutor*);
 
 typedef struct Division
 {
-    float numerator;
-    float denominator;
-    char result[32];
+	float numerator;
+	float denominator;
+	char result[32];
 } Division;
 
 void* Division_Create(StatementExecutor* executor, SlimList* args)
@@ -23,27 +23,35 @@ void* Division_Create(StatementExecutor* executor, SlimList* args)
 
 void Division_Destroy(void* void_self)
 {
-    free(void_self);
+	free(void_self);
 }
 
 static char* setNumerator(void* void_self, SlimList* args) {
 	Division* self = (Division*)void_self;
 	self->numerator = atof(SlimList_GetStringAt(args, 0));
-	return "OK";
+	return "";
 }
 
 static char* setDenominator(void* void_self, SlimList* args) {
 	Division* self = (Division*)void_self;
 	self->denominator = atof(SlimList_GetStringAt(args, 0));
-	return "OK";
+	return "";
 }
 
 static char* Quotient(void* void_self, SlimList* args) {
 	Division* self = (Division*)void_self;
-  float quotient = self->numerator / self->denominator;
-  snprintf(self->result, 32, "%f", quotient);
+	float quotient = self->numerator / self->denominator;
+	snprintf(self->result, 32, "%f", quotient);
 	return self->result;
 }
+
+// TODO:  make function registration look like this
+// FIXTURE(Division) 
+// {
+// 	FUNCTION(setNumerator);
+// 	FUNCTION(setDenominator);
+// 	FUNCTION(Quotient);
+// }
 
 void Division_Register(StatementExecutor* executor)
 {

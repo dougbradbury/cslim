@@ -9,8 +9,8 @@ void Count_Register(StatementExecutor*);
 
 typedef struct Count
 {
-  int count;
-  char result[32];
+	int count;
+	char result[32];
 } Count;
 
 void* Count_Create(StatementExecutor* executor, SlimList* args)
@@ -22,18 +22,18 @@ void* Count_Create(StatementExecutor* executor, SlimList* args)
 
 void Count_Destroy(void* self)
 {
-    free(self);
+	free(self);
 }
 
 static char* Count_count(void* void_self, SlimList* args) {
 	Count* self = (Count*)void_self;
-  self->count++;
-	return "OK";
+	self->count++;
+	return "";
 }
 
 static char* Count_counter(void* void_self, SlimList* args) {
 	Count* self = (Count*)void_self;
-  snprintf(self->result, 32, "%d", self->count);
+	snprintf(self->result, 32, "%d", self->count);
 	return self->result;
 }
 

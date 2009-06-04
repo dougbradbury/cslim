@@ -5,16 +5,16 @@ SILENCE = @
 COMPONENT_NAME = CSlim
 TARGET_LIB = \
 	lib/lib$(COMPONENT_NAME).a
-	
+
+SERVER_TARGET = \
+	$(COMPONENT_NAME)_server
+
+$(SERVER_TARGET):
+
 TEST_TARGET = \
 	$(COMPONENT_NAME)_tests
 test: $(TEST_TARGET)
 
-DEMO_TARGET = \
-	$(COMPONENT_NAME)_demo
-
-demo: $(DEMO_TARGET)
-	
 #--- Inputs ----#
 PROJECT_HOME_DIR = .
 CPPUTEST_HOME = ../CppUTest
@@ -43,12 +43,12 @@ TEST_SRC_DIRS = \
 	tests/CSlim \
 	tests/Com
 
-DEMO_MAIN = \
+MAIN = \
 	src/Main/main.o \
+	src/Main/Fixtures.o \
 	src/Main/DecisionTableExample.o \
 	src/Main/ScriptTableExample.o \
-	src/Main/QueryTableExample.o \
-	tests/CSlim/TestSlim.o
+	src/Main/QueryTableExample.o 
 
 #includes for all compiles	
 INCLUDES =\
@@ -57,13 +57,14 @@ INCLUDES =\
   -Iinclude/Com\
   -I$(CPPUTEST_HOME)/include/\
   -I$(CPPUTEST_HOME)/include/Platforms/$(CPP_PLATFORM)\
+  -Iinclude/Main
 
 #Flags to pass to ld
 LDFLAGS +=
 	
 include $(CPPUTEST_HOME)/build/ComponentMakefile
 
-$(DEMO_TARGET): CFLAGS += 
-$(DEMO_TARGET): GCOVFLAGS += 
-$(DEMO_TARGET): $(TARGET_LIB) $(USER_LIBS) $(DEMO_MAIN) 
-	$(CC) $(LDFLAGS) -o $@ $(TARGET_LIB) $(DEMO_MAIN)
+$(SERVER_TARGET): CFLAGS += 
+$(SERVER_TARGET): GCOVFLAGS += 
+$(SERVER_TARGET): $(TARGET_LIB) $(USER_LIBS) $(MAIN) 
+	$(CC) $(LDFLAGS) -o $@ $(TARGET_LIB) $(MAIN)

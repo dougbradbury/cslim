@@ -9,6 +9,7 @@
 #include <regex.h>
 #include "SymbolTable.h"
 #include "assert.h"
+#include <ctype.h>
 
 
 typedef struct methodNode {

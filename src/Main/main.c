@@ -7,21 +7,17 @@
 #include "SlimListDeserializer.h"
 #include "StatementExecutor.h"
 #include "ListExecutor.h"
-#include "TestSlim.h"
 #include "SlimListSerializer.h"
-extern void Division_Register(StatementExecutor* executor);
-extern void Count_Register(StatementExecutor* executor);
-extern void EmployeePayRecordsRow_Register(StatementExecutor* executor);
 
-char * temp_handle_slim_message(char * message);
-//SlimExecutor executor;
+void AddFixtures(StatementExecutor* executor);
+char * handle_slim_message(char * message);
 
 int connection_handler(int socket)
 {
 	int result = 0;
 	TcpComLink * comLink = TcpComLink_Create(socket);
 	SlimConnectionHandler* connection = SlimConnectionHandler_Create(&TcpComLink_send, &TcpComLink_recv, (void*)comLink);
-	SlimConnectionHandler_RegisterSlimMessageHandler(connection, &temp_handle_slim_message);
+	SlimConnectionHandler_RegisterSlimMessageHandler(connection, &handle_slim_message);
 
 	result = SlimConnectionHandler_Run(connection);
 
@@ -36,10 +32,7 @@ static ListExecutor * listExecutor;
 int main(int ac, char** av)
 {
 	statementExecutor = StatementExecutor_Create();
-	StatementExecutor_AddFixture(statementExecutor, TestSlim_Register);
-	StatementExecutor_AddFixture(statementExecutor, Division_Register);
-	StatementExecutor_AddFixture(statementExecutor, Count_Register);
-	StatementExecutor_AddFixture(statementExecutor, EmployeePayRecordsRow_Register);
+	AddFixtures(statementExecutor);
 	
 	listExecutor = ListExecutor_Create(statementExecutor);
 	
@@ -56,7 +49,7 @@ int main(int ac, char** av)
 
 
 
-char * temp_handle_slim_message(char * message)
+char * handle_slim_message(char * message)
 {
 	SlimList* instructions = SlimList_Deserialize(message);
 	SlimList* results = ListExecutor_Execute(listExecutor, instructions);

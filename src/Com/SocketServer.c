@@ -123,8 +123,6 @@ extern int SocketServer_Run(SocketServer* self, char * listening_port_number)
         exit(1);
     }
 
-    printf("server: waiting for connections...\n");
-
 	sin_size = sizeof their_addr;
 	new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
 	if (new_fd == -1) {
@@ -135,7 +133,6 @@ extern int SocketServer_Run(SocketServer* self, char * listening_port_number)
 	inet_ntop(their_addr.ss_family,
 	    get_in_addr((struct sockaddr *)&their_addr),
 	    s, sizeof s);
-	printf("server: got connection from %s\n", s);
 
 	serve(self, new_fd);
 

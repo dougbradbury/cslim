@@ -48,7 +48,8 @@ static char* returnValue(void* self, SlimList* args) {
 }
 
 static char* oneArg(void* self, SlimList* args) {
-	return SlimList_GetStringAt(args, 0);
+	char * value = SlimList_GetStringAt(args, 0);
+	return value;
 }
 
 static char* add(void* self, SlimList* args) {

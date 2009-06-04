@@ -1,0 +1,28 @@
+Hi.
+You're smart.
+We're sure you can figure all this out by looking at the code.
+
+But here are the basics.
+
+Fixtures in CSlim are sets of functions and a data structure that binds them together.   See Main/DecisionTableExample.c
+
+Note that the struct Division is used to hold data for all the functions in this fixture, rather like an object <grin>.
+
+Each function returns a char*, and you'd better control the memory for what it returns. You can return a pointer to a static variable, or to a dynamically allocated buffer.  You can delete dynamically allocated buffers in your "destructor" (see below);  Repeat, every function returns a char*, so if you want to return an integer you'll have to convert it to a char*.  See the ScriptTableExample for a rather discouraging example of way that this needs to be done.
+
+Slim calls your functions with a void* pointer to the fixture data structure.  You'll have to cast the void* if you want to use it.  The functions also take a pointer to a SlimList that contains all the arguments were passed to your function.  These arguments will be strings or other SlimLists, and you'll have to just know which are which.  You should get familiar with the SlimList interface.  It's not very exciting, but you'll be using it a lot.  Take a close look at the QueryTableExample.  It makes considerable use of SlimList, and the related function SlimList_Serialize;
+
+Notice the "Register" function at the bottom of the DecisionTableExample.c file.  This will be called by the main program of the Slim Server.  It is your responsibility to register your fixture and your functions in this function.   
+
+You register a fixture by calling StatementExecutor_RegisterFixture providing a fixture_name, and pointers to two functions.  The create function is used to allocate and initialize the fixture data structure.  The destroy function is your destructor.  You use it to free any memory you may have allocated.
+
+You register your functions by calling StatementExecutor_RegisterMethod and providing the name of the function and a pointer to the function. 
+
+The names are used by FitNesse and do not need to match the actual C names of the fixture and methods -- though it would probably be silly if they didn't.
+
+Now look at the Main/Fixtures.c file.  This is where you tell the main Slim Server program about all your fixtures.  The FIXTURES and FIXTURE macros make this easy.
+
+The only thing left is the makefile.  You need to add your fixture .o files to the MAIN macro (Though we fully expect that you'll be using your own makefile, so just do the equivalent.)
+
+This makefile depends on CPPUTEST.  This helps us to run our unit tests.  If you use CPPUTEST then great.  Otherwise you'll probably want to pull all that out of the makefile.  
+
