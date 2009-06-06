@@ -46,13 +46,6 @@ TEST_SRC_DIRS = \
 SERVER_SRC_DIRS =\
 	src/Main
 	
-MAIN = \
-	src/Main/main.o \
-	src/Main/Fixtures.o \
-	src/Main/DecisionTableExample.o \
-	src/Main/ScriptTableExample.o \
-	src/Main/QueryTableExample.o 
-
 #includes for all compiles	
 INCLUDES =\
   -I.\
