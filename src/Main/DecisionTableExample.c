@@ -1,11 +1,8 @@
 #include <stdlib.h>
 #include <memory.h>
-#include "StatementExecutor.h"
-#include "SlimList.h"
 #include <stdio.h>
-
-void Division_Register(StatementExecutor*);
-
+#include "SlimList.h"
+#include "Fixtures.h"
 
 typedef struct Division
 {
@@ -14,7 +11,7 @@ typedef struct Division
 	char result[32];
 } Division;
 
-void* Division_Create(StatementExecutor* executor, SlimList* args)
+void* Division_Create(void* errorHandler, SlimList* args)
 {
 	Division* self = malloc(sizeof(Division));
 	memset(self, 0, sizeof(Division));
@@ -35,6 +32,8 @@ static char* setNumerator(void* void_self, SlimList* args) {
 static char* setDenominator(void* void_self, SlimList* args) {
 	Division* self = (Division*)void_self;
 	self->denominator = atof(SlimList_GetStringAt(args, 0));
+	if (self->denominator == 0.0)
+		return SLIM_EXCEPTION("You shouldn't divide by zero now should ya?");
 	return "";
 }
 
@@ -45,18 +44,9 @@ static char* Quotient(void* void_self, SlimList* args) {
 	return self->result;
 }
 
-// TODO:  make function registration look like this
-// FIXTURE(Division) 
-// {
-// 	FUNCTION(setNumerator);
-// 	FUNCTION(setDenominator);
-// 	FUNCTION(Quotient);
-// }
 
-void Division_Register(StatementExecutor* executor)
-{
-	StatementExecutor_RegisterFixture(executor, "Division", Division_Create, Division_Destroy);
-	StatementExecutor_RegisterMethod(executor, "Division", "setNumerator", setNumerator);	
-	StatementExecutor_RegisterMethod(executor, "Division", "setDenominator", setDenominator);
-	StatementExecutor_RegisterMethod(executor, "Division", "Quotient", Quotient);
-}
+CREATE_FIXTURE(Division) 
+	FUNCTION(setNumerator)
+	FUNCTION(setDenominator)
+	FUNCTION(Quotient)
+END

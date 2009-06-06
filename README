@@ -12,6 +12,11 @@ Each function returns a char*, and you'd better control the memory for what it r
 
 Slim calls your functions with a void* pointer to the fixture data structure.  You'll have to cast the void* if you want to use it.  The functions also take a pointer to a SlimList that contains all the arguments were passed to your function.  These arguments will be strings or other SlimLists, and you'll have to just know which are which.  You should get familiar with the SlimList interface.  It's not very exciting, but you'll be using it a lot.  Take a close look at the QueryTableExample.  It makes considerable use of SlimList, and the related function SlimList_Serialize;
 
+You can abort the#define SLIM_ABORT(reason) QUOTES(__EXCEPTION__:ABORT_SLIM_TEST:message:<<reason.>>)
+
+You can cause a slim exception in any function by returning a message with the SLIM_EXCEPTION(reason) macro.
+To cause an exception in a Constructor
+
 Notice the "Register" function at the bottom of the DecisionTableExample.c file.  This will be called by the main program of the Slim Server.  It is your responsibility to register your fixture and your functions in this function.   
 
 You register a fixture by calling StatementExecutor_RegisterFixture providing a fixture_name, and pointers to two functions.  The create function is used to allocate and initialize the fixture data structure.  The destroy function is your destructor.  You use it to free any memory you may have allocated.
@@ -19,6 +24,8 @@ You register a fixture by calling StatementExecutor_RegisterFixture providing a 
 You register your functions by calling StatementExecutor_RegisterMethod and providing the name of the function and a pointer to the function. 
 
 The names are used by FitNesse and do not need to match the actual C names of the fixture and methods -- though it would probably be silly if they didn't.
+
+
 
 Now look at the Main/Fixtures.c file.  This is where you tell the main Slim Server program about all your fixtures.  The FIXTURES and FIXTURE macros make this easy.
 

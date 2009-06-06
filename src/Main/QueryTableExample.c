@@ -1,27 +1,32 @@
 #include <stdlib.h>
 #include <memory.h>
-#include "StatementExecutor.h"
+#include <stdio.h>
+#include "Fixtures.h"
 #include "SlimList.h"
 #include "SlimListSerializer.h"
-#include <stdio.h>
-
-void EmployeePayRecordsRow_Register(StatementExecutor*);
 
 
 typedef struct EmployeePayRecordsRow
 {
-	char result[32];
+	char * result;
 } EmployeePayRecordsRow;
 
-void* EmployeePayRecordsRow_Create(StatementExecutor* executor, SlimList* args)
+static void clearResult(EmployeePayRecordsRow* self)
+{
+	if (self->result)
+		free(self->result);
+}
+void* EmployeePayRecordsRow_Create(void* errorHandler, SlimList* args)
 {
 	EmployeePayRecordsRow* self = malloc(sizeof(EmployeePayRecordsRow));
 	memset(self, 0, sizeof(EmployeePayRecordsRow));
 	return self;
 }
 
-void EmployeePayRecordsRow_Destroy(void* self)
+void EmployeePayRecordsRow_Destroy(void* void_self)
 {
+	EmployeePayRecordsRow* self = (EmployeePayRecordsRow*)void_self;
+	clearResult(self);
 	free(self);
 }
 
@@ -42,18 +47,17 @@ static char* query(void* void_self, SlimList* args) {
 	
 	SlimList* records = SlimList_Create();
 	SlimList_AddList(records, record1);
-	char* result = SlimList_Serialize(records);
+	clearResult(self);
+	self->result = SlimList_Serialize(records);
 	
 	SlimList_Destroy(id);
 	SlimList_Destroy(pay);
 	SlimList_Destroy(record1);
 	SlimList_Destroy(records);
-	return result;
+	return self->result;
 }
 
-
-void EmployeePayRecordsRow_Register(StatementExecutor* executor)
-{
-	StatementExecutor_RegisterFixture(executor, "EmployeePayRecordsRow", EmployeePayRecordsRow_Create, EmployeePayRecordsRow_Destroy);
-	StatementExecutor_RegisterMethod(executor, "EmployeePayRecordsRow", "query", query); 
-}
+CREATE_FIXTURE(EmployeePayRecordsRow)
+	FUNCTION(EmployeePayRecordsRow_Create)
+	FUNCTION(query)
+END

@@ -1,5 +1,5 @@
 #Set this to @ to keep the makefile quiet
-SILENCE = @ 
+SILENCE = @
 
 #---- Outputs ----#
 COMPONENT_NAME = CSlim
@@ -43,6 +43,9 @@ TEST_SRC_DIRS = \
 	tests/CSlim \
 	tests/Com
 
+SERVER_SRC_DIRS =\
+	src/Main
+	
 MAIN = \
 	src/Main/main.o \
 	src/Main/Fixtures.o \
@@ -61,10 +64,8 @@ INCLUDES =\
 
 #Flags to pass to ld
 LDFLAGS +=
-	
-include $(CPPUTEST_HOME)/build/ComponentMakefile
 
 $(SERVER_TARGET): CFLAGS += 
 $(SERVER_TARGET): GCOVFLAGS += 
-$(SERVER_TARGET): $(TARGET_LIB) $(USER_LIBS) $(MAIN) 
-	$(CC) $(LDFLAGS) -o $@ $(TARGET_LIB) $(MAIN)
+	
+include ComponentMakefile
