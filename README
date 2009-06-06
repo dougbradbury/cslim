@@ -43,6 +43,7 @@ The only thing left is the makefile.  The makefile provided will build everythin
 * Unit Tests *
 **************
 CSlim was built using CPPUTEST.  If you want to run the test target, you'll have to download CPPUTEST and set the CPPUTEST_HOME macro in the Makefile.
+http://www.cpputest.org/
 
 ******************
 * Communications *
