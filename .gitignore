@@ -3,7 +3,7 @@
 *.gcno
 *.o
 CSlim_tests
-CSlim_demo
+CSlim_server
 libCSlim.a
 *.gcov
 gcov_*.txt*

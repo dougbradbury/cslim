@@ -12,7 +12,7 @@ Each function returns a char*, and you'd better control the memory for what it r
 
 Slim calls your functions with a void* pointer to the fixture data structure.  You'll have to cast the void* if you want to use it.  The functions also take a pointer to a SlimList that contains all the arguments were passed to your function.  These arguments will be strings or other SlimLists, and you'll have to just know which are which.  You should get familiar with the SlimList interface.  It's not very exciting, but you'll be using it a lot.  Take a close look at the QueryTableExample.  It makes considerable use of SlimList, and the related function SlimList_Serialize;
 
-You can cause a slim exception in any function by returning a message with the SLIM_EXCEPTION(reason) macro.  This will turn the cell being executed yellow.  To cause an exception in a Create function (if, for example the wrong number of arguments have been given to it), use the SLIM_CONSTRUCTOR_ERROR(errorHandler, reason) macro.
+You can cause a slim exception in any function by returning a message with the SLIM_EXCEPTION(reason) macro.  This will turn the cell being executed yellow.  To cause an exception in a Create function (if, for example the wrong number of arguments have been given to it), use the SLIM_CONSTRUCTOR_ERROR(errorHandler, reason) macro.  See Main/ExceptionExample.c for examples of create exceptions.
 
 ****************
 * Registration *
