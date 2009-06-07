@@ -5,8 +5,6 @@
 #include <sys/types.h>
 #include <stdio.h>
 
-//static local variables
-
 struct SlimConnectionHandler
 {
 	com_func_t sendFunc;

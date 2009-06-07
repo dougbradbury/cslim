@@ -47,8 +47,6 @@ int main(int ac, char** av)
 	return result;
 }
 
-
-
 char * handle_slim_message(char * message)
 {
 	SlimList* instructions = SlimList_Deserialize(message);
@@ -58,3 +56,8 @@ char * handle_slim_message(char * message)
 	SlimList_Destroy(instructions);
 	return response;
 }
+
+
+
+
+

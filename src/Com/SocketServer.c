@@ -59,7 +59,7 @@ void serve(SocketServer* self, int socket)
 	(*self->handler)(socket);
 }
 
-extern int SocketServer_Run(SocketServer* self, char * listening_port_number)
+int SocketServer_Run(SocketServer* self, char * listening_port_number)
 {
     int sockfd, new_fd;  // listen on sock_fd, new connection on new_fd
     struct addrinfo hints, *servinfo, *p;

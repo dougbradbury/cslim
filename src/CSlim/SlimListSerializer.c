@@ -37,7 +37,7 @@ char* SlimList_Serialize(SlimList* self)
 	for(i = 0; i < listLength; i++)
 	{
 		char * nodeString = nodeStringAt(self, i);
-		write_ptr += sprintf(write_ptr, "%06ld:%s:", strlen(nodeString), nodeString);
+		write_ptr += sprintf(write_ptr, "%06ld:%s:", (long)strlen(nodeString), nodeString);
 	}
 	strcpy(write_ptr, "]");
 	return buf;

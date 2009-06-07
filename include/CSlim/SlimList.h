@@ -11,7 +11,7 @@ typedef struct SlimList SlimList;
 
 SlimList* SlimList_Create(void); 
 void SlimList_Destroy(SlimList*);
-void SlimList_AddString(SlimList*, char*);
+extern void SlimList_AddString(SlimList*, char*);
 void SlimList_AddList(SlimList* self, SlimList* element);
 int SlimList_GetLength(SlimList*);
 int SlimList_Equals(SlimList* self, SlimList* other);

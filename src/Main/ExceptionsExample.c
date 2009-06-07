@@ -29,6 +29,7 @@ static char* setTrouble(void* void_self, SlimList* args) {
 	return SLIM_EXCEPTION("You stink");
 }
 
-CREATE_FIXTURE(ExceptionsExample) 
-	FUNCTION(setTrouble)
-END
+SLIM_CREATE_FIXTURE(ExceptionsExample) 
+	SLIM_FUNCTION(setTrouble)
+SLIM_END
+

@@ -105,3 +105,4 @@ void TestSlim_Register(StatementExecutor* executor)
 	
 	StatementExecutor_RegisterMethod(executor, "TestSlimUndeclared", "echo", oneArg);
 }
+

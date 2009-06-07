@@ -1,8 +1,9 @@
 #include "Fixtures.h"
 
-FIXTURES
-	FIXTURE(Division)
-	FIXTURE(Count)
-	FIXTURE(EmployeePayRecordsRow)
-	FIXTURE(ExceptionsExample)
-END
+SLIM_FIXTURES
+	SLIM_FIXTURE(Division)
+	SLIM_FIXTURE(Count)
+	SLIM_FIXTURE(EmployeePayRecordsRow)
+	SLIM_FIXTURE(ExceptionsExample)
+SLIM_END
+

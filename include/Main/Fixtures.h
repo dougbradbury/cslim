@@ -1,28 +1,29 @@
+#define SLIM_QUOTES(x)  #x
 void StatementExecutor_AddFixture(void*, void*);
 void StatementExecutor_RegisterFixture(void*, void *, void *, void *);
 void StatementExecutor_RegisterMethod(void*, void * , void *, void *);
 void StatementExecutor_ConstructorError(void *, char *);
 
-#define FIXTURE(fixture) \
+#define SLIM_FIXTURE(fixture) \
 extern void fixture##_Register(void*);\
 StatementExecutor_AddFixture(executor, fixture##_Register); 
 
-#define FIXTURES void AddFixtures(void* executor) \
+#define SLIM_FIXTURES void AddFixtures(void* executor) \
 {
 
-#define END }
+#define SLIM_END }
 
 
-#define CREATE_FIXTURE(name) static char * fixtureName = #name; \
+#define SLIM_CREATE_FIXTURE(name) static char * fixtureName = #name; \
 void name##_Register(void* executor) \
 { \
 	StatementExecutor_RegisterFixture(executor, #name, name##_Create, name##_Destroy);
-#define FUNCTION(name) StatementExecutor_RegisterMethod(executor, fixtureName, #name, name);	
-#define END }
+#define SLIM_FUNCTION(name) StatementExecutor_RegisterMethod(executor, fixtureName, #name, name);	
 
-#define QUOTES(x)  #x
-#define SLIM_ABORT(reason) QUOTES(__EXCEPTION__:ABORT_SLIM_TEST:message:<<reason.>>)
 
-#define SLIM_EXCEPTION(reason) QUOTES(__EXCEPTION__:message:<<reason.>>)
+#define SLIM_ABORT(reason) SLIM_QUOTES(__EXCEPTION__:ABORT_SLIM_TEST:message:<<reason.>>)
+
+#define SLIM_EXCEPTION(reason) SLIM_QUOTES(__EXCEPTION__:message:<<reason.>>)
 
 #define SLIM_CONSTRUCTOR_ERROR(errorHandler, reason) 		StatementExecutor_ConstructorError(errorHandler, reason);
+

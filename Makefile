@@ -32,6 +32,7 @@ CPPFLAGS =
 SRC_DIRS = \
 	src/CSlim \
 	src/Com
+	# src/ComWin32
 
 #TEST_SRC_DIRS is a list of directories including 
 # - A test main (AllTests.cpp by conventin)

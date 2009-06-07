@@ -36,7 +36,8 @@ static char* counter(void* void_self, SlimList* args) {
 }
 
 
-CREATE_FIXTURE(Count)
-	FUNCTION(count)
-	FUNCTION(counter)	
-END
+SLIM_CREATE_FIXTURE(Count)
+	SLIM_FUNCTION(count)
+	SLIM_FUNCTION(counter)	
+SLIM_END
+

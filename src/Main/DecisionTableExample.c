@@ -40,13 +40,14 @@ static char* setDenominator(void* void_self, SlimList* args) {
 static char* Quotient(void* void_self, SlimList* args) {
 	Division* self = (Division*)void_self;
 	float quotient = self->numerator / self->denominator;
-	snprintf(self->result, 32, "%f", quotient);
+	snprintf(self->result, 32, "%g", quotient);
 	return self->result;
 }
 
 
-CREATE_FIXTURE(Division) 
-	FUNCTION(setNumerator)
-	FUNCTION(setDenominator)
-	FUNCTION(Quotient)
-END
+SLIM_CREATE_FIXTURE(Division) 
+	SLIM_FUNCTION(setNumerator)
+	SLIM_FUNCTION(setDenominator)
+	SLIM_FUNCTION(Quotient)
+SLIM_END
+

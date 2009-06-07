@@ -57,7 +57,8 @@ static char* query(void* void_self, SlimList* args) {
 	return self->result;
 }
 
-CREATE_FIXTURE(EmployeePayRecordsRow)
-	FUNCTION(EmployeePayRecordsRow_Create)
-	FUNCTION(query)
-END
+SLIM_CREATE_FIXTURE(EmployeePayRecordsRow)
+	SLIM_FUNCTION(EmployeePayRecordsRow_Create)
+	SLIM_FUNCTION(query)
+SLIM_END
+
