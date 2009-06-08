@@ -16,7 +16,7 @@ struct SymbolTable
 
 SymbolTable* SymbolTable_Create(void)
 {
-     SymbolTable* self = malloc(sizeof(SymbolTable));
+     SymbolTable* self = (SymbolTable*)malloc(sizeof(SymbolTable));
      memset(self, 0, sizeof(SymbolTable));
      return self;
 }
@@ -45,7 +45,7 @@ char * SymbolTable_FindSymbol(SymbolTable* self, char * name, int length) {
 }
 
 void SymbolTable_SetSymbol(SymbolTable* self, char* symbol, char* value) {
-	SymbolNode * symbolNode = malloc(sizeof(SymbolNode));
+	SymbolNode * symbolNode = (SymbolNode * )malloc(sizeof(SymbolNode));
 	symbolNode->name = buyString(symbol);
 	symbolNode->value = buyString(value);
 	symbolNode->next = self->head;

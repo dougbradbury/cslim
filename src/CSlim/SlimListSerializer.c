@@ -27,7 +27,7 @@ int SlimList_SerializedLength(SlimList* self)
 
 char* SlimList_Serialize(SlimList* self)
 {
-	char* buf = malloc(SlimList_SerializedLength(self)+1);
+	char* buf = (char*)malloc(SlimList_SerializedLength(self)+1);
 	char* write_ptr = buf;
 	int listLength = SlimList_GetLength(self);
 	int i;

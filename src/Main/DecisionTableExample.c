@@ -13,7 +13,7 @@ typedef struct Division
 
 void* Division_Create(void* errorHandler, SlimList* args)
 {
-	Division* self = malloc(sizeof(Division));
+	Division* self = (Division*)malloc(sizeof(Division));
 	memset(self, 0, sizeof(Division));
 	return self;
 }

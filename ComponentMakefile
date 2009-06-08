@@ -80,7 +80,7 @@ $(TARGET_LIB): $(OBJ)
 	$(SILENCE) ranlib $@
 	
 $(SERVER_TARGET): $(TARGET_LIB) $(USER_LIBS) $(SERVER_OBJS) 
-	$(CXX) $(LDFLAGS) -o $@ $(SERVER_OBJS) $(TARGET_LIB)
+	$(CXX) $(LDFLAGS) $(SERVER_OBJS) $(TARGET_LIB) -o $@
 	
 
 test: $(TEST_TARGET)

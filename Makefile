@@ -32,7 +32,8 @@ CPPFLAGS =
 SRC_DIRS = \
 	src/CSlim \
 	src/Com
-	# src/ComWin32
+#	src/ComWin32
+
 
 #TEST_SRC_DIRS is a list of directories including 
 # - A test main (AllTests.cpp by conventin)
@@ -57,9 +58,10 @@ INCLUDES =\
   -Iinclude/Main
 
 #Flags to pass to ld
-LDFLAGS +=
+LDFLAGS += 
+#LDFLAGS += -lwsock32
 
-$(SERVER_TARGET): CFLAGS += 
+$(SERVER_TARGET): CFLAGS += -Wall -O
 $(SERVER_TARGET): GCOVFLAGS += 
 	
 include ComponentMakefile

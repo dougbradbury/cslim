@@ -13,7 +13,7 @@ typedef struct Count
 
 void* Count_Create(void* errorHandler, SlimList* args)
 {
-	Count* self = malloc(sizeof(Count));
+	Count* self = (Count*)malloc(sizeof(Count));
 	memset(self, 0, sizeof(Count));
 	return self;
 }

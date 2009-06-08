@@ -14,7 +14,7 @@ struct ListExecutor
 
 ListExecutor* ListExecutor_Create(StatementExecutor* executor)
 {
-	ListExecutor* self = malloc(sizeof(ListExecutor));
+	ListExecutor* self = (ListExecutor*)malloc(sizeof(ListExecutor));
 	memset(self, 0, sizeof(ListExecutor));
 	self->executor = executor;
 	return self;

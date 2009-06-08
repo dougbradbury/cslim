@@ -15,7 +15,7 @@ struct SlimConnectionHandler
 
 SlimConnectionHandler* SlimConnectionHandler_Create(com_func_t sendFunction, com_func_t recvFunction, void * comLink)
 {
-	SlimConnectionHandler* self = malloc(sizeof(SlimConnectionHandler));
+	SlimConnectionHandler* self = (SlimConnectionHandler*)malloc(sizeof(SlimConnectionHandler));
 	memset(self, 0, sizeof(SlimConnectionHandler));
 	self->sendFunc = sendFunction;
 	self->recvFunc = recvFunction;
@@ -53,7 +53,7 @@ int read_size(SlimConnectionHandler* self)
 
 int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 {
-	char * message = malloc(3);
+	char * message = (char*)malloc(3);
 	message[0] = 0;
 	int numbytes;
 
@@ -68,7 +68,7 @@ int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 		if (size_i > 0)
 		{
 			free(message);
-			message = malloc(size_i + 1);
+			message = (char*)malloc(size_i + 1);
 			memset(message, 0, size_i + 1);
 
 		    if ((numbytes = self->recvFunc(self->comLink, message, size_i)) == -1) 
@@ -79,7 +79,7 @@ int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 			//execute and get response
 			char* response_message = self->slimHandler(message);
 			int response_length = strlen(response_message);
-			char * response = malloc(response_length + 7);
+			char * response = (char *)malloc(response_length + 7);
 			sprintf(response, "%06d:%s", response_length, response_message);
 			free(response_message);
 			int send_result = self->sendFunc(self->comLink, response, response_length + 7);

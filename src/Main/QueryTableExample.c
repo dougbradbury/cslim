@@ -18,7 +18,7 @@ static void clearResult(EmployeePayRecordsRow* self)
 }
 void* EmployeePayRecordsRow_Create(void* errorHandler, SlimList* args)
 {
-	EmployeePayRecordsRow* self = malloc(sizeof(EmployeePayRecordsRow));
+	EmployeePayRecordsRow* self = (EmployeePayRecordsRow*)malloc(sizeof(EmployeePayRecordsRow));
 	memset(self, 0, sizeof(EmployeePayRecordsRow));
 	return self;
 }

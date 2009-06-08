@@ -22,7 +22,7 @@ struct SocketServer
 
 SocketServer* SocketServer_Create(void)
 {
-     SocketServer* self = malloc(sizeof(SocketServer));
+     SocketServer* self = (SocketServer*)malloc(sizeof(SocketServer));
      memset(self, 0, sizeof(SocketServer));
      return self;
 }

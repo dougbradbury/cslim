@@ -15,7 +15,7 @@ void* ExceptionsExample_Create(void* errorHandler, SlimList* args)
 		return NULL;
 	}
 
-	ExceptionsExample* self = malloc(sizeof(ExceptionsExample));
+	ExceptionsExample* self = (ExceptionsExample*)malloc(sizeof(ExceptionsExample));
 	memset(self, 0, sizeof(ExceptionsExample));
 	return self;
 }

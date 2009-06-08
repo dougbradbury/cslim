@@ -19,7 +19,7 @@ void* TestSlim_Create(StatementExecutor* executor, SlimList* args)
 		return NULL;
 	}
 	
-	TestSlim* self = malloc(sizeof(TestSlim));
+	TestSlim* self = (TestSlim*)malloc(sizeof(TestSlim));
 	memset(self, 0, sizeof(TestSlim));
 	
 	if (SlimList_GetLength(args) == 1)

@@ -25,7 +25,7 @@ static void insertNode(SlimList* self, Node* node);
 
 SlimList* SlimList_Create(void)
 {
-     SlimList* self = malloc(sizeof(SlimList));
+     SlimList* self = (SlimList*)malloc(sizeof(SlimList));
      memset(self, 0, sizeof(SlimList));
      return self;
 }
@@ -50,7 +50,7 @@ void SlimList_Destroy(SlimList* self)
 
 void SlimList_AddBuffer(SlimList* self, char* buffer, int length) 
 {
-	Node* newNode = malloc(sizeof(Node));
+	Node* newNode = (Node*)malloc(sizeof(Node));
 	newNode->next = 0;
 	newNode->list = 0;
 	

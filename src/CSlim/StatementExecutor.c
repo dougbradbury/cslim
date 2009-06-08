@@ -64,7 +64,7 @@ static void* Null_Create(StatementExecutor* executor, SlimList* args);
 
 StatementExecutor* StatementExecutor_Create(void)
 {
-	StatementExecutor* self = malloc(sizeof(StatementExecutor));
+	StatementExecutor* self = (StatementExecutor*)malloc(sizeof(StatementExecutor));
 	memset(self, 0, sizeof(StatementExecutor));
 	self->symbolTable = SymbolTable_Create();
 	return self;
@@ -121,7 +121,7 @@ static void destroyMethods(MethodNode* head) {
 char* StatementExecutor_Make(StatementExecutor* executor, char* instanceName, char* className, SlimList* args){
 	FixtureNode* fixtureNode = findFixture(executor, className);
 	if (fixtureNode) {
-		InstanceNode* instanceNode = malloc(sizeof(InstanceNode));
+		InstanceNode* instanceNode = (InstanceNode* )malloc(sizeof(InstanceNode));
 		instanceNode->next = executor->instances;
 		executor->instances = instanceNode;
 		instanceNode->name = instanceName;
@@ -196,7 +196,7 @@ static char* replaceStringFrom(SymbolTable* symbolTable, char* string, char* fro
 		{
 			int valueLength = strlen(symbolValue);
 			int bufferLength = strlen(string)+valueLength-(length+1) + 1;
-			char * newString = malloc(bufferLength);
+			char * newString = (char*)malloc(bufferLength);
 			memset(newString, 0, bufferLength);
 			strncat(newString, string, (dollarSign - string));
 			strcat(newString, symbolValue);
@@ -246,7 +246,7 @@ void StatementExecutor_RegisterFixture(StatementExecutor* executor, char * class
 	FixtureNode* fixtureNode = findFixture(executor, className);
 	if (!fixtureNode)
 	{
-		fixtureNode = malloc(sizeof(FixtureNode));
+		fixtureNode = (FixtureNode*)malloc(sizeof(FixtureNode));
 		fixtureNode->next = executor->fixtures;
 		executor->fixtures = fixtureNode;
 		fixtureNode->name = className;		
@@ -275,7 +275,7 @@ void StatementExecutor_RegisterMethod(StatementExecutor* executor, char * classN
 		fixtureNode = findFixture(executor, className);
 	}
 		
-	MethodNode* node = malloc(sizeof(MethodNode));
+	MethodNode* node = (MethodNode*)malloc(sizeof(MethodNode));
 	node->name = methodName;
 	node->method = method;
 	node->next = fixtureNode->methods;
