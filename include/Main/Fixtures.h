@@ -1,11 +1,12 @@
-#define SLIM_QUOTES(x)  #x
-void StatementExecutor_AddFixture(void*, void*);
-void StatementExecutor_RegisterFixture(void*, void *, void *, void *);
-void StatementExecutor_RegisterMethod(void*, void * , void *, void *);
-void StatementExecutor_ConstructorError(void *, char *);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
+#include "StatementExecutor.h"
+
+#define SLIM_QUOTES(x)  #x
 #define SLIM_FIXTURE(fixture) \
-extern void fixture##_Register(void*);\
+extern void fixture##_Register(StatementExecutor*);\
 StatementExecutor_AddFixture(executor, fixture##_Register); 
 
 #define SLIM_FIXTURES void AddFixtures(void* executor) \
@@ -15,7 +16,7 @@ StatementExecutor_AddFixture(executor, fixture##_Register);
 
 
 #define SLIM_CREATE_FIXTURE(name) static char * fixtureName = #name; \
-void name##_Register(void* executor) \
+void name##_Register(StatementExecutor* executor) \
 { \
 	StatementExecutor_RegisterFixture(executor, #name, name##_Create, name##_Destroy);
 #define SLIM_FUNCTION(name) StatementExecutor_RegisterMethod(executor, fixtureName, #name, name);	
@@ -27,3 +28,7 @@ void name##_Register(void* executor) \
 
 #define SLIM_CONSTRUCTOR_ERROR(errorHandler, reason) 		StatementExecutor_ConstructorError(errorHandler, reason);
 
+
+#ifdef __cplusplus
+}
+#endif

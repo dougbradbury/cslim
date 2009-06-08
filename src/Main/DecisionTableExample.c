@@ -11,7 +11,7 @@ typedef struct Division
 	char result[32];
 } Division;
 
-void* Division_Create(void* errorHandler, SlimList* args)
+void* Division_Create(StatementExecutor* errorHandler, SlimList* args)
 {
 	Division* self = (Division*)malloc(sizeof(Division));
 	memset(self, 0, sizeof(Division));

@@ -16,7 +16,8 @@ static void clearResult(EmployeePayRecordsRow* self)
 	if (self->result)
 		free(self->result);
 }
-void* EmployeePayRecordsRow_Create(void* errorHandler, SlimList* args)
+
+void* EmployeePayRecordsRow_Create(StatementExecutor* errorHandler, SlimList* args)
 {
 	EmployeePayRecordsRow* self = (EmployeePayRecordsRow*)malloc(sizeof(EmployeePayRecordsRow));
 	memset(self, 0, sizeof(EmployeePayRecordsRow));
@@ -58,7 +59,6 @@ static char* query(void* void_self, SlimList* args) {
 }
 
 SLIM_CREATE_FIXTURE(EmployeePayRecordsRow)
-	SLIM_FUNCTION(EmployeePayRecordsRow_Create)
 	SLIM_FUNCTION(query)
 SLIM_END
 

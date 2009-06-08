@@ -11,7 +11,7 @@ typedef struct Count
 	char result[32];
 } Count;
 
-void* Count_Create(void* errorHandler, SlimList* args)
+void* Count_Create(StatementExecutor* errorHandler, SlimList* args)
 {
 	Count* self = (Count*)malloc(sizeof(Count));
 	memset(self, 0, sizeof(Count));

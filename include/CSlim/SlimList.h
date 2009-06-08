@@ -1,11 +1,9 @@
 #ifndef D_SlimList_H
 #define D_SlimList_H
 
-///////////////////////////////////////////////////////////////////////////////
-//
-//  SlimList is responsible for ...
-//
-///////////////////////////////////////////////////////////////////////////////
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct SlimList SlimList;
 
@@ -21,5 +19,10 @@ void SlimList_ReplaceAt(SlimList* self, int index, char * replacementString);
 void SlimList_AddBuffer(SlimList* self, char* buffer, int length);
 SlimList* SlimList_GetTailAt(SlimList*, int);
 char* SlimList_ToString(SlimList*);
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif  // D_SlimList_H

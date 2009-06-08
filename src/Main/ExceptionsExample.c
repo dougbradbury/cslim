@@ -8,7 +8,7 @@ typedef struct ExceptionsExample
 {
 } ExceptionsExample;
 
-void* ExceptionsExample_Create(void* errorHandler, SlimList* args)
+void* ExceptionsExample_Create(StatementExecutor* errorHandler, SlimList* args)
 {
 	if (SlimList_GetLength(args) < 1) {
 		SLIM_CONSTRUCTOR_ERROR(errorHandler, "One arg required");
