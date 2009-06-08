@@ -9,7 +9,7 @@ extern "C" {
 extern void fixture##_Register(StatementExecutor*);\
 StatementExecutor_AddFixture(executor, fixture##_Register); 
 
-#define SLIM_FIXTURES void AddFixtures(void* executor) \
+#define SLIM_FIXTURES void AddFixtures(StatementExecutor* executor) \
 {
 
 #define SLIM_END }

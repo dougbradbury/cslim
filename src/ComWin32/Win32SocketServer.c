@@ -1,8 +1,9 @@
-#include <winsock.h>
-
-#include <stdlib.h>
-#include <memory.h>
 #include <stdio.h>
+#include <winsock.h>
+#include <stdlib.h>
+
+#include <memory.h>
+
 #include "SocketServer.h"
 
 struct SocketServer
@@ -124,7 +125,7 @@ SocketServer* SocketServer_Create(void)
   
 	WSAData wsaData;
 	int nCode;
-	if ((nCode = WSAStartup(MAKEWORD(1, 1), &wsaData)) != 0) {
+	if ((nCode = WSAStartup(MAKEWORD(2, 0), &wsaData)) != 0) {
 		return 0;
 	}
 	 SocketServer* self = (SocketServer*)malloc(sizeof(SocketServer));

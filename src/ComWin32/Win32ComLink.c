@@ -1,6 +1,8 @@
+#include <stdio.h>
 #include <winsock.h>
-#include "TcpComLink.h"
 #include <stdlib.h>
+
+#include "TcpComLink.h"
 #include <memory.h>
 
 //static local variables
