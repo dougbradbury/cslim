@@ -1,4 +1,3 @@
-#include "CppUTest/TestHarness.h"
 #include <stdlib.h>
 #include <memory.h>
 #include <iostream>
@@ -6,10 +5,12 @@
 extern "C"
 {
 #include "SlimList.h"
-#include "CppUTest/TestHarness_c.h"
 #include "SlimListDeserializer.h"
 #include "SlimListSerializer.h"
 }
+
+#include "CppUTest/TestHarness.h"
+#include "CppUTest/TestHarness_c.h"
 
 TEST_GROUP(SlimListDeserializer)
 {
@@ -23,22 +24,22 @@ TEST_GROUP(SlimListDeserializer)
 		serializedList = 0;
 		deserializedList = 0;
     }
-    
+
     void teardown()
     {
 		SlimList_Destroy(slimList);
 
 		if (deserializedList)
 			SlimList_Destroy(deserializedList);
-			
+
 		if (serializedList != 0)
 			cpputest_free(serializedList);
     }
 
 	void check_lists_equal(SlimList* expected, SlimList* actual) {
-		CHECK(SlimList_Equals(expected, actual));	
+		CHECK(SlimList_Equals(expected, actual));
 	}
-	
+
 };
 
 
@@ -64,16 +65,16 @@ TEST(SlimListDeserializer, deserializeEmptyString)
 TEST(SlimListDeserializer, MissingOpenBracketReturnsNull)
 {
 	SlimList* list = SlimList_Deserialize("hello");
-	POINTERS_EQUAL(0, list);	
+	POINTERS_EQUAL(0, list);
 }
 
 TEST(SlimListDeserializer, MissingClosingBracketReturnsNull)
 {
 	SlimList* list = SlimList_Deserialize("[000000:");
-	POINTERS_EQUAL(0, list);	
+	POINTERS_EQUAL(0, list);
 }
 
-TEST(SlimListDeserializer, canDeserializeCanonicalListWithOneElement) 
+TEST(SlimListDeserializer, canDeserializeCanonicalListWithOneElement)
 {
 	char* canonicalList = "[000001:000008:Hi doug.:]";
 	SlimList* deserializedList = SlimList_Deserialize(canonicalList);
@@ -87,7 +88,7 @@ TEST(SlimListDeserializer, canDeserializeCanonicalListWithOneElement)
 TEST(SlimListDeserializer, canDeSerializeListWithOneElement)
 {
 	SlimList_AddString(slimList, "hello");
-	serializedList = SlimList_Serialize(slimList);	
+	serializedList = SlimList_Serialize(slimList);
 	deserializedList = SlimList_Deserialize(serializedList);
 	CHECK(deserializedList != 0);
 	check_lists_equal(slimList, deserializedList);
@@ -97,7 +98,7 @@ TEST(SlimListDeserializer, canDeSerializeListWithTwoElements)
 {
 	SlimList_AddString(slimList, "hello");
 	SlimList_AddString(slimList, "bob");
-	serializedList = SlimList_Serialize(slimList);	
+	serializedList = SlimList_Serialize(slimList);
 	deserializedList = SlimList_Deserialize(serializedList);
 	CHECK(deserializedList != 0);
 	check_lists_equal(slimList, deserializedList);
@@ -109,13 +110,13 @@ TEST(SlimListDeserializer, canAddSubList)
 	embeddedList = SlimList_Create();
 	SlimList_AddString(embeddedList, "element");
 	SlimList_AddList(slimList, embeddedList);
-	serializedList = SlimList_Serialize(slimList);	
+	serializedList = SlimList_Serialize(slimList);
 	deserializedList = SlimList_Deserialize(serializedList);
 	SlimList * subList = SlimList_GetListAt(deserializedList, 0);
 	subList = SlimList_GetListAt(deserializedList, 0);
 	check_lists_equal(embeddedList, subList);
-	
-	SlimList_Destroy(embeddedList);	
+
+	SlimList_Destroy(embeddedList);
 }
 
 TEST(SlimListDeserializer, getStringWhereThereIsAList)
@@ -124,12 +125,12 @@ TEST(SlimListDeserializer, getStringWhereThereIsAList)
 	embeddedList = SlimList_Create();
 	SlimList_AddString(embeddedList, "element");
 	SlimList_AddList(slimList, embeddedList);
-	serializedList = SlimList_Serialize(slimList);	
+	serializedList = SlimList_Serialize(slimList);
 	deserializedList = SlimList_Deserialize(serializedList);
 	char * string = SlimList_GetStringAt(deserializedList, 0);
 
 	STRCMP_EQUAL("[000001:000007:element:]", string);
 	// POINTERS_EQUAL(0, string); ?????????????????????????????????????
-	
-	SlimList_Destroy(embeddedList);	
+
+	SlimList_Destroy(embeddedList);
 }

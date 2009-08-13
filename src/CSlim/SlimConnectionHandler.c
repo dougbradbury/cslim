@@ -37,12 +37,12 @@ int read_size(SlimConnectionHandler* self)
 {
 	char size[7];
 	int size_i = -1;
-	char colon;		
+	char colon;
 	memset(size, 0, 7);
-	
-	if (self->recvFunc(self->comLink, size, 6) == 6) 
+
+	if (self->recvFunc(self->comLink, size, 6) == 6)
 	{
-		if ((self->recvFunc(self->comLink, &colon, 1)) == 1 && colon == ':') 
+		if ((self->recvFunc(self->comLink, &colon, 1)) == 1 && colon == ':')
 		{
 			size_i = atoi(size);
 		}
@@ -71,15 +71,15 @@ int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 			message = (char*)malloc(size_i + 1);
 			memset(message, 0, size_i + 1);
 
-		    if ((numbytes = self->recvFunc(self->comLink, message, size_i)) == -1) 
+		    if ((numbytes = self->recvFunc(self->comLink, message, size_i)) == -1)
 		        break;
 			if (strcmp("bye", message) == 0)
 				break;
-			
+
 			//execute and get response
 			char* response_message = self->slimHandler(message);
 			int response_length = strlen(response_message);
-			char * response = (char *)malloc(response_length + 7);
+			char * response = (char *)malloc(response_length + 7 + 1);
 			sprintf(response, "%06d:%s", response_length, response_message);
 			free(response_message);
 			int send_result = self->sendFunc(self->comLink, response, response_length + 7);

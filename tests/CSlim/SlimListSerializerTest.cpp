@@ -1,4 +1,3 @@
-#include "CppUTest/TestHarness.h"
 #include <stdlib.h>
 #include <memory.h>
 #include <iostream>
@@ -7,9 +6,11 @@
 extern "C"
 {
 #include "SlimList.h"
-#include "CppUTest/TestHarness_c.h"
 #include "SlimListSerializer.h"
 }
+
+#include "CppUTest/TestHarness.h"
+#include "CppUTest/TestHarness_c.h"
 
 TEST_GROUP(SlimListSerializer)
 {
@@ -21,7 +22,7 @@ TEST_GROUP(SlimListSerializer)
 		slimList  = SlimList_Create();
 		serializedList = 0;
     }
-    
+
     void teardown()
     {
 		SlimList_Destroy(slimList);
@@ -29,7 +30,7 @@ TEST_GROUP(SlimListSerializer)
 		if (serializedList != 0)
 			cpputest_free(serializedList);
     }
-	
+
 };
 
 TEST(SlimListSerializer, SerializeAListWithNoElements)
@@ -49,7 +50,7 @@ TEST(SlimListSerializer, SerializeAListWithTwoElements)
 {
 	SlimList_AddString(slimList, "hello");
 	SlimList_AddString(slimList, "world");
-	
+
 	serializedList = SlimList_Serialize(slimList);
 
 	STRCMP_EQUAL("[000002:000005:hello:000005:world:]", serializedList);
@@ -78,11 +79,11 @@ TEST(SlimListSerializer, canCopyAList)
 	char * serialCopy = SlimList_Serialize(copy);
 	char * serialSlimList = SlimList_Serialize(slimList);
 	STRCMP_EQUAL(serialCopy, serialSlimList);
-	
+
 	SlimList_Destroy(copy);
 	cpputest_free(serialSlimList);
 	cpputest_free(serialCopy);
-	
+
 }
 
 TEST(SlimListSerializer, SerializeNestedList)
@@ -111,6 +112,6 @@ TEST(SlimListSerializer, serializeNull)
   SlimList_AddString(slimList, NULL);
 	serializedList = SlimList_Serialize(slimList);
 	STRCMP_EQUAL("[000001:000004:null:]", serializedList);
-  
+
 }
 
