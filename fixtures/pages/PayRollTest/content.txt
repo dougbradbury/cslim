@@ -1,0 +1,3 @@
+!|Query: EmployeePayRecordsRow|
+|id|pay|
+|1|1000|

@@ -46,8 +46,8 @@ char * SymbolTable_FindSymbol(SymbolTable* self, char * name, int length) {
 
 void SymbolTable_SetSymbol(SymbolTable* self, char* symbol, char* value) {
 	SymbolNode * symbolNode = (SymbolNode * )malloc(sizeof(SymbolNode));
-	symbolNode->name = buyString(symbol);
-	symbolNode->value = buyString(value);
+	symbolNode->name = CSlim_BuyString(symbol);
+	symbolNode->value = CSlim_BuyString(value);
 	symbolNode->next = self->head;
 	self->head = symbolNode;
 }

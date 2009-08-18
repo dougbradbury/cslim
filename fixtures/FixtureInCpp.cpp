@@ -27,7 +27,7 @@ typedef struct Multiplication
 
 void* Multiplication_Create(StatementExecutor* errorHandler, SlimList* args)
 {
-	Multiplication* self = new Multiplication;
+	Multiplication* self = (Multiplication*)malloc(sizeof(Multiplication));
 	self->result[0] = 0;
 	self->multiplication = new cMultiplication();
 	return self;
@@ -37,8 +37,7 @@ void Multiplication_Destroy(void* void_self)
 {
 	Multiplication* self = (Multiplication*)void_self;
 	delete self->multiplication;
-	delete self;
-	free(void_self);
+	free(self);
 }
 
 static char* setMultiplicand1(void* void_self, SlimList* args) {

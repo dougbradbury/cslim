@@ -211,12 +211,12 @@ static char* replaceStringFrom(SymbolTable* symbolTable, char* string, char* fro
 		else
 		{
 			if (*(dollarSign+1) == 0)
-				return buyString(string);
+				return CSlim_BuyString(string);
 				
 			return replaceStringFrom(symbolTable, string, dollarSign+1);
 		}
 	}
-	return buyString(string);
+	return CSlim_BuyString(string);
 }
 
 static int lengthOfSymbol(char * start)

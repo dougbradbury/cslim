@@ -56,7 +56,7 @@ void SlimList_AddBuffer(SlimList* self, char* buffer, int length)
 	
 	insertNode(self, newNode);
 
-	newNode->string = buyBuf(buffer, length);
+	newNode->string = CSlim_BuyBuf(buffer, length);
 }
 
 
@@ -133,7 +133,7 @@ void SlimList_ReplaceAt(SlimList* self, int index, char * replacementString)
 		SlimList_Destroy(node->list);
 		node->list = 0;
 	}
-	char * newString = buyString(replacementString);
+	char * newString = CSlim_BuyString(replacementString);
 	free(node->string);
 	node->string = newString;
 }

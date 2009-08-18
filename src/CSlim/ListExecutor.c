@@ -39,24 +39,24 @@ char* InvalidCommand(ListExecutor* self, SlimList* instruction) {
 	char* command = SlimList_GetStringAt(instruction, 1);
 	static char msg[128];
 	snprintf(msg, 128, "__EXCEPTION__:message:<<INVALID_STATEMENT: [\"%s\", \"%s\"].>>", id, command);
-	return buyString(msg);
+	return CSlim_BuyString(msg);
 }
 
 char* MalformedInstruction(ListExecutor* self, SlimList* instruction) {
 	static char msg[128];
 	snprintf(msg, 128, "__EXCEPTION__:message:<<MALFORMED_INSTRUCTION %s.>>", SlimList_ToString(instruction));
-	return buyString(msg);
+	return CSlim_BuyString(msg);
 }
 
 char* Import(ListExecutor* self, SlimList* instruction) {
-	return buyString("OK");
+	return CSlim_BuyString("OK");
 }
 
 char* Make(ListExecutor* self, SlimList* instruction) {
 	char* instanceName = SlimList_GetStringAt(instruction, 2);
 	char* className = SlimList_GetStringAt(instruction, 3);
 	SlimList* args = SlimList_GetTailAt(instruction, 4);
-	char * result = buyString(StatementExecutor_Make(self->executor, instanceName, className, args));
+	char * result = CSlim_BuyString(StatementExecutor_Make(self->executor, instanceName, className, args));
 	SlimList_Destroy(args);
 	return result;
 }
@@ -68,7 +68,7 @@ char* Call(ListExecutor* self, SlimList* instruction) {
 	char* methodName = SlimList_GetStringAt(instruction, 3);
 	SlimList* args = SlimList_GetTailAt(instruction, 4);
 		
-	char* result = buyString(StatementExecutor_Call(self->executor, instanceName, methodName, args));
+	char* result = CSlim_BuyString(StatementExecutor_Call(self->executor, instanceName, methodName, args));
 	SlimList_Destroy(args);
 	return result;
 }
@@ -81,7 +81,7 @@ char* CallAndAssign(ListExecutor* self, SlimList* instruction) {
 	char* methodName = SlimList_GetStringAt(instruction, 4);
 	SlimList* args = SlimList_GetTailAt(instruction, 5);
 		
-	char* result = buyString(StatementExecutor_Call(self->executor, instanceName, methodName, args));
+	char* result = CSlim_BuyString(StatementExecutor_Call(self->executor, instanceName, methodName, args));
 	StatementExecutor_SetSymbol(self->executor, symbolName, result);
 	SlimList_Destroy(args);
 	return result;

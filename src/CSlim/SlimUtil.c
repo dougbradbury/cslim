@@ -1,18 +1,42 @@
 #include <string.h>
 #include <stdlib.h>
-char * buyBuf(char* buffer, int length)
+#include "SlimUtil.h"
+char * CSlim_BuyBuf(char* buffer, int length)
 {
 	if (buffer == NULL)
 		return NULL;
-		
+
 	char * purchase = (char*)malloc(length+1);
 	strncpy(purchase, buffer, length);
 	purchase[length] = 0;
 	return purchase;
 }
-char * buyString(char* string)
+char * CSlim_BuyString(char* string)
 {
 	if (string == NULL)
 		return NULL;
-	return buyBuf(string, strlen(string));
+	return CSlim_BuyBuf(string, strlen(string));
 }
+
+int CSlim_MapToIntFrom(MapStringInt* map, const char* name)
+{
+	MapStringInt* p = map;
+	while (p->string != NULL && 0 != strcmp(name, p->string))
+	{
+		p++;
+	}
+
+	return p->n;
+}
+
+const char* CSlim_MapToStringFrom(MapStringInt* map, int n)
+{
+	MapStringInt* p = map;
+	while (p->string != NULL && n != p->n)
+	{
+		p++;
+	}
+
+	return p->string;
+}
+

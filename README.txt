@@ -34,16 +34,42 @@ The names are used by FitNesse match the actual C names by convention, but you c
 
 Now look at the Main/Fixtures.c file.  This is where you tell the main Slim Server program about all your fixtures.  The CSLIM_FIXTURES and CSLIM_FIXTURE macros make this easy.  The fixture name you use in the FIXTURE macro in Fixtures.c must match the name you used in the CREATE_FIXTURE macro in your fixture file.
 
+If you happen to have a fixture that does not have any functions, like for setup and tear down, you can use this macro:
+
+SLIM_CREATE_EMPTY_FIXTURE(name)
+
 ************
 * Makefile *
 ************
-The only thing left is the makefile.  The makefile provided will build everything in Main.  You need to add and any additional directories to the SERVER_SRC_DIRS macro (Though we fully expect that you'll be using your own makefile, so just do the equivalent.)
+The only thing left is the makefile.  The makefile provided will build the CSlim library and its unit tests.  It will also build a second executable from everything in /fixtures.  CSlim depends on CppUTest, notice it is using the ComponentMakefile from CppUTest.  You can model your makefiles after these or whatever you want.
+
+
+*************************************
+* Running the example fitnesse test *
+*************************************
+You need to download FitNesse from fitnesse.org.  Example pages are in cslim/fixtures/pages.  Fire up fitnesse and create a new page like CslimExample.  Add this to your CslimExample page:
+
+!contents -R2 -g -p -f -h
+
+!define TEST_SYSTEM {slim}
+!define TEST_RUNNER {<path>/cslim/fixtures/Cslim_cslim}
+!define COMMAND_PATTERN {%m}
+
+If you are using a unix based system, make a symbolic link in fitnesse/FitNesseRoot/CslimExample pointing to cslim/fixtures/pages, with a command like this:
+
+	ln -s <path>/cslim/fixtures/pages CslimExampleSuite
+
+You should be able to see the CounterTest, DivisionTest, etc.
+
 
 **************
 * Unit Tests *
 **************
-CSlim was built using CPPUTEST.  If you want to run the test target, you'll have to download CPPUTEST and set the CPPUTEST_HOME macro in the Makefile.
-http://www.cpputest.org/
+CSlim was built using CppUTest. You'll have to down load and make CppUTest (http://www.cpputest.org/). Put it next to the cslim directory like this:
+
+<path>/cslim
+<path>/CppUTest
+
 
 ******************
 * Communications *

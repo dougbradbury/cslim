@@ -5,35 +5,28 @@ SILENCE = @
 COMPONENT_NAME = CSlim
 TARGET_LIB = \
 	lib/lib$(COMPONENT_NAME).a
-
-SERVER_TARGET = \
-	$(COMPONENT_NAME)_server
-
-$(SERVER_TARGET):
-
+	
 TEST_TARGET = \
 	$(COMPONENT_NAME)_tests
-test: $(TEST_TARGET)
 
 #--- Inputs ----#
 PROJECT_HOME_DIR = .
 CPPUTEST_HOME = ../CppUTest
+CSLIM_HOME = .
 CPP_PLATFORM = Gcc
 
 #CFLAGS are set to override malloc and free to get memory leak detection in C programs
-$(TEST_TARGET):CFLAGS = -Dmalloc=cpputest_malloc -Dfree=cpputest_free
-#$(TEST_TARGET):GCOVFLAGS = -fprofile-arcs -ftest-coverage
-CPPFLAGS = 
+CFLAGS = -Dmalloc=cpputest_malloc -Dfree=cpputest_free
+CPPFLAGS =
+#GCOVFLAGS = -fprofile-arcs -ftest-coverage
 
 #SRC_DIRS is a list of source directories that make up the target library
 #If test files are in these directories, their IMPORT_TEST_GROUPs need
 #to be included in main to force them to be linked in.  By convention
 #put them into an AllTests.h file in each directory
 SRC_DIRS = \
-	src/CSlim \
-	src/Com
-#	src/ComWin32
-
+	src/Com\
+	src/CSlim\
 
 #TEST_SRC_DIRS is a list of directories including 
 # - A test main (AllTests.cpp by conventin)
@@ -42,26 +35,27 @@ SRC_DIRS = \
 # - 
 TEST_SRC_DIRS = \
 	tests \
+	tests/Com \
 	tests/CSlim \
-	tests/Com
 
-SERVER_SRC_DIRS =\
-	src/Main
+MOCKS_SRC_DIRS = \
 	
+CSLIM_SRC_DIRS = \
+	fixtures
+
 #includes for all compiles	
 INCLUDES =\
-  -I.\
-  -Iinclude/CSlim\
   -Iinclude/Com\
+  -Iinclude/CSlim\
+  -Itests/CSlim\
   -I$(CPPUTEST_HOME)/include/\
-  -I$(CPPUTEST_HOME)/include/Platforms/$(CPP_PLATFORM)\
-  -Iinclude/Main
+
 
 #Flags to pass to ld
-LDFLAGS += 
-#LDFLAGS += -lwsock32
+LDFLAGS +=
 
-$(SERVER_TARGET): CFLAGS += -Wall -O
-$(SERVER_TARGET): GCOVFLAGS += 
+OTHER_MAKEFILE_TO_INCLUDE = $(CSLIM_HOME)/build/CSlimServerMakefile
 	
-include ComponentMakefile
+include $(CPPUTEST_HOME)/build/ComponentMakefile
+
+all: $(TEST_TARGET) $(CSLIM_TARGET) 
