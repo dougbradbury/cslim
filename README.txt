@@ -52,7 +52,7 @@ You need to download FitNesse from fitnesse.org.  Example pages are in cslim/fix
 !contents -R2 -g -p -f -h
 
 !define TEST_SYSTEM {slim}
-!define TEST_RUNNER {<path>/cslim/fixtures/Cslim_cslim}
+!define TEST_RUNNER {<path>/cslim/Cslim_cslim}
 !define COMMAND_PATTERN {%m}
 
 If you are using a unix based system, make a symbolic link in fitnesse/FitNesseRoot/CslimExample pointing to cslim/fixtures/pages, with a command like this:
