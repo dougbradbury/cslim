@@ -25,7 +25,7 @@ SlimConnectionHandler* SlimConnectionHandler_Create(com_func_t sendFunction, com
 
 void SlimConnectionHandler_Destroy(SlimConnectionHandler* self)
 {
-    free(self);
+	free(self);
 }
 
 void SlimConnectionHandler_RegisterSlimMessageHandler(SlimConnectionHandler* self, char * (*handler)(char *) )
@@ -57,7 +57,7 @@ int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 	message[0] = 0;
 	int numbytes;
 
- 	if (self->sendFunc(self->comLink, "Slim -- V0.0\n", 13) == -1)
+	if (self->sendFunc(self->comLink, "Slim -- V0.0\n", 13) == -1)
 	{
 		return -1;
 	}
@@ -70,25 +70,35 @@ int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 			free(message);
 			message = (char*)malloc(size_i + 1);
 			memset(message, 0, size_i + 1);
-
-		    if ((numbytes = self->recvFunc(self->comLink, message, size_i)) == -1)
-		        break;
-			if (strcmp("bye", message) == 0)
+			numbytes = self->recvFunc(self->comLink, message, size_i);
+			if (numbytes != size_i)
+			{
+				printf("did not receive right number of bytes\n");
 				break;
+			}
+			if (strcmp("bye", message) == 0)
+			{
+				break;
+			}
 
 			//execute and get response
 			char* response_message = self->slimHandler(message);
 			int response_length = strlen(response_message);
-			char * response = (char *)malloc(response_length + 7 + 1);
+			int response_message_length = response_length + 7;
+			char * response = (char *)malloc(response_message_length + 1);
 			sprintf(response, "%06d:%s", response_length, response_message);
 			free(response_message);
-			int send_result = self->sendFunc(self->comLink, response, response_length + 7);
+			int send_result = self->sendFunc(self->comLink, response, response_message_length);
 			free(response);
-			if ( send_result == -1)
+			if ( send_result != response_message_length)
+			{
+				printf("Failure to send all data");
 				break;
+			}
 		}
 	}
 	free(message);
+	fflush(stdout);	   
 	return 0;
 
 }

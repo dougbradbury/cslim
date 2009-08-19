@@ -26,10 +26,23 @@ void TcpComLink_Destroy(TcpComLink* self)
 int TcpComLink_send(void * voidSelf, char * msg, int length)
 {
 	TcpComLink * self = (TcpComLink *)voidSelf;
-	return send(self->socket, msg, length, 0);
-}
+    int total = 0;        // how many bytes we've sent
+    int bytesleft = length; // how many we have left to send
+    int n;
+
+    while(total < length) {
+        n = send(self->socket, msg+total, bytesleft, 0);
+        if (n == -1) { break; }
+        total += n;
+        bytesleft -= n;
+    }
+
+    return total;
+} 
+
+
 int TcpComLink_recv(void * voidSelf, char * buffer, int length)
 {
 	TcpComLink * self = (TcpComLink *)voidSelf;
-	return recv(self->socket, buffer, length, 0);
+	return recv(self->socket, buffer, length,  MSG_WAITALL);
 }

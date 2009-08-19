@@ -44,10 +44,29 @@ static char* Quotient(void* void_self, SlimList* args) {
 	return self->result;
 }
 
+//These are optional.  If they aren't declared, they are ignored
+static char* execute(void* void_self, SlimList* args) {
+    return "";
+}
+
+static char* reset(void* void_self, SlimList* args) {
+	Division* self = (Division*)void_self;
+    self->denominator = 0.0f;
+    self->numerator = 0.0f;
+    return "";
+}
+static char* table(void* void_self, SlimList* args) {
+    return "";
+}
+
+
 
 SLIM_CREATE_FIXTURE(Division) 
 	SLIM_FUNCTION(setNumerator)
 	SLIM_FUNCTION(setDenominator)
 	SLIM_FUNCTION(Quotient)
+	SLIM_FUNCTION(execute)
+	SLIM_FUNCTION(reset)
+	SLIM_FUNCTION(table)
 SLIM_END
 
