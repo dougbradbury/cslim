@@ -10,8 +10,8 @@ extern "C"
 	
 	struct MockComLink {
 		char lastSendMsg[32];
-		char * recvStream;
-		char * recvPtr;
+		char const * recvStream;
+		char const * recvPtr;
 	};
 	int mock_send_func(void * voidSelf, char * msg, int length)
 	{

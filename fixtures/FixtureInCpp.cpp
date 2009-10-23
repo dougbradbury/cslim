@@ -23,12 +23,14 @@ typedef struct Multiplication
 {
 	cMultiplication * multiplication;
 	char result[32];
+	char nothing[1];
 } Multiplication;
 
 void* Multiplication_Create(StatementExecutor* errorHandler, SlimList* args)
 {
 	Multiplication* self = (Multiplication*)malloc(sizeof(Multiplication));
 	self->result[0] = 0;
+	self->nothing[0] = 0;
 	self->multiplication = new cMultiplication();
 	return self;
 }
@@ -43,13 +45,13 @@ void Multiplication_Destroy(void* void_self)
 static char* setMultiplicand1(void* void_self, SlimList* args) {
 	Multiplication* self = (Multiplication*)void_self;
 	self->multiplication->m1 = atof(SlimList_GetStringAt(args, 0));
-	return "";
+	return self->nothing;
 }
 
 static char* setMultiplicand2(void* void_self, SlimList* args) {
 	Multiplication* self = (Multiplication*)void_self;
 	self->multiplication->m2 = atof(SlimList_GetStringAt(args, 0));
-	return "";
+	return self->nothing;
 }
 
 static char* Product(void* void_self, SlimList* args) {

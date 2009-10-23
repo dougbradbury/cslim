@@ -1,7 +1,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "SlimUtil.h"
-char * CSlim_BuyBuf(char* buffer, int length)
+char * CSlim_BuyBuf(char const* buffer, int length)
 {
 	if (buffer == NULL)
 		return NULL;
@@ -11,7 +11,7 @@ char * CSlim_BuyBuf(char* buffer, int length)
 	purchase[length] = 0;
 	return purchase;
 }
-char * CSlim_BuyString(char* string)
+char * CSlim_BuyString(char const* string)
 {
 	if (string == NULL)
 		return NULL;

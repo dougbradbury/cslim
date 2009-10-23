@@ -10,18 +10,18 @@ if (*current != (a))\
 }\
 current++;
 
-int readLength(char** readPtr)
+int readLength(char const** readPtr)
 {
 	int length = atoi(*readPtr);
 	*readPtr += 6;	
 	return length;
 }
 
-SlimList* SlimList_Deserialize(char* serializedList)
+SlimList* SlimList_Deserialize(char const* serializedList)
 {
 	int listLength;
 	SlimList * list = 0;
-	char* current = 0;
+	char const* current = 0;
 	
 	if(serializedList == 0 || strlen(serializedList) == 0)
 		return 0;

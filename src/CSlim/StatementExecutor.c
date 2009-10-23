@@ -14,7 +14,7 @@
 
 typedef struct methodNode {
 	struct methodNode* next;
-	char* name;
+	char const* name;
 	Method method;
 } MethodNode;
 
@@ -23,20 +23,20 @@ typedef struct fixtureNode {
 	Constructor constructor;
 	Destructor destructor;
 	MethodNode* methods;
-	char* name;
+	char const* name;
 } FixtureNode;
 
 typedef struct instanceNode {
 	struct instanceNode* next;
-	char* name;
+	char const* name;
 	void* instance;
 	FixtureNode* fixture;
 } InstanceNode;
 
 typedef struct symbolNode {
 	struct symbolNode* next;
-	char* name;
-	char* value;
+	char const* name;
+	char const* value;
 } SymbolNode;
 
 struct StatementExecutor
@@ -45,7 +45,7 @@ struct StatementExecutor
 	InstanceNode* instances;	
 	SymbolTable * symbolTable;
 	char message[120];
-	char* userMessage;
+	char const* userMessage;
 };
 
 
@@ -57,7 +57,7 @@ void replaceSymbols(SymbolTable*, SlimList*);
 static char* replaceString(SymbolTable*, char*);
 static char* replaceStringFrom(SymbolTable*, char*, char*);
 static int lengthOfSymbol(char *);
-static FixtureNode * findFixture(StatementExecutor* executor, char * className);
+static FixtureNode * findFixture(StatementExecutor* executor, char const * className);
 static void Null_Destroy(void* self);
 static void* Null_Create(StatementExecutor* executor, SlimList* args);
 
@@ -70,7 +70,7 @@ StatementExecutor* StatementExecutor_Create(void)
 	return self;
 }
 
-InstanceNode* GetInstanceNode(StatementExecutor* executor, char * instanceName)
+InstanceNode* GetInstanceNode(StatementExecutor* executor, char const* instanceName)
 {
 	InstanceNode* instanceNode;
 	for (instanceNode = executor->instances; instanceNode; instanceNode = instanceNode->next) {
@@ -118,7 +118,7 @@ static void destroyMethods(MethodNode* head) {
 	}
 }
 
-char* StatementExecutor_Make(StatementExecutor* executor, char* instanceName, char* className, SlimList* args){
+char* StatementExecutor_Make(StatementExecutor* executor, char const* instanceName, char const* className, SlimList* args){
 	FixtureNode* fixtureNode = findFixture(executor, className);
 	if (fixtureNode) {
 		InstanceNode* instanceNode = (InstanceNode* )malloc(sizeof(InstanceNode));
@@ -142,7 +142,7 @@ char* StatementExecutor_Make(StatementExecutor* executor, char* instanceName, ch
 	return executor->message;	
 }
 
-char* StatementExecutor_Call(StatementExecutor* executor, char* instanceName, char* methodName, SlimList* args){
+char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceName, char const* methodName, SlimList* args){
 	InstanceNode* instanceNode = GetInstanceNode(executor, instanceName);
 	if (instanceNode)
 	{
@@ -230,7 +230,7 @@ static int lengthOfSymbol(char * start)
 	return length;
 }
 
-void* StatementExecutor_Instance(StatementExecutor* executor, char* instanceName){
+void* StatementExecutor_Instance(StatementExecutor* executor, char const* instanceName){
 	
 	InstanceNode* instanceNode = GetInstanceNode(executor, instanceName);
 	if (instanceNode)
@@ -242,7 +242,7 @@ void StatementExecutor_AddFixture(StatementExecutor* executor, Fixture fixture) 
 	fixture(executor);
 }
 
-void StatementExecutor_RegisterFixture(StatementExecutor* executor, char * className, Constructor constructor, Destructor destructor){
+void StatementExecutor_RegisterFixture(StatementExecutor* executor, char const * className, Constructor constructor, Destructor destructor){
 	FixtureNode* fixtureNode = findFixture(executor, className);
 	if (!fixtureNode)
 	{
@@ -257,7 +257,7 @@ void StatementExecutor_RegisterFixture(StatementExecutor* executor, char * class
 	fixtureNode->destructor = destructor;
 }
 
-static FixtureNode * findFixture(StatementExecutor* executor, char * className)
+static FixtureNode * findFixture(StatementExecutor* executor, char const* className)
 {
 	FixtureNode* fixtureNode = NULL;
 	for (fixtureNode = executor->fixtures; fixtureNode; fixtureNode = fixtureNode->next) {
@@ -268,7 +268,7 @@ static FixtureNode * findFixture(StatementExecutor* executor, char * className)
 	return fixtureNode;
 }
 
-void StatementExecutor_RegisterMethod(StatementExecutor* executor, char * className, char * methodName, Method method){
+void StatementExecutor_RegisterMethod(StatementExecutor* executor, char const * className, char const * methodName, Method method){
 	FixtureNode* fixtureNode = findFixture(executor, className);
 	if (fixtureNode == NULL) {
 		StatementExecutor_RegisterFixture(executor, className, Null_Create, Null_Destroy);
@@ -283,15 +283,15 @@ void StatementExecutor_RegisterMethod(StatementExecutor* executor, char * classN
 	return;			
 }
 
-void StatementExecutor_SetSymbol(StatementExecutor* self, char* symbol, char* value) {
+void StatementExecutor_SetSymbol(StatementExecutor* self, char const* symbol, char const* value) {
 	SymbolTable_SetSymbol(self->symbolTable, symbol, value);
 }
 
-void StatementExecutor_ConstructorError(StatementExecutor* executor, char* message) {
+void StatementExecutor_ConstructorError(StatementExecutor* executor, char const* message) {
 	executor->userMessage = message;	
 }
 
-char* StatementExecutor_FixtureError(char* message) {
+char* StatementExecutor_FixtureError(char const* message) {
 	static char buffer[128];
 	char * formatString = "__EXCEPTION__:message:<<%.100s.>>";
 	snprintf(buffer, 128, formatString, message);	

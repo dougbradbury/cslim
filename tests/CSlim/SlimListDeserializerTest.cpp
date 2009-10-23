@@ -76,7 +76,7 @@ TEST(SlimListDeserializer, MissingClosingBracketReturnsNull)
 
 TEST(SlimListDeserializer, canDeserializeCanonicalListWithOneElement)
 {
-	char* canonicalList = "[000001:000008:Hi doug.:]";
+	char const* canonicalList = "[000001:000008:Hi doug.:]";
 	SlimList* deserializedList = SlimList_Deserialize(canonicalList);
 	CHECK(deserializedList != NULL);
 	LONGS_EQUAL(1, SlimList_GetLength(deserializedList));

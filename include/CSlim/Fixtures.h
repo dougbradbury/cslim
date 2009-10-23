@@ -23,7 +23,7 @@ StatementExecutor_AddFixture(executor, fixture##_Register);
 	}
 
 
-#define SLIM_CREATE_FIXTURE(name) static char * fixtureName = #name; \
+#define SLIM_CREATE_FIXTURE(name) static const char * fixtureName = #name; \
 void name##_Register(StatementExecutor* executor) \
 { \
 	PRIVATE_REGISTER_FIXTURE(name);

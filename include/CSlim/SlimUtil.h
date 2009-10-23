@@ -1,7 +1,7 @@
 #ifndef SLIMUTILS_H
 #define SLIMUTILS_H
-char * CSlim_BuyBuf(char*, int);
-char * CSlim_BuyString(char*);
+char * CSlim_BuyBuf(char const*, int);
+char * CSlim_BuyString(char const*);
 
 typedef struct MapStringInt
 {

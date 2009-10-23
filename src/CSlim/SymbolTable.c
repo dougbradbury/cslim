@@ -34,7 +34,7 @@ void SymbolTable_Destroy(SymbolTable* self)
 	free(self);
 }
 
-char * SymbolTable_FindSymbol(SymbolTable* self, char * name, int length) {
+char * SymbolTable_FindSymbol(SymbolTable* self, char const * name, int length) {
 	SymbolNode* node;
 	for (node = self->head; node; node = node->next)
 	{
@@ -44,7 +44,7 @@ char * SymbolTable_FindSymbol(SymbolTable* self, char * name, int length) {
 	return NULL;
 }
 
-void SymbolTable_SetSymbol(SymbolTable* self, char* symbol, char* value) {
+void SymbolTable_SetSymbol(SymbolTable* self, char const * symbol, char const * value) {
 	SymbolNode * symbolNode = (SymbolNode * )malloc(sizeof(SymbolNode));
 	symbolNode->name = CSlim_BuyString(symbol);
 	symbolNode->value = CSlim_BuyString(value);
@@ -52,7 +52,7 @@ void SymbolTable_SetSymbol(SymbolTable* self, char* symbol, char* value) {
 	self->head = symbolNode;
 }
 
-int SymbolTable_GetSymbolLength(SymbolTable* self, char* symbol, int length)
+int SymbolTable_GetSymbolLength(SymbolTable* self, char const* symbol, int length)
 {
 	char * symbolValue = SymbolTable_FindSymbol(self, symbol, length);
 	if (symbolValue == NULL)
