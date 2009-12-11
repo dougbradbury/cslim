@@ -15,6 +15,7 @@ int SlimList_GetLength(SlimList*);
 int SlimList_Equals(SlimList* self, SlimList* other);
 SlimList * SlimList_GetListAt(SlimList* self, int index);
 char * SlimList_GetStringAt(SlimList* self, int index);
+SlimList* SlimList_GetHashAt(SlimList* self, int index);
 void SlimList_ReplaceAt(SlimList* self, int index, char const * replacementString);
 void SlimList_AddBuffer(SlimList* self, char const* buffer, int length);
 SlimList* SlimList_GetTailAt(SlimList*, int);

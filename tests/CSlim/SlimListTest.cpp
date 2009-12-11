@@ -97,6 +97,30 @@ TEST(SlimList, canGetElements)
 	STRCMP_EQUAL("element2", SlimList_GetStringAt(slimList, 1));
 }
 
+TEST(SlimList, canGetHashWithOneElement)
+{
+	SlimList_AddString(slimList, "<table><tr><td>name</td><td>bob</td></tr></table>");
+
+	SlimList * hash = SlimList_GetHashAt(slimList, 0);
+     SlimList * twoElementList = SlimList_GetListAt(hash, 0);
+       
+     STRCMP_EQUAL("name", SlimList_GetStringAt(twoElementList, 0));
+     STRCMP_EQUAL("bob", SlimList_GetStringAt(twoElementList, 1));
+     SlimList_Destroy(hash);
+}
+
+TEST(SlimList, canGetHashWithMultipleElements)
+{
+     SlimList_AddString(slimList, "<table><tr><td>name</td><td>dough</td></tr><tr><td>addr</td><td>here</td></tr></table>");
+
+     SlimList * hash = SlimList_GetHashAt(slimList, 0);
+     SlimList * twoElementList = SlimList_GetListAt(hash,1);
+  
+     STRCMP_EQUAL("addr", SlimList_GetStringAt(twoElementList, 0));
+     STRCMP_EQUAL("here", SlimList_GetStringAt(twoElementList, 1));
+     SlimList_Destroy(hash);
+}
+
 TEST(SlimList, cannotGetElementThatAreNotThere)
 {
 	SlimList_AddString(slimList, "element1");

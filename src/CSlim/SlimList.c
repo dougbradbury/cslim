@@ -126,6 +126,46 @@ char * SlimList_GetStringAt(SlimList* self, int index)
 	return node->string;
 }
 
+SlimList* SlimList_GetHashAt(SlimList* self, int index)
+{
+     SlimList *hash = SlimList_Create();
+     SlimList *element;
+     
+     int i;
+     char * row = strstr(SlimList_GetStringAt(self, 0), "<tr>");
+     char * cellStart;
+     char * cellValue;
+     char * cellStop;
+     
+     while (row != NULL)
+     {
+          element = SlimList_Create();
+          
+          cellStart = strstr(row, "<td>");
+          
+          for(i = 0; i < 2; i++)
+          {
+               cellValue = cellStart + strlen("<td>");
+               cellStop = strstr(cellValue, "</td>");
+               
+               int length = cellStop - cellValue;
+               char buf[length];
+               strncat(buf, cellValue, length);
+               
+               SlimList_AddString(element, buf);
+               
+               cellStart = strstr(cellStop + strlen("<td>"), "<td>");
+          }
+          
+          SlimList_AddList(hash, element);
+          SlimList_Destroy(element);
+          
+          row = strstr(row + strlen("<tr>"), "<tr>");
+     }
+     
+     return hash;
+}
+
 void SlimList_ReplaceAt(SlimList* self, int index, char const * replacementString)
 {
 	Node* node = SlimList_GetNodeAt(self, index);
