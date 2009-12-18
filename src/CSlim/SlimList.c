@@ -17,7 +17,7 @@ struct Node {
 
 struct SlimList {
 	int length;
-	Node* head;	
+	Node* head; 
 	Node* tail;
 };
 
@@ -25,9 +25,9 @@ static void insertNode(SlimList* self, Node* node);
 
 SlimList* SlimList_Create(void)
 {
-     SlimList* self = (SlimList*)malloc(sizeof(SlimList));
-     memset(self, 0, sizeof(SlimList));
-     return self;
+	 SlimList* self = (SlimList*)malloc(sizeof(SlimList));
+	 memset(self, 0, sizeof(SlimList));
+	 return self;
 }
 
 void SlimList_Destroy(SlimList* self)
@@ -45,7 +45,7 @@ void SlimList_Destroy(SlimList* self)
 		next = node->next;
 		free(node);
 	}
-    free(self);
+	free(self);
 }
 
 void SlimList_AddBuffer(SlimList* self, char const* buffer, int length) 
@@ -126,44 +126,58 @@ char * SlimList_GetStringAt(SlimList* self, int index)
 	return node->string;
 }
 
+static char * parseHashCell(char ** cellStart)
+{
+	char * cellValue = *cellStart + strlen("<td>");
+	char * cellStop = strstr(cellValue, "</td>");
+
+	int length = cellStop - cellValue;
+	char * buf = malloc(length + 1);
+	strncpy(buf, cellValue, length);
+	buf[length] = 0;
+	
+	*cellStart = strstr(cellStop + strlen("<td>"), "<td>");
+	
+	return buf;
+}
+
+static SlimList* parseHashEntry(char * row)
+{
+		SlimList * element = SlimList_Create();
+
+		char * cellStart = strstr(row, "<td>");
+
+		char* hashKey = parseHashCell(&cellStart);
+		SlimList_AddString(element, hashKey);
+		free(hashKey);
+
+		char * hashValue = parseHashCell(&cellStart);
+		SlimList_AddString(element, hashValue);
+		free(hashValue);
+		
+		return element;
+}
+
 SlimList* SlimList_GetHashAt(SlimList* self, int index)
 {
-     SlimList *hash = SlimList_Create();
-     SlimList *element;
-     
-     int i;
-     char * row = strstr(SlimList_GetStringAt(self, 0), "<tr>");
-     char * cellStart;
-     char * cellValue;
-     char * cellStop;
-     
-     while (row != NULL)
-     {
-          element = SlimList_Create();
-          
-          cellStart = strstr(row, "<td>");
-          
-          for(i = 0; i < 2; i++)
-          {
-               cellValue = cellStart + strlen("<td>");
-               cellStop = strstr(cellValue, "</td>");
-               
-               int length = cellStop - cellValue;
-               char buf[length];
-               strncat(buf, cellValue, length);
-               
-               SlimList_AddString(element, buf);
-               
-               cellStart = strstr(cellStop + strlen("<td>"), "<td>");
-          }
-          
-          SlimList_AddList(hash, element);
-          SlimList_Destroy(element);
-          
-          row = strstr(row + strlen("<tr>"), "<tr>");
-     }
-     
-     return hash;
+	SlimList *hash = SlimList_Create();
+	SlimList *element;
+
+	int i;
+	char * row = strstr(SlimList_GetStringAt(self, 0), "<tr>");
+	char * cellStart;
+	char * cellValue;
+	char * cellStop;
+
+	while (row != NULL)
+	{
+		element = parseHashEntry(row);
+		SlimList_AddList(hash, element);
+		SlimList_Destroy(element);
+		row = strstr(row + strlen("<tr>"), "<tr>");
+	}
+
+	return hash;
 }
 
 void SlimList_ReplaceAt(SlimList* self, int index, char const * replacementString)
