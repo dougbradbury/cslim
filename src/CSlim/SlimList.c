@@ -163,11 +163,7 @@ SlimList* SlimList_GetHashAt(SlimList* self, int index)
 	SlimList *hash = SlimList_Create();
 	SlimList *element;
 
-	int i;
 	char * row = strstr(SlimList_GetStringAt(self, 0), "<tr>");
-	char * cellStart;
-	char * cellValue;
-	char * cellStop;
 
 	while (row != NULL)
 	{
