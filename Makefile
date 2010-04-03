@@ -11,8 +11,12 @@ TEST_TARGET = \
 
 #--- Inputs ----#
 PROJECT_HOME_DIR = .
-CPPUTEST_HOME = ../CppUTest
-CSLIM_HOME = .
+ifeq "$(CPPUTEST_HOME)" ""
+    CPPUTEST_HOME = ../CppUTest
+endif
+ifeq "$(endifCSLIM_HOME)" ""
+    endifCSLIM_HOME = ../cslim
+endif
 CPP_PLATFORM = Gcc
 
 # set OS_PLATFROM to win to build with winsock
@@ -20,7 +24,7 @@ CPP_PLATFORM = Gcc
 
 #CFLAGS are set to override malloc and free to get memory leak detection in C programs
 CFLAGS = -Dmalloc=cpputest_malloc -Dfree=cpputest_free
-CPPFLAGS =
+CPPFLAGS = -Wall
 #GCOVFLAGS = -fprofile-arcs -ftest-coverage
 
 #SRC_DIRS is a list of source directories that make up the target library
@@ -37,7 +41,7 @@ else
 endif
 
 #TEST_SRC_DIRS is a list of directories including 
-# - A test main (AllTests.cpp by conventin)
+# - A test main (AllTests.cpp by convention)
 # - OBJ files in these directories are included in the TEST_TARGET
 # - Consequently - AllTests.h containing the IMPORT_TEST_GROUPS is not needed
 # - 
@@ -58,13 +62,16 @@ INCLUDES =\
   -Itests/CSlim\
   -I$(CPPUTEST_HOME)/include/\
 
-
 #Flags to pass to ld
+
 ifeq ($(OS_PLATFORM), win)
   LDFLAGS += -lWS2_32
 else
   LDFLAGS += 
 endif
+
+LD_LIBRARIES += -lstdc++
+
 
 OTHER_MAKEFILE_TO_INCLUDE = $(CSLIM_HOME)/build/CSlimServerMakefile
 	
