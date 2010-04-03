@@ -43,6 +43,8 @@ SLIM_CREATE_EMPTY_FIXTURE(name)
 ************
 The only thing left is the makefile.  The makefile provided will build the CSlim library and its unit tests.  It will also build a second executable from everything in /fixtures.  CSlim depends on CppUTest, notice it is using the ComponentMakefile from CppUTest.  You can model your makefiles after these or whatever you want.
 
+To build for windows, uncomment this line in the makefile
+# OS_PLATFORM = win
 
 *************************************
 * Running the example fitnesse test *

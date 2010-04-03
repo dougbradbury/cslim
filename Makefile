@@ -15,6 +15,9 @@ CPPUTEST_HOME = ../CppUTest
 CSLIM_HOME = .
 CPP_PLATFORM = Gcc
 
+# set OS_PLATFROM to win to build with winsock
+# OS_PLATFORM = win
+
 #CFLAGS are set to override malloc and free to get memory leak detection in C programs
 CFLAGS = -Dmalloc=cpputest_malloc -Dfree=cpputest_free
 CPPFLAGS =
@@ -25,8 +28,13 @@ CPPFLAGS =
 #to be included in main to force them to be linked in.  By convention
 #put them into an AllTests.h file in each directory
 SRC_DIRS = \
-	src/Com\
 	src/CSlim\
+
+ifeq ($(OS_PLATFORM), win)
+  SRC_DIRS += src/ComWin32
+else
+  SRC_DIRS += src/Com
+endif
 
 #TEST_SRC_DIRS is a list of directories including 
 # - A test main (AllTests.cpp by conventin)
@@ -52,7 +60,11 @@ INCLUDES =\
 
 
 #Flags to pass to ld
-LDFLAGS +=
+ifeq ($(OS_PLATFORM), win)
+  LDFLAGS += -lWS2_32
+else
+  LDFLAGS += 
+endif
 
 OTHER_MAKEFILE_TO_INCLUDE = $(CSLIM_HOME)/build/CSlimServerMakefile
 	

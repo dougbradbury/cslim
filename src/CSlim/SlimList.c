@@ -165,9 +165,6 @@ SlimList* SlimList_GetHashAt(SlimList* self, int index)
 
 	int i;
 	char * row = strstr(SlimList_GetStringAt(self, 0), "<tr>");
-	char * cellStart;
-	char * cellValue;
-	char * cellStop;
 
 	while (row != NULL)
 	{

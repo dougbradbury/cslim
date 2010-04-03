@@ -73,7 +73,7 @@ int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 			numbytes = self->recvFunc(self->comLink, message, size_i);
 			if (numbytes != size_i)
 			{
-				printf("did not receive right number of bytes\n");
+				printf("did not receive right number of bytes.  %d expected but received %d\n", size_i, numbytes);
 				break;
 			}
 			if (strcmp("bye", message) == 0)
