@@ -14,8 +14,8 @@ PROJECT_HOME_DIR = .
 ifeq "$(CPPUTEST_HOME)" ""
     CPPUTEST_HOME = ../CppUTest
 endif
-ifeq "$(endifCSLIM_HOME)" ""
-    endifCSLIM_HOME = ../cslim
+ifeq "$(CSLIM_HOME)" ""
+    CSLIM_HOME = ../cslim
 endif
 CPP_PLATFORM = Gcc
 
