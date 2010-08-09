@@ -1,5 +1,7 @@
+#ifndef CPP_COMPILING
 #ifdef __cplusplus
 extern "C" {
+#endif
 #endif
 
 #include "StatementExecutor.h"
@@ -38,6 +40,8 @@ void name##_Register(StatementExecutor* executor) \
 #define SLIM_CONSTRUCTOR_ERROR(errorHandler, reason) 		StatementExecutor_ConstructorError(errorHandler, reason);
 
 
+#ifndef CPP_COMPILING
 #ifdef __cplusplus
 }
+#endif
 #endif

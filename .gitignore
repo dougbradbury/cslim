@@ -10,3 +10,4 @@ gcov_*.txt*
 CSlim_tests.txt
 CSlim.tmproj
 *.zip
+*~

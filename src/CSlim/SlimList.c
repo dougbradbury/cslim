@@ -132,7 +132,7 @@ static char * parseHashCell(char ** cellStart)
 	char * cellStop = strstr(cellValue, "</td>");
 
 	int length = cellStop - cellValue;
-	char * buf = malloc(length + 1);
+	char * buf = (char*)malloc(length + 1);
 	strncpy(buf, cellValue, length);
 	buf[length] = 0;
 	
