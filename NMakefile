@@ -1,0 +1,39 @@
+BASE_DIR=$(MAKEDIR)
+CFLAGS= /MT /EHsc /Zi /I$(BASE_DIR)\include\CSlim /I$(BASE_DIR)\include\Com \
+       /I$(BASE_DIR)\include\VS2010 -Dsnprintf=_snprintf /FIstring.h /TP /c \
+       -DCPP_COMPILING=1
+
+all: TheFixtures CSlim ComWin32 CSlim_lib
+
+CSlim:
+	cd $(BASE_DIR)
+	cd src\CSlim
+	cl $(CFLAGS) *.c
+	cd $(BASE_DIR)
+
+ComWin32:
+	cd $(BASE_DIR)
+	cd src\ComWin32
+	cl $(CFLAGS) *.c
+	cd $(BASE_DIR)
+
+CSlim_lib:
+	cd $(BASE_DIR)
+	lib /out:$(BASE_DIR)\Lib\CSlim.lib src\CSlim\*.obj src\ComWin32\*.obj
+
+TheFixtures:
+	cd $(BASE_DIR)
+	cd fixtures
+	cl $(CFLAGS) *.c
+	cl $(CFLAGS) *.cpp
+
+SlimExecutable: all
+	link /DEBUG /SUBSYSTEM:CONSOLE /OUT:$(BASE_DIR)\fixtures\slim.exe \
+		src\CSlim\*.obj src\ComWin32\*.obj fixtures\*.obj \
+		"C:\Program Files\Microsoft SDKs\Windows\v7.0A\Lib\WS2_32.Lib"
+
+clean:
+	del src\CSlim\*.obj
+	del src\ComWin32\*.obj
+	del fixtures\*.obj
+	del lib\*.lib

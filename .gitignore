@@ -11,3 +11,9 @@ CSlim_tests.txt
 CSlim.tmproj
 *.zip
 *~
+*.obj
+*.swp
+*.exe
+*.ilk
+*.pdb
+*.lib
