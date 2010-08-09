@@ -18,7 +18,9 @@ public:
 	char result[32];	
 };
 
+#ifndef CPP_COMPILING
 extern "C" {
+#endif
 typedef struct Multiplication
 {
 	cMultiplication * multiplication;
@@ -66,4 +68,6 @@ SLIM_CREATE_FIXTURE(Multiplication)
 	SLIM_FUNCTION(Product)
 SLIM_END
 
+#ifndef CPP_COMPILING
 }
+#endif
