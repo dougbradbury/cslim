@@ -158,22 +158,25 @@ static SlimList* parseHashEntry(char * row)
 		return element;
 }
 
-SlimList* SlimList_GetHashAt(SlimList* self, int index)
-{
-	SlimList *hash = SlimList_Create();
-	SlimList *element;
-
-	char * row = strstr(SlimList_GetStringAt(self, 0), "<tr>");
-
-	while (row != NULL)
+static SlimList* SlimList_deserializeHash(char * serializedHash)
+{	
+  SlimList *element;
+  SlimList *hash = SlimList_Create();
+  
+  char * row = strstr(serializedHash, "<tr>");
+  while (row != NULL)
 	{
 		element = parseHashEntry(row);
 		SlimList_AddList(hash, element);
 		SlimList_Destroy(element);
 		row = strstr(row + strlen("<tr>"), "<tr>");
 	}
+  return hash;	
+}
 
-	return hash;
+SlimList* SlimList_GetHashAt(SlimList* self, int index)
+{
+	return SlimList_deserializeHash(SlimList_GetStringAt(self, 0));
 }
 
 void SlimList_ReplaceAt(SlimList* self, int index, char const * replacementString)
