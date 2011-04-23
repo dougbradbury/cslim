@@ -5,48 +5,51 @@
 
 extern "C"
 {
-	#include "SlimConnectionHandler.h"
-	#include "CppUTest/TestHarness_c.h"
-	
-	struct MockComLink {
-		char lastSendMsg[32];
-		char const * recvStream;
-		char const * recvPtr;
-	};
-	int mock_send_func(void * voidSelf, char * msg, int length)
-	{
-		MockComLink * self = (MockComLink*)voidSelf;
-		strncpy(self->lastSendMsg, msg, length);
-		return length;
-	}
-	int mock_recv_func(void * voidSelf, char * buffer, int length)
-	{
-		MockComLink * self = (MockComLink*)voidSelf;
-		strncpy(buffer, self->recvPtr, length);
-		self->recvPtr += length;
-		return length;
-	}
+  #include "SlimConnectionHandler.h"
+  #include "CppUTest/TestHarness_c.h"
+  
+  struct MockComLink {
+    char lastSendMsg[32];
+    char const * recvStream;
+    char const * recvPtr;
+  };
+  int mock_send_func(void * voidSelf, char * msg, int length)
+  {
+    MockComLink * self = (MockComLink*)voidSelf;
+    strncpy(self->lastSendMsg, msg, length);
+    return length;
+  }
+  int mock_recv_func(void * voidSelf, char * buffer, int length)
+  {
+    MockComLink * self = (MockComLink*)voidSelf;
+    strncpy(buffer, self->recvPtr, length);
+    self->recvPtr += length;
+    return length;
+  }
 
-	char * slimResponse;
-	char sentSlimMessage[32];
-	char * mock_handle_slim_message(char * message)
-	{
-		strcpy(sentSlimMessage, message);
-		return slimResponse;
-	}
-	
+  char * slimResponse;
+  char sentSlimMessage[32];
+  void * sentMsgHandler;
+  char * mock_handle_slim_message(void* self, char * message)
+  {
+    strcpy(sentSlimMessage, message);
+    sentMsgHandler = self;
+    return slimResponse;
+  }
+  
 }
 
 TEST_GROUP(SlimConnectionHandler)
 {
     SlimConnectionHandler* slimConnectionHandler;
-	MockComLink comLink;
+    MockComLink comLink;
+    void* mockMessageHandler;
     void setup()
     {
-		slimConnectionHandler = SlimConnectionHandler_Create(&mock_send_func, &mock_recv_func, (void*)&comLink);
-		memset(comLink.lastSendMsg, 0, 32);
-		
-		SlimConnectionHandler_RegisterSlimMessageHandler(slimConnectionHandler, &mock_handle_slim_message);
+      slimConnectionHandler = SlimConnectionHandler_Create(&mock_send_func, &mock_recv_func, (void*)&comLink);
+      memset(comLink.lastSendMsg, 0, 32);    
+      mockMessageHandler = (void*)0x123456;
+      SlimConnectionHandler_RegisterSlimMessageHandler(slimConnectionHandler, mockMessageHandler, &mock_handle_slim_message);
     }
     
     void teardown()
@@ -56,25 +59,26 @@ TEST_GROUP(SlimConnectionHandler)
 };
 
 TEST(SlimConnectionHandler, ShouldSendVersion)
-{	
-	comLink.recvStream = "000003:bye";
-	comLink.recvPtr = comLink.recvStream;
+{  
+  comLink.recvStream = "000003:bye";
+  comLink.recvPtr = comLink.recvStream;
 
-	SlimConnectionHandler_Run(slimConnectionHandler);
-	
-	STRCMP_EQUAL("Slim -- V0.0\n", comLink.lastSendMsg);
+  SlimConnectionHandler_Run(slimConnectionHandler);
+  
+  STRCMP_EQUAL("Slim -- V0.0\n", comLink.lastSendMsg);
 }
 
 TEST(SlimConnectionHandler, ShouldReadMessageAndCallSlimHandler)
 {
-	comLink.recvStream = "000006:abcdef000003:bye";
-	comLink.recvPtr = comLink.recvStream;
-	
-	slimResponse = (char*)cpputest_malloc(8);
-	strcpy(slimResponse, "ghijklm");
-	
-	SlimConnectionHandler_Run(slimConnectionHandler);
-	
-	STRCMP_EQUAL("000007:ghijklm", comLink.lastSendMsg);
-	STRCMP_EQUAL("abcdef", sentSlimMessage);
+  comLink.recvStream = "000006:abcdef000003:bye";
+  comLink.recvPtr = comLink.recvStream;
+  
+  slimResponse = (char*)cpputest_malloc(8);
+  strcpy(slimResponse, "ghijklm");
+  
+  SlimConnectionHandler_Run(slimConnectionHandler);
+  
+  STRCMP_EQUAL("000007:ghijklm", comLink.lastSendMsg);
+  STRCMP_EQUAL("abcdef", sentSlimMessage);
+  CHECK_EQUAL(mockMessageHandler, sentMsgHandler);
 }
