@@ -8,6 +8,8 @@
 #include "ListExecutor.h"
 #include "SlimListSerializer.h"
 
+void AddFixtures(StatementExecutor*);
+
 struct Slim
 {
   StatementExecutor * statementExecutor;
@@ -31,23 +33,23 @@ void Slim_Destroy(Slim * self)
   free(self);
 }
 
-char * Slim_HandleMessage(Slim* self, char * message)
+char * Slim_HandleMessage(void* voidSelf, char * message)
 {
- SlimList* instructions = SlimList_Deserialize(message);
- SlimList* results = ListExecutor_Execute(self->listExecutor, instructions);
- char * response = SlimList_Serialize(results);
- SlimList_Destroy(results);
- SlimList_Destroy(instructions);
- return response;
+  Slim* self = (Slim*)voidSelf;
+  SlimList* instructions = SlimList_Deserialize(message);
+  SlimList* results = ListExecutor_Execute(self->listExecutor, instructions);
+  char * response = SlimList_Serialize(results);
+  SlimList_Destroy(results);
+  SlimList_Destroy(instructions);
+  return response;
 }
 
 int Slim_HandleConnection(Slim* self, void* comLink, com_func_t send, com_func_t recv)
 {
-  printf("handle connection: %p", self);
   int result = 0;
-	SlimConnectionHandler* connection = SlimConnectionHandler_Create(send, recv, comLink);
-	SlimConnectionHandler_RegisterSlimMessageHandler(connection, self, &Slim_HandleMessage);
-	result = SlimConnectionHandler_Run(connection);
-	SlimConnectionHandler_Destroy(connection);  
+  SlimConnectionHandler* connection = SlimConnectionHandler_Create(send, recv, comLink);
+  SlimConnectionHandler_RegisterSlimMessageHandler(connection, self, &Slim_HandleMessage);
+  result = SlimConnectionHandler_Run(connection);
+  SlimConnectionHandler_Destroy(connection);  
   return result;
 }
