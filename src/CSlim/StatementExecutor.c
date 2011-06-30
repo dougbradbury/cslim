@@ -3,10 +3,10 @@
 #include "SlimListDeserializer.h"
 #include "SlimListSerializer.h"
 #include <stdlib.h>
-#include <memory.h>
+#include <string.h>
 #include <stdio.h>
 #include "SlimUtil.h"
-#include <regex.h>
+// #include <regex.h>
 #include "SymbolTable.h"
 #include "assert.h"
 #include <ctype.h>

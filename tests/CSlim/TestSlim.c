@@ -1,6 +1,6 @@
 #include "TestSlim.h"
 #include <stdlib.h>
-#include <memory.h>
+#include <string.h>
 #include <stdio.h>
 
 //static local variables

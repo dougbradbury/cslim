@@ -1,6 +1,6 @@
 #include "SocketServer.h"
 #include <stdlib.h>
-#include <memory.h>
+#include <string.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <errno.h>

@@ -1,6 +1,6 @@
 #include "TcpComLink.h"
 #include <stdlib.h>
-#include <memory.h>
+#include <string.h>
 #include <sys/socket.h>
 
 //static local variables

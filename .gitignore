@@ -2,6 +2,7 @@
 *.gcda
 *.gcno
 *.o
+*.a
 CSlim_tests
 CSlim_cslim
 libCSlim.a

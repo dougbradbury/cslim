@@ -1,6 +1,6 @@
 #include "SymbolTable.h"
 #include <stdlib.h>
-#include <memory.h>
+#include <string.h>
 #include "SlimUtil.h"
 
 typedef struct symbolNode {

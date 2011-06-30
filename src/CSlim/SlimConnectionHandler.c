@@ -1,8 +1,8 @@
 #include "SlimConnectionHandler.h"
 #include <stdlib.h>
-#include <memory.h>
 #include <string.h>
-#include <sys/types.h>
+#include <string.h>
+// #include <sys/types.h>
 #include <stdio.h>
 
 struct SlimConnectionHandler
