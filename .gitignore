@@ -18,3 +18,4 @@ CSlim.tmproj
 *.ilk
 *.pdb
 *.lib
+build-cli

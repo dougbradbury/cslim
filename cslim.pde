@@ -1,4 +1,3 @@
-#include <WProgram.h>
 #include <SPI.h>
 
 #include <Client.h>
@@ -40,16 +39,4 @@ void loop()
 }
 
 
-
-
-
-
-int main(int ac, char** av)
-{
-  setup()
-  while(true)
-  {
-    loop();
-  }
-}
 
