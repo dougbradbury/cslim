@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <memory.h>
 
-#include "slim.h"
+#include "Slim.h"
 #include "SlimList.h"
 #include "SlimListDeserializer.h"
 #include "StatementExecutor.h"

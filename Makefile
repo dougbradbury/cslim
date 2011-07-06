@@ -5,7 +5,7 @@ SILENCE = @
 COMPONENT_NAME = CSlim
 TARGET_LIB = \
 	lib/lib$(COMPONENT_NAME).a
-	
+
 TEST_TARGET = \
 	$(COMPONENT_NAME)_tests
 
