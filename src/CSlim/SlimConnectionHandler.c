@@ -4,7 +4,6 @@
 #include <string.h>
 // #include <sys/types.h>
 #include <stdio.h>
-
 struct SlimConnectionHandler
 {
 	com_func_t sendFunc;
@@ -49,6 +48,7 @@ int read_size(SlimConnectionHandler* self)
 			size_i = atoi(size);
 		}
 	}
+  self->sendFunc(self->comLink, "size read", 9);
 	return size_i;
 }
 
@@ -73,9 +73,12 @@ int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 			message = (char*)malloc(size_i + 1);
 			memset(message, 0, size_i + 1);
 			numbytes = self->recvFunc(self->comLink, message, size_i);
+      self->sendFunc(self->comLink, "received message", 16);
+      self->sendFunc(self->comLink, message, size_i);
 			if (numbytes != size_i)
 			{
-				printf("did not receive right number of bytes.  %d expected but received %d\n", size_i, numbytes);
+        self->sendFunc(self->comLink, "did not receive right number of bytes", 37);
+        // printf("did not receive right number of bytes.  %d expected but received %d\n", size_i, numbytes);
 				break;
 			}
 			if (strcmp("bye", message) == 0)
@@ -94,7 +97,7 @@ int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 			free(response);
 			if ( send_result != response_message_length)
 			{
-				printf("Failure to send all data");
+        self->sendFunc(self->comLink, "Failure to send all data", 24);
 				break;
 			}
 		}

@@ -1,5 +1,4 @@
 #include "Ethernet.h"
-#include "Server.h"
 
 #include <stdlib.h>
 
