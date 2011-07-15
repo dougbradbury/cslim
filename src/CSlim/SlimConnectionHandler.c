@@ -82,25 +82,19 @@ int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 			{
 				break;
 			}
-
 			//execute and get response
 			char* response_message = self->slimHandlerFunc(self->slimHandler, message);
 			int response_length = strlen(response_message);
-			int response_message_length = response_length + 7;
-			char * response = (char *)malloc(response_message_length + 1);
-			sprintf(response, "%06d:%s", response_length, response_message);
+			char * length_buffer = (char *)malloc(8);
+			sprintf(length_buffer, "%06d:", response_length);
+			int send_result = self->sendFunc(self->comLink, length_buffer, 7);
+			free(length_buffer);
+			send_result = self->sendFunc(self->comLink, response_message, response_length);
 			free(response_message);
-			int send_result = self->sendFunc(self->comLink, response, response_message_length);
-			free(response);
-			if ( send_result != response_message_length)
-			{
-				printf("Failure to send all data");
-				break;
-			}
 		}
 	}
 	free(message);
-	fflush(stdout);	   
+	fflush(stdout);
 	return 0;
 
 }
