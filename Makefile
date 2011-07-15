@@ -3,7 +3,6 @@ ARDUINO_DIR = /Applications/Arduino.app/Contents/Resources/Java
 TARGET       = CSlim
 BOARD_TAG    = mega2560
 ARDUINO_PORT = /dev/tty.usbmodem621
-
 ARDUINO_LIBS = Ethernet Spi Ethernet/utility
 
 CSLIM_SRC = src/CSlim/Slim.c src/CSlim/ListExecutor.c src/CSlim/SlimConnectionHandler.c src/CSlim/SlimList.c \

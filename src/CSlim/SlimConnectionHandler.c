@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string.h>
-// #include <sys/types.h>
 #include <stdio.h>
 struct SlimConnectionHandler
 {
@@ -72,31 +71,24 @@ int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 			message = (char*)malloc(size_i + 1);
 			memset(message, 0, size_i + 1);
 			numbytes = self->recvFunc(self->comLink, message, size_i);
-      self->sendFunc(self->comLink, message, size_i);
 			if (numbytes != size_i)
 			{
-        printf("did not receive right number of bytes.  %d expected but received %d\n", size_i, numbytes);
+				printf("did not receive right number of bytes.  %d expected but received %d\n", size_i, numbytes);
 				break;
 			}
 			if (strcmp("bye", message) == 0)
 			{
 				break;
 			}
-
 			//execute and get response
 			char* response_message = self->slimHandlerFunc(self->slimHandler, message);
 			int response_length = strlen(response_message);
-			int response_message_length = response_length + 7;
-			char * response = (char *)malloc(response_message_length + 1);
-			sprintf(response, "%06d:%s", response_length, response_message);
+			char * length_buffer = (char *)malloc(8);
+			sprintf(length_buffer, "%06d:", response_length);
+			int send_result = self->sendFunc(self->comLink, length_buffer, 7);
+			free(length_buffer);
+			send_result = self->sendFunc(self->comLink, response_message, response_length);
 			free(response_message);
-			int send_result = self->sendFunc(self->comLink, response, response_message_length);
-			free(response);
-			if ( send_result != response_message_length)
-			{
-        self->sendFunc(self->comLink, "Failure to send all data", 24);
-				break;
-			}
 		}
 	}
 	free(message);

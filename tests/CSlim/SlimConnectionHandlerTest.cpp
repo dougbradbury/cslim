@@ -10,13 +10,15 @@ extern "C"
   
   struct MockComLink {
     char lastSendMsg[32];
+    int lastSendIndex;
     char const * recvStream;
     char const * recvPtr;
   };
   int mock_send_func(void * voidSelf, char * msg, int length)
   {
     MockComLink * self = (MockComLink*)voidSelf;
-    strncpy(self->lastSendMsg, msg, length);
+    strncpy(self->lastSendMsg + self->lastSendIndex, msg, length);
+    self->lastSendIndex += length;
     return length;
   }
   int mock_recv_func(void * voidSelf, char * buffer, int length)
@@ -48,6 +50,7 @@ TEST_GROUP(SlimConnectionHandler)
     {
       slimConnectionHandler = SlimConnectionHandler_Create(&mock_send_func, &mock_recv_func, (void*)&comLink);
       memset(comLink.lastSendMsg, 0, 32);    
+      comLink.lastSendIndex = 0;
       mockMessageHandler = (void*)0x123456;
       SlimConnectionHandler_RegisterSlimMessageHandler(slimConnectionHandler, mockMessageHandler, &mock_handle_slim_message);
     }
@@ -78,7 +81,7 @@ TEST(SlimConnectionHandler, ShouldReadMessageAndCallSlimHandler)
   
   SlimConnectionHandler_Run(slimConnectionHandler);
   
-  STRCMP_EQUAL("000007:ghijklm", comLink.lastSendMsg);
+  STRCMP_EQUAL("Slim -- V0.0\n000007:ghijklm", comLink.lastSendMsg);
   STRCMP_EQUAL("abcdef", sentSlimMessage);
   CHECK_EQUAL(mockMessageHandler, sentMsgHandler);
 }
