@@ -1,8 +1,8 @@
 ARDUINO_DIR = /Applications/Arduino.app/Contents/Resources/Java
 
 TARGET       = CSlim
-BOARD_TAG    = atmega328
-ARDUINO_PORT = /dev/tty.usbserial-11CP0620
+BOARD_TAG    = mega2560
+ARDUINO_PORT = /dev/tty.usbmodem621
 
 ARDUINO_LIBS = Ethernet Spi Ethernet/utility
 
@@ -11,11 +11,11 @@ src/CSlim/SlimListDeserializer.c src/CSlim/SlimListSerializer.c src/CSlim/SlimUt
 src/CSlim/SymbolTable.c
 
 FIXTURE_C_SRC = fixtures/Fixtures.c fixtures/DecisionTableExample.c fixtures/ExceptionsExample.c fixtures/QueryTableExample.c \
-fixtures/ScriptTableExample.c   
+fixtures/ScriptTableExample.c
 FIXTURE_CPP_SRC = fixtures/FixtureInCpp.cpp
 
 CPP_COMPILING = 1
-CPPFLAGS += -Iinclude/CSlim -Iinclude/ComArduino 
+CPPFLAGS += -Iinclude/CSlim -Iinclude/ComArduino
 LOCAL_C_SRCS += $(CSLIM_SRC) $(FIXTURE_C_SRC)
 LOCAL_CPP_SRCS += src/ComArduino/SerialComLink.cpp $(FIXTURE_CPP_SRC)
 
