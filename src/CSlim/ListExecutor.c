@@ -61,24 +61,28 @@ char* Make(ListExecutor* self, SlimList* instruction) {
 }
 
 char* Call(ListExecutor* self, SlimList* instruction) {
+  char *instanceName, *methodName, *result;
+  SlimList* args;
 	if (SlimList_GetLength(instruction) < 4)
 		return MalformedInstruction(self, instruction);
-	char* instanceName = SlimList_GetStringAt(instruction, 2);
-	char* methodName = SlimList_GetStringAt(instruction, 3);
-	SlimList* args = SlimList_GetTailAt(instruction, 4);
-	char* result = CSlim_BuyString(StatementExecutor_Call(self->executor, instanceName, methodName, args));
+	instanceName = SlimList_GetStringAt(instruction, 2);
+	methodName = SlimList_GetStringAt(instruction, 3);
+	args = SlimList_GetTailAt(instruction, 4);
+	result = CSlim_BuyString(StatementExecutor_Call(self->executor, instanceName, methodName, args));
 	SlimList_Destroy(args);
 	return result;
 }
 
 char* CallAndAssign(ListExecutor* self, SlimList* instruction) {
+  char *symbolName, *instanceName, *methodName, *result;
+  SlimList* args;
 	if (SlimList_GetLength(instruction) < 5)
 		return MalformedInstruction(self, instruction);
-	char* symbolName = SlimList_GetStringAt(instruction, 2);
-	char* instanceName = SlimList_GetStringAt(instruction, 3);
-	char* methodName = SlimList_GetStringAt(instruction, 4);
-	SlimList* args = SlimList_GetTailAt(instruction, 5);
-	char* result = CSlim_BuyString(StatementExecutor_Call(self->executor, instanceName, methodName, args));
+	symbolName = SlimList_GetStringAt(instruction, 2);
+	instanceName = SlimList_GetStringAt(instruction, 3);
+	methodName = SlimList_GetStringAt(instruction, 4);
+	args = SlimList_GetTailAt(instruction, 5);
+	result = CSlim_BuyString(StatementExecutor_Call(self->executor, instanceName, methodName, args));
 	StatementExecutor_SetSymbol(self->executor, symbolName, result);
 	SlimList_Destroy(args);
 	return result;
