@@ -37,13 +37,13 @@ char* InvalidCommand(ListExecutor* self, SlimList* instruction) {
 	char* id = SlimList_GetStringAt(instruction, 0);
 	char* command = SlimList_GetStringAt(instruction, 1);
 	static char msg[128];
-	snprintf(msg, 128, "__EXCEPTION__:message:<<INVALID_STATEMENT: [\"%s\", \"%s\"].>>", id, command);
+	snprintf(msg, (size_t)128, "__EXCEPTION__:message:<<INVALID_STATEMENT: [\"%s\", \"%s\"].>>", id, command);
 	return CSlim_BuyString(msg);
 }
 
 char* MalformedInstruction(ListExecutor* self, SlimList* instruction) {
 	static char msg[128];
-	snprintf(msg, 128, "__EXCEPTION__:message:<<MALFORMED_INSTRUCTION %s.>>", SlimList_ToString(instruction));
+	snprintf(msg, (size_t)128, "__EXCEPTION__:message:<<MALFORMED_INSTRUCTION %s.>>", SlimList_ToString(instruction));
 	return CSlim_BuyString(msg);
 }
 
