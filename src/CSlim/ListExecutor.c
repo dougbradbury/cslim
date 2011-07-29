@@ -6,7 +6,6 @@
 #include <memory.h>
 
 
-//static local variables
 struct ListExecutor
 {
 	StatementExecutor* executor;
@@ -67,7 +66,6 @@ char* Call(ListExecutor* self, SlimList* instruction) {
 	char* instanceName = SlimList_GetStringAt(instruction, 2);
 	char* methodName = SlimList_GetStringAt(instruction, 3);
 	SlimList* args = SlimList_GetTailAt(instruction, 4);
-		
 	char* result = CSlim_BuyString(StatementExecutor_Call(self->executor, instanceName, methodName, args));
 	SlimList_Destroy(args);
 	return result;
@@ -80,7 +78,6 @@ char* CallAndAssign(ListExecutor* self, SlimList* instruction) {
 	char* instanceName = SlimList_GetStringAt(instruction, 3);
 	char* methodName = SlimList_GetStringAt(instruction, 4);
 	SlimList* args = SlimList_GetTailAt(instruction, 5);
-		
 	char* result = CSlim_BuyString(StatementExecutor_Call(self->executor, instanceName, methodName, args));
 	StatementExecutor_SetSymbol(self->executor, symbolName, result);
 	SlimList_Destroy(args);
@@ -97,7 +94,7 @@ char* Dispatch(ListExecutor* self, SlimList* instruction) {
 		return Call(self, instruction);
 	else if (strcmp(command, "callAndAssign") == 0)
 		return CallAndAssign(self, instruction);
-	else 
+	else
 		return InvalidCommand(self, instruction);
 }
 
@@ -110,10 +107,10 @@ SlimList* ListExecutor_Execute(ListExecutor* self, SlimList* instructions)
 		SlimList* instruction = SlimList_GetListAt(instructions, n);
 		char* id = SlimList_GetStringAt(instruction, 0);
 		char* result = Dispatch(self, instruction);
-		AddResult(results, id, result);		
+		AddResult(results, id, result);
 		if (result)
 			free(result);
 	}
-	
-	return results;	
+
+	return results;
 }
