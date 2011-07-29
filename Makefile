@@ -73,7 +73,7 @@ endif
 LD_LIBRARIES += -lstdc++
 
 
-OTHER_MAKEFILE_TO_INCLUDE = $(CSLIM_HOME)/build/CSlimServerMakefile
+OTHER_MAKEFILE_TO_INCLUDE = $(CSLIM_HOME)/build/MakefileWorker.mk
 	
 include $(CPPUTEST_HOME)/build/ComponentMakefile
 
