@@ -1,6 +1,6 @@
 #Set this to @ to keep the makefile quiet
 SILENCE = @
-
+RANLIB = ranlib
 #---- Outputs ----#
 COMPONENT_NAME = CSlim
 TARGET_LIB = \

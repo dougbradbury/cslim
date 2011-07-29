@@ -26,4 +26,4 @@ char* SlimList_ToString(SlimList*);
 #endif
 
 
-#endif  // D_SlimList_H
+#endif
