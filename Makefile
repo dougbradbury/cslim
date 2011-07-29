@@ -16,7 +16,7 @@ FIXTURE_CPP_SRC = fixtures/FixtureInCpp.cpp
 CPP_COMPILING = 1
 CPPFLAGS += -Iinclude/CSlim -Iinclude/ComArduino
 LOCAL_C_SRCS += $(CSLIM_SRC) $(FIXTURE_C_SRC)
-LOCAL_CPP_SRCS += src/ComArduino/SerialComLink.cpp $(FIXTURE_CPP_SRC)
+LOCAL_CPP_SRCS += src/ComArduino/SerialComLink.cpp src/ComArduino/TcpComLink.cpp $(FIXTURE_CPP_SRC)
 
 include Arduino.mk
 

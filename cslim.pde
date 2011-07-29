@@ -11,30 +11,33 @@ extern "C" {
 }
 
 Slim * slim;
-Server server(4123);
-
-byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };  
-//the IP address for the shield:
-byte ip[] = { 10, 0, 0, 177 };   
+Server server(22);
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+byte ip[] = { 192,168,1, 177 };
+byte gateway[] = { 192,168,1, 1 };
+byte subnet[] = { 255, 255, 255, 0 };
 
 void setup()
 {
   slim = Slim_Create();
-  Serial.begin(9600);
 
-  // Ethernet.begin(mac, ip);
-  // server.begin();
+  Ethernet.begin(mac, ip, gateway, subnet);
+  server.begin();
+
+  Serial.begin(9600);
+  Serial.write("Slim running\n");
+
 }
 
 
 void loop_ethernet()
 {
-//  // if an incoming client connects, there will be bytes available to read:
   Client client = server.available();
-  if (client == true) {
-    TcpComLink * comLink = TcpComLink_Create(&client);	
+  if (client) {
+    Serial.write("New Connection\n");
+    TcpComLink * comLink = TcpComLink_Create(&client);
     Slim_HandleConnection(slim, (void*)comLink, &TcpComLink_send, &TcpComLink_recv);
-    TcpComLink_Destroy(comLink);    
+    TcpComLink_Destroy(comLink);
   }
 }
 
@@ -46,6 +49,6 @@ void loop_serial()
 
 void loop()
 {
-  loop_serial();
+  loop_ethernet();
 }
 
