@@ -38,7 +38,7 @@ void SlimConnectionHandler_RegisterSlimMessageHandler(SlimConnectionHandler* sel
 int read_size(SlimConnectionHandler* self)
 {
 	char size[7];
-	int size_i = -1;
+	size_t size_i = 0;
 	char colon;
 	memset(size, (size_t)0, (size_t)7);
 
@@ -66,12 +66,12 @@ int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 
 	while(1)
 	{
-		size_t size_i = read_size(self);
+		int size_i = read_size(self);
 		if (size_i > 0)
 		{
 			free(message);
 			message = (char*)malloc(size_i + (size_t)1);
-			memset(message, 0, size_i + (size_t)1);
+			memset(message, 0, (size_t)size_i + (size_t)1);
 			numbytes = self->recvFunc(self->comLink, message, size_i);
 			if (numbytes != size_i)
 			{
