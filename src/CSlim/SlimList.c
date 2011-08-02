@@ -48,19 +48,19 @@ void SlimList_Destroy(SlimList* self)
 	free(self);
 }
 
-void SlimList_AddBuffer(SlimList* self, char const* buffer, int length) 
+void SlimList_AddBuffer(SlimList* self, char const* buffer, int length)
 {
 	Node* newNode = (Node*)malloc(sizeof(Node));
 	newNode->next = 0;
 	newNode->list = 0;
-	
+
 	insertNode(self, newNode);
 
 	newNode->string = CSlim_BuyBuf(buffer, length);
 }
 
 
-void SlimList_AddString(SlimList* self, char const* string) 
+void SlimList_AddString(SlimList* self, char const* string)
 {
 	SlimList_AddBuffer(self, string, string ? strlen(string) : 0);
 }
@@ -83,12 +83,12 @@ int SlimList_Equals(SlimList* self, SlimList* other){
 	if (self->length != other->length)
 		return 0;
 
-	for (p = self->head, q=other->head; p; p=p->next, q=q->next) 
+	for (p = self->head, q=other->head; p; p=p->next, q=q->next)
 	{
 		if (strcmp(p->string, q->string) != 0)
-			return 0;	
+			return 0;
 	}
-	
+
 	return 1;
 }
 
@@ -113,7 +113,7 @@ SlimList * SlimList_GetListAt(SlimList* self, int index)
 	if (node)
 	{
 		if (node->list == 0)
-			node->list = SlimList_Deserialize(node->string);	
+			node->list = SlimList_Deserialize(node->string);
 	}
 	return node->list;
 }
@@ -124,6 +124,12 @@ char * SlimList_GetStringAt(SlimList* self, int index)
 	if(node == 0)
 		return 0;
 	return node->string;
+}
+
+double SlimList_GetDoubleAt(SlimList* self, int index)
+{
+  char* speed_s = SlimList_GetStringAt(self, index);
+  return atof(speed_s);
 }
 
 static char * parseHashCell(char ** cellStart)

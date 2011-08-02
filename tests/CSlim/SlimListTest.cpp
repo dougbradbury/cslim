@@ -103,7 +103,7 @@ TEST(SlimList, canGetHashWithOneElement)
 
 	SlimList * hash = SlimList_GetHashAt(slimList, 0);
      SlimList * twoElementList = SlimList_GetListAt(hash, 0);
-       
+
      STRCMP_EQUAL("name", SlimList_GetStringAt(twoElementList, 0));
      STRCMP_EQUAL("bob", SlimList_GetStringAt(twoElementList, 1));
      SlimList_Destroy(hash);
@@ -115,7 +115,7 @@ TEST(SlimList, canGetHashWithMultipleElements)
 
      SlimList * hash = SlimList_GetHashAt(slimList, 0);
      SlimList * twoElementList = SlimList_GetListAt(hash,1);
-  
+
      STRCMP_EQUAL("addr", SlimList_GetStringAt(twoElementList, 0));
      STRCMP_EQUAL("here", SlimList_GetStringAt(twoElementList, 1));
      SlimList_Destroy(hash);
@@ -167,4 +167,10 @@ TEST(SlimList, recursiveToString)
   STRCMP_EQUAL("[\"a\", \"b\", [\"3\", \"4\"]]", SlimList_ToString(slimList));
 
   SlimList_Destroy(sublist);
+}
+
+TEST(SlimList, getDouble)
+{
+  SlimList_AddString(slimList, "2.3");
+  DOUBLES_EQUAL(2.3, SlimList_GetDoubleAt(slimList, 0), 0.1);
 }
