@@ -21,7 +21,6 @@ void SlimList_ReplaceAt(SlimList* self, int index, char const * replacementStrin
 void SlimList_AddBuffer(SlimList* self, char const* buffer, int length);
 SlimList* SlimList_GetTailAt(SlimList*, int index);
 char* SlimList_ToString(SlimList*);
-
 #ifdef __cplusplus
 }
 #endif

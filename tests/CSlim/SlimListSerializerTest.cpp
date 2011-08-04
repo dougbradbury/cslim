@@ -14,23 +14,21 @@ extern "C"
 
 TEST_GROUP(SlimListSerializer)
 {
-    SlimList* slimList;
-	char* serializedList;
+  SlimList* slimList;
+  char* serializedList;
 
-    void setup()
-    {
-		slimList  = SlimList_Create();
-		serializedList = 0;
-    }
+  void setup()
+  {
+    slimList  = SlimList_Create();
+    serializedList = 0;
+  }
 
-    void teardown()
-    {
-		SlimList_Destroy(slimList);
+  void teardown()
+  {
+    SlimList_Destroy(slimList);
 
-		if (serializedList != 0)
-			cpputest_free(serializedList);
-    }
-
+    SlimList_Release(serializedList);
+  }
 };
 
 TEST(SlimListSerializer, SerializeAListWithNoElements)
