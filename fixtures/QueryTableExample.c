@@ -11,12 +11,6 @@ typedef struct EmployeePayRecordsRow
 	char * result;
 } EmployeePayRecordsRow;
 
-static void clearResult(EmployeePayRecordsRow* self)
-{
-	if (self->result)
-		free(self->result);
-}
-
 void* EmployeePayRecordsRow_Create(StatementExecutor* errorHandler, SlimList* args)
 {
 	EmployeePayRecordsRow* self = (EmployeePayRecordsRow*)malloc(sizeof(EmployeePayRecordsRow));
@@ -27,7 +21,7 @@ void* EmployeePayRecordsRow_Create(StatementExecutor* errorHandler, SlimList* ar
 void EmployeePayRecordsRow_Destroy(void* void_self)
 {
 	EmployeePayRecordsRow* self = (EmployeePayRecordsRow*)void_self;
-	clearResult(self);
+	SlimList_Release(self->result);
 	free(self);
 }
 
@@ -49,7 +43,7 @@ static char* query(void* void_self, SlimList* args) {
 	SlimList* records = SlimList_Create();
 	SlimList_AddList(records, record1);
 
-	clearResult(self);
+	SlimList_Release(self->result);
 	self->result = SlimList_Serialize(records);
 
 	SlimList_Destroy(id);

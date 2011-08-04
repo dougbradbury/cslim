@@ -33,7 +33,7 @@ TEST_GROUP(SlimListDeserializer)
 			SlimList_Destroy(deserializedList);
 
 		if (serializedList != 0)
-			cpputest_free(serializedList);
+			SlimList_Release(serializedList);
     }
 
 	void check_lists_equal(SlimList* expected, SlimList* actual) {

@@ -90,7 +90,7 @@ int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 			int send_result = self->sendFunc(self->comLink, length_buffer, 7);
 			free(length_buffer);
 			send_result = self->sendFunc(self->comLink, response_message, response_length);
-			free(response_message);
+			SlimList_Release(response_message);
 		}
 	}
 	free(message);

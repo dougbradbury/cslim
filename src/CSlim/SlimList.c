@@ -69,7 +69,7 @@ void SlimList_AddList(SlimList* self, SlimList* element)
 {
 	char * embedded = SlimList_Serialize(element);
 	SlimList_AddString(self, embedded);
-	free(embedded);
+	SlimList_Release(embedded);
 }
 
 int SlimList_GetLength(SlimList* self)

@@ -177,7 +177,7 @@ void replaceSymbols(SymbolTable* symbolTable, SlimList* list) {
 			char* serializedReplacedList = SlimList_Serialize(embeddedList);
 			SlimList_ReplaceAt(list, i, serializedReplacedList);
 			SlimList_Destroy(embeddedList);
-			free(serializedReplacedList);
+			SlimList_Release(serializedReplacedList);
 		}
 	}
 }

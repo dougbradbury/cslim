@@ -13,7 +13,7 @@ void AddFixtures(StatementExecutor*);
 struct Slim
 {
   StatementExecutor * statementExecutor;
-  ListExecutor * listExecutor;  
+  ListExecutor * listExecutor;
 };
 
 Slim * Slim_Create()
@@ -22,7 +22,7 @@ Slim * Slim_Create()
   memset(self, 0, sizeof(Slim));
   self->statementExecutor = StatementExecutor_Create();
   AddFixtures(self->statementExecutor);
-  self->listExecutor = ListExecutor_Create(self->statementExecutor);   
+  self->listExecutor = ListExecutor_Create(self->statementExecutor);
   return self;
 }
 
@@ -50,6 +50,6 @@ int Slim_HandleConnection(Slim* self, void* comLink, com_func_t send, com_func_t
   SlimConnectionHandler* connection = SlimConnectionHandler_Create(send, recv, comLink);
   SlimConnectionHandler_RegisterSlimMessageHandler(connection, self, &Slim_HandleMessage);
   result = SlimConnectionHandler_Run(connection);
-  SlimConnectionHandler_Destroy(connection);  
+  SlimConnectionHandler_Destroy(connection);
   return result;
 }
