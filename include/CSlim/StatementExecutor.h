@@ -24,4 +24,4 @@ void StatementExecutor_SetSymbol(StatementExecutor*, char const* symbol, char co
 void StatementExecutor_ConstructorError(StatementExecutor* executor, char const* message);
 char* StatementExecutor_FixtureError(char const* message);
 
-#endif  // D_StatementExecutor_H
+#endif

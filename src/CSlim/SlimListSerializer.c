@@ -42,3 +42,9 @@ char* SlimList_Serialize(SlimList* self)
 	strcpy(write_ptr, "]");
 	return buf;
 }
+
+void SlimList_Release(char *serializedResults)
+{
+  if(serializedResults)
+    free(serializedResults);
+}
