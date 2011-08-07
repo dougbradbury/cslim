@@ -23,7 +23,9 @@ CPP_PLATFORM = Gcc
 # OS_PLATFORM = win
 
 #CFLAGS are set to override malloc and free to get memory leak detection in C programs
-CPPUTEST_CFLAGS = -Dmalloc=cpputest_malloc -Dfree=cpputest_free
+ifneq ($(CPPUTEST_USE_MEM_LEAK_DETECTION), N)
+	CPPUTEST_CFLAGS = -Dmalloc=cpputest_malloc -Dfree=cpputest_free
+endif
 CPPFLAGS = -Wall
 #GCOVFLAGS = -fprofile-arcs -ftest-coverage
 
