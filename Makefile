@@ -35,6 +35,7 @@ CPPFLAGS = -Wall
 #put them into an AllTests.h file in each directory
 SRC_DIRS = \
 	src/CSlim\
+	src/ExecutorC\
 
 ifeq ($(OS_PLATFORM), win)
   SRC_DIRS += src/ComWin32
