@@ -1,4 +1,6 @@
 #include "SlimConnectionHandler.h"
+#include "SlimList.h"
+#include "SlimListSerializer.h"
 #include <stdlib.h>
 #include <string.h>
 #include <string.h>

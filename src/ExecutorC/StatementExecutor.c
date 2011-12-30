@@ -6,22 +6,20 @@
 #include <string.h>
 #include <stdio.h>
 #include "SlimUtil.h"
-// #include <regex.h>
 #include "SymbolTable.h"
 #include "assert.h"
 #include <ctype.h>
 
-
 typedef struct methodNode {
 	struct methodNode* next;
 	char const* name;
-	Method method;
+    SlimBaseMethod0 method;
+    MethodInvoker methodInvoker;
 } MethodNode;
 
 typedef struct fixtureNode {
 	struct fixtureNode* next;
-	Constructor constructor;
-	Destructor destructor;
+    ConstructorInvoker constructorInvoker;
 	MethodNode* methods;
 	char const* name;
 } FixtureNode;
@@ -29,7 +27,7 @@ typedef struct fixtureNode {
 typedef struct instanceNode {
 	struct instanceNode* next;
 	char const* name;
-	void* instance;
+    SlimFixtureBase* instance;
 	FixtureNode* fixture;
 } InstanceNode;
 
@@ -48,8 +46,6 @@ struct StatementExecutor
 	char const* userMessage;
 };
 
-
-
 static void destroyInstances(InstanceNode*);
 static void destroyFixtures(FixtureNode*);
 static void destroyMethods(MethodNode*);
@@ -58,8 +54,6 @@ static char* replaceString(SymbolTable*, char*);
 static char* replaceStringFrom(SymbolTable*, char*, char*);
 static int lengthOfSymbol(char *);
 static FixtureNode * findFixture(StatementExecutor* executor, char const * className);
-static void Null_Destroy(void* self);
-static void* Null_Create(StatementExecutor* executor, SlimList* args);
 
 
 StatementExecutor* StatementExecutor_Create(void)
@@ -93,7 +87,7 @@ static void destroyInstances(InstanceNode* head) {
 	InstanceNode* instanceNode;
 	for (instanceNode = head; instanceNode;) {
 		InstanceNode* nextInstanceNode = instanceNode->next;
-		instanceNode->fixture->destructor(instanceNode->instance);
+        delete instanceNode->instance;
 		free(instanceNode);
 		instanceNode = nextInstanceNode;	
 	}
@@ -128,10 +122,15 @@ char* StatementExecutor_Make(StatementExecutor* executor, char const* instanceNa
 		instanceNode->fixture = fixtureNode;
 		replaceSymbols(executor->symbolTable, args);
 		executor->userMessage = NULL;
-		instanceNode->instance = (fixtureNode->constructor)(executor, args);
+        instanceNode->instance = fixtureNode->constructorInvoker(className, executor, args);
+
 		if (instanceNode->instance != NULL) {	
 			return "OK";
 		} else {
+            // Empty instance name so GetInstanceNode() won't succeed in StatementExecutor_Call(), and won't call the null-instance method, and will return "NO_INTANCE" exception
+            // The other way is to move the above instanceNode malloc and member-filling code to the preceding if-body
+            // i.e. only when instance can be instantiated then instanceNode is created and linked
+            instanceNode->name = "";
 			char * formatString = "__EXCEPTION__:message:<<COULD_NOT_INVOKE_CONSTRUCTOR %.32s %.32s.>>";
 			snprintf(executor->message, 120, formatString, className, executor->userMessage ? executor->userMessage : "");	
 			return executor->message;	
@@ -150,7 +149,7 @@ char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceNa
 		for (node = instanceNode->fixture->methods; node; node = node->next) {
 			if (strcmp(methodName, node->name) == 0) {
 				replaceSymbols(executor->symbolTable, args);
-				char* retval =  node->method(instanceNode->instance, args);
+                char* retval =  node->methodInvoker(node->method, instanceNode->instance, args);
 				return retval;
 			}
 		}
@@ -242,7 +241,167 @@ void StatementExecutor_AddFixture(StatementExecutor* executor, Fixture fixture) 
 	fixture(executor);
 }
 
-void StatementExecutor_RegisterFixture(StatementExecutor* executor, char const * className, Constructor constructor, Destructor destructor){
+bool Register(ClassInfo* ci)
+{
+    return SlimFixtureBase::Register(ci);
+}
+
+bool SlimFixtureBase::Register(ClassInfo* classInfo)
+{
+    ClassInfoMap()[classInfo->type] = classInfo;
+    return true;
+}
+ 
+// Use this to avoid the "static initialization order fiasco" between original SlimFixtureBase::m_classInfoMap and <DerivedFixtureClass>::m_cInfo
+// http://www.parashift.com/c++-faq-lite/ctors.html#faq-10.14
+std::map<std::string, ClassInfo*>& SlimFixtureBase::ClassInfoMap()
+{
+    static std::map<std::string, ClassInfo*> classInfoMap;
+    return classInfoMap;
+}
+
+SlimFixtureBase* SlimFixtureBase::CreateObject0(char const* className, StatementExecutor* executor, SlimList* args)
+{
+    if (ClassInfoMap()[className] != NULL)
+    {
+        return ((SlimBaseCreateObject0)ClassInfoMap()[className]->funcCreate)(executor);
+    }
+    return NULL;
+}
+
+SlimFixtureBase* SlimFixtureBase::CreateObject1(char const* className, StatementExecutor* executor, SlimList* args)
+{
+    if (ClassInfoMap()[className] != NULL)
+    {
+        return ((SlimBaseCreateObject1)ClassInfoMap()[className]->funcCreate)(executor, SlimList_GetStringAt(args, 0));
+    }
+    return NULL;
+}
+
+SlimFixtureBase* SlimFixtureBase::CreateObject2(char const* className, StatementExecutor* executor, SlimList* args)
+{
+    if (ClassInfoMap()[className] != NULL)
+    {
+        return ((SlimBaseCreateObject2)ClassInfoMap()[className]->funcCreate)(executor, SlimList_GetStringAt(args, 0), 
+            SlimList_GetStringAt(args, 1));
+    }
+    return NULL;
+}
+
+SlimFixtureBase* SlimFixtureBase::CreateObject3(char const* className, StatementExecutor* executor, SlimList* args)
+{
+    if (ClassInfoMap()[className] != NULL)
+    {
+        return ((SlimBaseCreateObject3)ClassInfoMap()[className]->funcCreate)(executor, SlimList_GetStringAt(args, 0),
+            SlimList_GetStringAt(args, 1), SlimList_GetStringAt(args, 2));
+    }
+    return NULL;
+}
+
+SlimFixtureBase* SlimFixtureBase::CreateObject4(char const* className, StatementExecutor* executor, SlimList* args)
+{
+    if (ClassInfoMap()[className] != NULL)
+    {
+        return ((SlimBaseCreateObject4)ClassInfoMap()[className]->funcCreate)(executor, SlimList_GetStringAt(args, 0),
+            SlimList_GetStringAt(args, 1), SlimList_GetStringAt(args, 2), SlimList_GetStringAt(args, 3));
+    }
+    return NULL;
+}
+
+SlimFixtureBase* SlimFixtureBase::CreateObject5(char const* className, StatementExecutor* executor, SlimList* args)
+{
+    if (ClassInfoMap()[className] != NULL)
+    {
+        return ((SlimBaseCreateObject5)ClassInfoMap()[className]->funcCreate)(executor, SlimList_GetStringAt(args, 0),
+            SlimList_GetStringAt(args, 1), SlimList_GetStringAt(args, 2), SlimList_GetStringAt(args, 3),
+            SlimList_GetStringAt(args, 4));
+    }
+    return NULL;
+}
+
+SlimFixtureBase* SlimFixtureBase::CreateObject6(char const* className, StatementExecutor* executor, SlimList* args)
+{
+    if (ClassInfoMap()[className] != NULL)
+    {
+        return ((SlimBaseCreateObject6)ClassInfoMap()[className]->funcCreate)(executor, SlimList_GetStringAt(args, 0),
+            SlimList_GetStringAt(args, 1), SlimList_GetStringAt(args, 2), SlimList_GetStringAt(args, 3),
+            SlimList_GetStringAt(args, 4), SlimList_GetStringAt(args, 5));
+    }
+    return NULL;
+}
+
+SlimFixtureBase* SlimFixtureBase::CreateObject7(char const* className, StatementExecutor* executor, SlimList* args)
+{
+    if (ClassInfoMap()[className] != NULL)
+    {
+        return ((SlimBaseCreateObject7)ClassInfoMap()[className]->funcCreate)(executor, SlimList_GetStringAt(args, 0),
+            SlimList_GetStringAt(args, 1), SlimList_GetStringAt(args, 2), SlimList_GetStringAt(args, 3),
+            SlimList_GetStringAt(args, 4), SlimList_GetStringAt(args, 5), SlimList_GetStringAt(args, 6));
+    }
+    return NULL;
+}
+
+SlimFixtureBase* SlimFixtureBase::CreateObject8(char const* className, StatementExecutor* executor, SlimList* args)
+{
+    if (ClassInfoMap()[className] != NULL)
+    {
+        return ((SlimBaseCreateObject8)ClassInfoMap()[className]->funcCreate)(executor, SlimList_GetStringAt(args, 0),
+            SlimList_GetStringAt(args, 1), SlimList_GetStringAt(args, 2), SlimList_GetStringAt(args, 3),
+            SlimList_GetStringAt(args, 4), SlimList_GetStringAt(args, 5), SlimList_GetStringAt(args, 6),
+            SlimList_GetStringAt(args, 7));
+    }
+    return NULL;
+}
+
+SlimFixtureBase* SlimFixtureBase::CreateObject9(char const* className, StatementExecutor* executor, SlimList* args)
+{
+    if (ClassInfoMap()[className] != NULL)
+    {
+        return ((SlimBaseCreateObject9)ClassInfoMap()[className]->funcCreate)(executor, SlimList_GetStringAt(args, 0),
+            SlimList_GetStringAt(args, 1), SlimList_GetStringAt(args, 2), SlimList_GetStringAt(args, 3),
+            SlimList_GetStringAt(args, 4), SlimList_GetStringAt(args, 5), SlimList_GetStringAt(args, 6),
+            SlimList_GetStringAt(args, 7), SlimList_GetStringAt(args, 8));
+    }
+    return NULL;
+}
+
+SlimFixtureBase* SlimFixtureBase::CreateObject10(char const* className, StatementExecutor* executor, SlimList* args)
+{
+    if (ClassInfoMap()[className] != NULL)
+    {
+        return ((SlimBaseCreateObject10)ClassInfoMap()[className]->funcCreate)(executor, SlimList_GetStringAt(args, 0),
+            SlimList_GetStringAt(args, 1), SlimList_GetStringAt(args, 2), SlimList_GetStringAt(args, 3),
+            SlimList_GetStringAt(args, 4), SlimList_GetStringAt(args, 5), SlimList_GetStringAt(args, 6),
+            SlimList_GetStringAt(args, 7), SlimList_GetStringAt(args, 8), SlimList_GetStringAt(args, 9));
+    }
+    return NULL;
+}
+
+ConstructorInvoker findConstructorInvoker(int argc)
+{
+    static ConstructorInvoker constructorInvokers[] =
+    {
+        SlimFixtureBase::CreateObject0,
+        SlimFixtureBase::CreateObject1,
+        SlimFixtureBase::CreateObject2,
+        SlimFixtureBase::CreateObject3,
+        SlimFixtureBase::CreateObject4,
+        SlimFixtureBase::CreateObject5,
+        SlimFixtureBase::CreateObject6,
+        SlimFixtureBase::CreateObject7,
+        SlimFixtureBase::CreateObject8,
+        SlimFixtureBase::CreateObject9,
+        SlimFixtureBase::CreateObject10
+    };
+
+    if (argc < 0 || argc > sizeof(constructorInvokers)/sizeof(constructorInvokers[0]) - 1)
+    {
+        return NULL;
+    }
+    return constructorInvokers[argc];
+}
+
+void StatementExecutor_RegisterFixture(StatementExecutor* executor, char const * className, int argc){
 	FixtureNode* fixtureNode = findFixture(executor, className);
 	if (!fixtureNode)
 	{
@@ -253,8 +412,7 @@ void StatementExecutor_RegisterFixture(StatementExecutor* executor, char const *
 		fixtureNode->methods = NULL;
 	}
 		
-	fixtureNode->constructor = constructor;
-	fixtureNode->destructor = destructor;
+    fixtureNode->constructorInvoker = findConstructorInvoker(argc);
 }
 
 static FixtureNode * findFixture(StatementExecutor* executor, char const* className)
@@ -268,16 +426,114 @@ static FixtureNode * findFixture(StatementExecutor* executor, char const* classN
 	return fixtureNode;
 }
 
-void StatementExecutor_RegisterMethod(StatementExecutor* executor, char const * className, char const * methodName, Method method){
+char* SlimFixtureBase::Method0(SlimBaseMethod0 method, void* instance, SlimList* args)
+{
+    return (((SlimFixtureBase*)instance)->*(SlimBaseMethod0)method)();
+}
+
+char* SlimFixtureBase::Method1(SlimBaseMethod0 method, void* instance, SlimList* args)
+{
+    return (((SlimFixtureBase*)instance)->*(SlimBaseMethod1)method)(SlimList_GetStringAt(args, 0));
+}
+
+char* SlimFixtureBase::Method2(SlimBaseMethod0 method, void* instance, SlimList* args)
+{
+    return (((SlimFixtureBase*)instance)->*(SlimBaseMethod2)method)(SlimList_GetStringAt(args, 0),
+        SlimList_GetStringAt(args, 1));
+}
+
+char* SlimFixtureBase::Method3(SlimBaseMethod0 method, void* instance, SlimList* args)
+{
+    return (((SlimFixtureBase*)instance)->*(SlimBaseMethod3)method)(SlimList_GetStringAt(args, 0),
+        SlimList_GetStringAt(args, 1), SlimList_GetStringAt(args, 2));
+}
+
+char* SlimFixtureBase::Method4(SlimBaseMethod0 method, void* instance, SlimList* args)
+{
+    return (((SlimFixtureBase*)instance)->*(SlimBaseMethod4)method)(SlimList_GetStringAt(args, 0),
+        SlimList_GetStringAt(args, 1), SlimList_GetStringAt(args, 2), SlimList_GetStringAt(args, 3));
+}
+
+char* SlimFixtureBase::Method5(SlimBaseMethod0 method, void* instance, SlimList* args)
+{
+    return (((SlimFixtureBase*)instance)->*(SlimBaseMethod5)method)(SlimList_GetStringAt(args, 0),
+        SlimList_GetStringAt(args, 1), SlimList_GetStringAt(args, 2), SlimList_GetStringAt(args, 3),
+        SlimList_GetStringAt(args, 4));
+}
+
+char* SlimFixtureBase::Method6(SlimBaseMethod0 method, void* instance, SlimList* args)
+{
+    return (((SlimFixtureBase*)instance)->*(SlimBaseMethod6)method)(SlimList_GetStringAt(args, 0),
+        SlimList_GetStringAt(args, 1), SlimList_GetStringAt(args, 2), SlimList_GetStringAt(args, 3),
+        SlimList_GetStringAt(args, 4), SlimList_GetStringAt(args, 5));
+}
+
+char* SlimFixtureBase::Method7(SlimBaseMethod0 method, void* instance, SlimList* args)
+{
+    return (((SlimFixtureBase*)instance)->*(SlimBaseMethod7)method)(SlimList_GetStringAt(args, 0),
+        SlimList_GetStringAt(args, 1), SlimList_GetStringAt(args, 2), SlimList_GetStringAt(args, 3),
+        SlimList_GetStringAt(args, 4), SlimList_GetStringAt(args, 5), SlimList_GetStringAt(args, 6));
+}
+
+char* SlimFixtureBase::Method8(SlimBaseMethod0 method, void* instance, SlimList* args)
+{
+    return (((SlimFixtureBase*)instance)->*(SlimBaseMethod8)method)(SlimList_GetStringAt(args, 0),
+        SlimList_GetStringAt(args, 1), SlimList_GetStringAt(args, 2), SlimList_GetStringAt(args, 3),
+        SlimList_GetStringAt(args, 4), SlimList_GetStringAt(args, 5), SlimList_GetStringAt(args, 6),
+        SlimList_GetStringAt(args, 7));
+}
+
+char* SlimFixtureBase::Method9(SlimBaseMethod0 method, void* instance, SlimList* args)
+{
+    return (((SlimFixtureBase*)instance)->*(SlimBaseMethod9)method)(SlimList_GetStringAt(args, 0),
+        SlimList_GetStringAt(args, 1), SlimList_GetStringAt(args, 2), SlimList_GetStringAt(args, 3),
+        SlimList_GetStringAt(args, 4), SlimList_GetStringAt(args, 5), SlimList_GetStringAt(args, 6),
+        SlimList_GetStringAt(args, 7), SlimList_GetStringAt(args, 8));
+}
+
+char* SlimFixtureBase::Method10(SlimBaseMethod0 method, void* instance, SlimList* args)
+{
+    return (((SlimFixtureBase*)instance)->*(SlimBaseMethod10)method)(SlimList_GetStringAt(args, 0),
+        SlimList_GetStringAt(args, 1), SlimList_GetStringAt(args, 2), SlimList_GetStringAt(args, 3),
+        SlimList_GetStringAt(args, 4), SlimList_GetStringAt(args, 5), SlimList_GetStringAt(args, 6),
+        SlimList_GetStringAt(args, 7), SlimList_GetStringAt(args, 8), SlimList_GetStringAt(args, 9));
+}
+
+MethodInvoker findMethodInvoker(int argc)
+{
+    static MethodInvoker methodInvokers[] =
+    {
+        SlimFixtureBase::Method0,
+        SlimFixtureBase::Method1,
+        SlimFixtureBase::Method2,
+        SlimFixtureBase::Method3,
+        SlimFixtureBase::Method4,
+        SlimFixtureBase::Method5,
+        SlimFixtureBase::Method6,
+        SlimFixtureBase::Method7,
+        SlimFixtureBase::Method8,
+        SlimFixtureBase::Method9,
+        SlimFixtureBase::Method10,
+    };
+
+    if (argc < 0 || argc > sizeof(methodInvokers)/sizeof(methodInvokers[0]) - 1)
+    {
+        return NULL;
+    }
+    return methodInvokers[argc];
+}
+
+void StatementExecutor_RegisterMethod(StatementExecutor* executor, char const * className, char const * methodName, SlimBaseMethod0 method, int argc){
 	FixtureNode* fixtureNode = findFixture(executor, className);
 	if (fixtureNode == NULL) {
-		StatementExecutor_RegisterFixture(executor, className, Null_Create, Null_Destroy);
+		StatementExecutor_RegisterFixture(executor, className, 0);
 		fixtureNode = findFixture(executor, className);
 	}
 		
 	MethodNode* node = (MethodNode*)malloc(sizeof(MethodNode));
 	node->name = methodName;
-	node->method = method;
+	node->method = method;  // node->method is type SlimBaseMethod0
+    node->methodInvoker = findMethodInvoker(argc);
 	node->next = fixtureNode->methods;
 	fixtureNode->methods = node;
 	return;			
@@ -297,14 +553,3 @@ char* StatementExecutor_FixtureError(char const* message) {
 	snprintf(buffer, 128, formatString, message);	
 	return buffer;	
 }
-
-static void* Null_Create(StatementExecutor* executor, SlimList* args)
-{
-	return NULL;
-}
-
-static void Null_Destroy(void* self)
-{
-}
-
-

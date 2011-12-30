@@ -1,0 +1,15 @@
+!contents -R2 -g -p -f -h
+!define TEST_SYSTEM {slim}
+!define COMMAND_PATTERN {%m} 
+!define TEST_RUNNER {c:\FitNessePractice\SlimFixtures\SampleCppFixture.exe}
+!define SLIM_VERSION {0.0}
+
+|script             |login dialog driver|Bob         |xyzzy                    |
+|login with username|Bob                |and password|xyzzy                    |
+|check              |login message      |Bob logged in.                        |
+|reject             |login with username|Bob         |and password|bad password|
+|check              |login message      |Bob not logged in.                    |
+|ensure             |login with username|Bob         |and password|xyzzy       |
+|note               |this is a comment                                         |
+|show               |number of login attempts                                  |
+|$symbol=           |login message                                             |

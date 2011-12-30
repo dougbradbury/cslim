@@ -1,19 +1,17 @@
 #include "TcpComLink.h"
-#include <stdlib.h>
-#include <string.h>
-#include <sys/socket.h>
+#include <winsock2.h>
 
 //static local variables
 struct TcpComLink
 {
-    int socket;
+    SOCKET Socket;
 };
 
 TcpComLink* TcpComLink_Create(int socket)
 {
 	TcpComLink* self = (TcpComLink*)malloc(sizeof(TcpComLink));
 	memset(self, 0, sizeof(TcpComLink));
-	self->socket = socket;
+	self->Socket = socket;
 	return self;
 }
 
@@ -21,7 +19,6 @@ void TcpComLink_Destroy(TcpComLink* self)
 {
     free(self);
 }
-
 
 int TcpComLink_send(void * voidSelf, char * msg, int length)
 {
@@ -31,7 +28,7 @@ int TcpComLink_send(void * voidSelf, char * msg, int length)
     int n;
 
     while(total < length) {
-        n = send(self->socket, msg+total, bytesleft, 0);
+        n = send(self->Socket, msg+total, bytesleft, 0);
         if (n == -1) { break; }
         total += n;
         bytesleft -= n;
@@ -40,9 +37,15 @@ int TcpComLink_send(void * voidSelf, char * msg, int length)
     return total;
 } 
 
-
 int TcpComLink_recv(void * voidSelf, char * buffer, int length)
 {
 	TcpComLink * self = (TcpComLink *)voidSelf;
-	return recv(self->socket, buffer, length,  MSG_WAITALL);
+
+	//No MSG_WAITALL flag in winsock2 ????
+	int bytesReceived = 0;
+	while (bytesReceived < length)
+	{
+		bytesReceived += recv(self->Socket, buffer + bytesReceived, length - bytesReceived, 0);
+	}
+	return bytesReceived;
 }
