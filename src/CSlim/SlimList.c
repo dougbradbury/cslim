@@ -62,7 +62,7 @@ void SlimList_AddBuffer(SlimList* self, char const* buffer, int length)
 
 void SlimList_AddString(SlimList* self, char const* string)
 {
-	SlimList_AddBuffer(self, string, string ? strlen(string) : 0);
+	SlimList_AddBuffer(self, string, string ? (int)strlen(string) : 0);
 }
 
 void SlimList_AddList(SlimList* self, SlimList* element)
@@ -137,7 +137,7 @@ static char * parseHashCell(char ** cellStart)
 	char * cellValue = *cellStart + strlen("<td>");
 	char * cellStop = strstr(cellValue, "</td>");
 
-	int length = cellStop - cellValue;
+	int length = (int)(cellStop - cellValue);
 	char * buf = (char*)malloc(length + 1);
 	strncpy(buf, cellValue, length);
 	buf[length] = 0;

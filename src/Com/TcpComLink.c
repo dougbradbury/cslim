@@ -31,7 +31,7 @@ int TcpComLink_send(void * voidSelf, char * msg, int length)
     int n;
 
     while(total < length) {
-        n = send(self->socket, msg+total, bytesleft, 0);
+        n = (int)send(self->socket, msg+total, bytesleft, 0);
         if (n == -1) { break; }
         total += n;
         bytesleft -= n;
@@ -44,5 +44,5 @@ int TcpComLink_send(void * voidSelf, char * msg, int length)
 int TcpComLink_recv(void * voidSelf, char * buffer, int length)
 {
 	TcpComLink * self = (TcpComLink *)voidSelf;
-	return recv(self->socket, buffer, length,  MSG_WAITALL);
+	return (int)recv(self->socket, buffer, length,  MSG_WAITALL);
 }

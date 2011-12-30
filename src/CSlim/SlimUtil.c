@@ -15,7 +15,7 @@ char * CSlim_BuyString(char const* string)
 {
 	if (string == NULL)
 		return NULL;
-	return CSlim_BuyBuf(string, strlen(string));
+	return CSlim_BuyBuf(string, (int)strlen(string));
 }
 
 int CSlim_MapToIntFrom(MapStringInt* map, const char* name)

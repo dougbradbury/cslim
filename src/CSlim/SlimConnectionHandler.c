@@ -1,8 +1,11 @@
 #include "SlimConnectionHandler.h"
+#include "SlimListSerializer.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <string.h>
 #include <stdio.h>
+
 struct SlimConnectionHandler
 {
 	com_func_t sendFunc;
@@ -47,7 +50,7 @@ int read_size(SlimConnectionHandler* self)
 			size_i = atoi(size);
 		}
 	}
-	return size_i;
+	return (int)size_i;
 }
 
 
@@ -82,7 +85,7 @@ int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 			}
 			//execute and get response
 			char* response_message = self->slimHandlerFunc(self->slimHandler, message);
-			int response_length = strlen(response_message);
+			int response_length = (int)strlen(response_message);
 			char * length_buffer = (char *)malloc((size_t)8);
 			sprintf(length_buffer, "%06d:", response_length);
 			int send_result = self->sendFunc(self->comLink, length_buffer, 7);
