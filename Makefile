@@ -60,6 +60,7 @@ CSLIM_SRC_DIRS = \
 INCLUDES =\
   -Iinclude/Com\
   -Iinclude/CSlim\
+  -Iinclude/ExecutorC\
   -Itests/CSlim\
   -I$(CPPUTEST_HOME)/include/\
 
