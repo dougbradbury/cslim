@@ -12,13 +12,15 @@ struct StatementExecutor
 {
     NSMutableDictionary* instances;
     NSMutableDictionary* symbols;
+    NSAutoreleasePool* pool;
 };
 
 StatementExecutor* StatementExecutor_Create(void) {
 	StatementExecutor* self = (StatementExecutor*)malloc(sizeof(StatementExecutor));
 	memset(self, 0, sizeof(StatementExecutor));
-    self->instances = [NSMutableDictionary dictionary];
-    self->symbols = [NSMutableDictionary dictionary];
+    self->pool = [[NSAutoreleasePool alloc] init];
+    self->instances = [[NSMutableDictionary dictionary] retain];
+    self->symbols = [[NSMutableDictionary dictionary] retain];
 	return self;
 }
 
@@ -105,6 +107,7 @@ void StatementExecutor_SetSymbol(StatementExecutor* self, char const* symbol, ch
 void StatementExecutor_Destroy(StatementExecutor* self) {
     [self->instances release];
     [self->symbols release];
+    [self->pool drain];
     free(self);
 }
 
