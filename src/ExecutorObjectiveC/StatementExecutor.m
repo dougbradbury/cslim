@@ -83,6 +83,8 @@ char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceNa
     }
     if ([returnType isEqualToString: @"@"]) {
         return NSStringToCString(result);
+    } else if ([returnType isEqualToString: @"i"]) {
+        return NSStringToCString([NSString stringWithFormat: @"%d", result]);
     } else {
         return "OK";
     }

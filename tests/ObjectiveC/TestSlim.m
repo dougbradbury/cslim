@@ -26,6 +26,10 @@
 -(void) withVoidReturnType {
     //Do nothing
 }
+-(int) withIntPassThrough:(NSString*) givenString {
+    return [givenString intValue];
+}
+
 -(void) setString: (NSString*) string {
     self.calledWithStringArg = string;
 }

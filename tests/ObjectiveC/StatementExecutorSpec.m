@@ -285,6 +285,14 @@ CONTEXT(StatementExecutor)
                     
                     [expect(result) toBeEqualTo: @"OK"];
                 }),
+             it(@"converts an int to a string when calling",
+                ^{
+                    SlimList_AddString(args, "123");
+                    StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", args);
+                    NSString* result = [NSString stringWithUTF8String: StatementExecutor_Call(statementExecutor, "test_slim", "withIntPassThrough", args)];
+                    
+                    [expect(result) toBeEqualTo: @"123"];
+                }),
 //             it(@"mvkdn",
 //                ^{
 //                    SlimList* args = SlimList_Create();
