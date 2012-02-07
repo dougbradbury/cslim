@@ -29,20 +29,15 @@ void* StatementExecutor_Instance(StatementExecutor* executor, char const* instan
 }
 
 char* StatementExecutor_Make(StatementExecutor* executor, char const* instanceName, char const* className, SlimList* args){
-    Class class = NSClassFromString([NSString stringWithFormat: @"%s", className]);
-
-//    NSString* newClassName = [NSString stringWithFormat: @"%s", className];
-//    for(NSString* symbol in [[executor->symbols keyEnumerator] allObjects]) {
-//        newClassName = [newClassName stringByReplacingOccurrencesOfString: [NSString stringWithFormat: @"$%@", symbol]
-//                                                               withString: [executor->symbols objectForKey: symbol]];
-//    }
-//    Class class = NSClassFromString(newClassName);
-//    NSLog(@"instanceName: %s", instanceName);
-//    NSLog(@"className: %s", className);
+    NSString* newClassName = [NSString stringWithFormat: @"%s", className];
+    for(NSString* symbol in [[executor->symbols keyEnumerator] allObjects]) {
+        newClassName = [newClassName stringByReplacingOccurrencesOfString: [NSString stringWithFormat: @"$%@", symbol]
+                                                               withString: [executor->symbols objectForKey: symbol]];
+    }
+    Class class = NSClassFromString(newClassName);
     if(class == nil) {
         [executor->instances removeObjectForKey: [NSString stringWithFormat: @"%s", instanceName]];
-//        return NSStringToCString([NSString stringWithFormat: @"__EXCEPTION__:message:<<NO_CLASS %@.>>", newClassName]);
-        return NSStringToCString([NSString stringWithFormat: @"__EXCEPTION__:message:<<NO_CLASS %s.>>", className]);
+        return NSStringToCString([NSString stringWithFormat: @"__EXCEPTION__:message:<<NO_CLASS %@.>>", newClassName]);
     } else {
         int length = SlimList_GetLength(args);
         StatementExecutor_ReplaceSymbols(executor, args);
@@ -65,7 +60,7 @@ char* StatementExecutor_Make(StatementExecutor* executor, char const* instanceNa
     }
 }
 
-char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceName, char const* methodName, SlimList* args){
+char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceName, char const* methodName, SlimList* args) {
     id instance = StatementExecutor_Instance(executor, instanceName);
     int length = SlimList_GetLength(args);
     SEL selector = NSSelectorFromCStringAndLength(methodName, length);
@@ -76,15 +71,21 @@ char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceNa
         return noMethodErrorFor(methodName, length);
     }
     StatementExecutor_ReplaceSymbols(executor, args);
+    NSMethodSignature* signature = [instance methodSignatureForSelector: selector];
+    NSString* returnType = [NSString stringWithUTF8String: [signature methodReturnType]];
+    NSString* result;
     if(length == 0) {
-        return NSStringToCString([instance performSelector: selector]);
+        result = [instance performSelector: selector];
     } else if (length == 1) {
-        return NSStringToCString([instance performSelector: selector withObject: SlimList_GetNSStringAt(args, 0)]);
+        result = [instance performSelector: selector withObject: SlimList_GetNSStringAt(args, 0)];
     } else {
-        return NSStringToCString([instance performSelector: selector withObject: SlimList_ToNSArray(args)]);
+        result = [instance performSelector: selector withObject: SlimList_ToNSArray(args)];
     }
-    
-    return "OK";
+    if ([returnType isEqualToString: @"@"]) {
+        return NSStringToCString(result);
+    } else {
+        return "OK";
+    }
 }
 
 void StatementExecutor_ReplaceSymbols(StatementExecutor* executor, SlimList* args) {

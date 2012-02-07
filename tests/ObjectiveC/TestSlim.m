@@ -23,6 +23,9 @@
     return @"return value";
 }
 
+-(void) withVoidReturnType {
+    //Do nothing
+}
 -(void) setString: (NSString*) string {
     self.calledWithStringArg = string;
 }

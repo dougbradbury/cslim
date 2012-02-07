@@ -41,6 +41,14 @@ CONTEXT(StatementExecutor)
                     [expect(test_slim_instance.calledWithFirstStringArg) toBeEqualTo: @"first param"];
                     [expect(test_slim_instance.calledWithSecondStringArg) toBeEqualTo: @"second param"];
                 }),
+             it(@"makes an instance of a class with a symbol in a class name",
+                ^{
+                    StatementExecutor_SetSymbol(statementExecutor, "part", "Test");
+                    StatementExecutor_Make(statementExecutor, "test_slim", "$partSlim", args);
+                    TestSlim* test_slim_instance = (TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
+                    bool isTestSlimClass = [test_slim_instance isKindOfClass: [TestSlim class]];
+                    expectTruth(isTestSlimClass);
+                }),
 //             it(@"returns an error if the wrong number of arguments is passed for make (1 for 0)",
 //                ^{
 //                    SlimList* args = SlimList_Create();
@@ -269,6 +277,13 @@ CONTEXT(StatementExecutor)
                     
                     [expect(test_slim_instance.calledWithFirstStringArg) toBeEqualTo: @"hello bob dog"];
                     [expect(test_slim_instance.calledWithSecondStringArg) toBeEqualTo: @"hello dog"];
+                }),
+             it(@"returns OK when calling a method with return type of void",
+                ^{
+                    StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", args);
+                    NSString* result = [NSString stringWithUTF8String: StatementExecutor_Call(statementExecutor, "test_slim", "withVoidReturnType", args)];
+                    
+                    [expect(result) toBeEqualTo: @"OK"];
                 }),
 //             it(@"mvkdn",
 //                ^{
