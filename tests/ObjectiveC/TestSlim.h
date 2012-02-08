@@ -17,4 +17,6 @@
 -(NSString*) withMultipleArgs:(NSArray*) args;
 -(NSString*) createTestSlimWithString: (NSString*) givenString;
 
+-(NSNumber*) returnsNSNumber;
+
 @end

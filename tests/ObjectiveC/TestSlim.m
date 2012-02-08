@@ -59,6 +59,10 @@
     return @"foo";
 }
 
+-(NSNumber*) returnsNSNumber {
+    return [NSNumber numberWithInt: 123];
+}
+
 -(void) dealloc {
     [calledWithStringArg release];
     [calledWithFirstStringArg release];

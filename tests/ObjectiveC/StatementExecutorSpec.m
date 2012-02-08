@@ -285,13 +285,20 @@ CONTEXT(StatementExecutor)
                     
                     [expect(result) toBeEqualTo: @"OK"];
                 }),
-             it(@"converts an int to a string when calling",
+             it(@"converts an int to a string when returning",
                 ^{
                     SlimList_AddString(args, "123");
                     StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", args);
                     NSString* result = [NSString stringWithUTF8String: StatementExecutor_Call(statementExecutor, "test_slim", "withIntPassThrough", args)];
                     
                     [expect(result) toBeEqualTo: @"123"];
+                }),
+             it(@"converts an NSNumber to a string when returning",
+                ^{
+                    StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", args);
+                    NSString* result = [NSString stringWithUTF8String: StatementExecutor_Call(statementExecutor, "test_slim", "returnsNSNumber", args)];
+                    TestSlim* test_slim_instance = (TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
+                    [expect(result) toBeEqualTo: [[test_slim_instance returnsNSNumber] stringValue]];
                 }),
 //             it(@"mvkdn",
 //                ^{

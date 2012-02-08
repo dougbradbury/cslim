@@ -1,6 +1,5 @@
 #import "StatementExecutor.h"
 
-
 void StatementExecutor_ReplaceSymbols(StatementExecutor* executor, SlimList* args);
 SEL NSSelectorFromCStringAndLength(char const* methodName, int numberOrArguments);
 NSString* SlimList_GetNSStringAt(SlimList* self, int index);
@@ -73,7 +72,7 @@ char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceNa
     StatementExecutor_ReplaceSymbols(executor, args);
     NSMethodSignature* signature = [instance methodSignatureForSelector: selector];
     NSString* returnType = [NSString stringWithUTF8String: [signature methodReturnType]];
-    NSString* result;
+    id result;
     if(length == 0) {
         result = [instance performSelector: selector];
     } else if (length == 1) {
@@ -82,7 +81,11 @@ char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceNa
         result = [instance performSelector: selector withObject: SlimList_ToNSArray(args)];
     }
     if ([returnType isEqualToString: @"@"]) {
-        return NSStringToCString(result);
+        if([NSStringFromClass([result class]) isEqualToString: @"NSCFString"]) {
+            return NSStringToCString(result);
+        } else {
+            return NSStringToCString([result stringValue]);
+        }
     } else if ([returnType isEqualToString: @"i"]) {
         return NSStringToCString([NSString stringWithFormat: @"%d", result]);
     } else {
