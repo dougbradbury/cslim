@@ -2,7 +2,8 @@
 
 @implementation TestSlim
 
-@synthesize wasNoArgsCalled, calledWithStringArg, calledWithFirstStringArg, calledWithSecondStringArg;
+@synthesize wasNoArgsCalled, calledWithStringArg, calledWithNSNumberArg;
+@synthesize calledWithFirstStringArg, calledWithSecondStringArg;
 
 -(id) initWithString: (NSString*) givenString {
     if ((self = [super init])) {
@@ -43,6 +44,10 @@
 -(NSString*) withStringArg:(NSString*) someString {
     self.calledWithStringArg = someString;
     return @"return value for one string";
+}
+
+-(void) withNSNumberArg:(NSNumber*) someNSNumber {
+    self.calledWithNSNumberArg = someNSNumber;
 }
 
 -(NSString*) withMultipleArgs:(NSArray*) args {

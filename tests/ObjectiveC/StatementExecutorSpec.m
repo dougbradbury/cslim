@@ -128,6 +128,15 @@ CONTEXT(StatementExecutor)
                     TestSlim* test_slim_instance = (TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
                     [expect(test_slim_instance.calledWithStringArg) toBeEqualTo:@"put the toilet seat down"];
                 }),
+             it(@"calls a function with an nsnumber argument",
+                ^{
+                    SlimList_AddString(args, "123.45");
+                    StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", empty);
+                    StatementExecutor_Call(statementExecutor, "test_slim", "withNSNumberArg", args);
+                    
+                    TestSlim* test_slim_instance = (TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
+                    expectTruth(123.45 == [test_slim_instance.calledWithNSNumberArg doubleValue]);
+                }),
              it(@"returns an error if the function with one argument does not exist",
                 ^{
                     SlimList_AddString(args, "put the toilet seat down");
