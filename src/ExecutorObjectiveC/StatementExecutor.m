@@ -73,23 +73,27 @@ char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceNa
     NSMethodSignature* signature = [instance methodSignatureForSelector: selector];
     NSString* returnType = [NSString stringWithUTF8String: [signature methodReturnType]];
     id result;
-    if(length == 0) {
-        result = [instance performSelector: selector];
-    } else if (length == 1) {
-        result = [instance performSelector: selector withObject: SlimList_GetNSStringAt(args, 0)];
-    } else {
-        result = [instance performSelector: selector withObject: SlimList_ToNSArray(args)];
-    }
-    if ([returnType isEqualToString: @"@"]) {
-        if([NSStringFromClass([result class]) isEqualToString: @"NSCFString"]) {
-            return NSStringToCString(result);
+    @try {
+        if(length == 0) {
+            result = [instance performSelector: selector];
+        } else if (length == 1) {
+            result = [instance performSelector: selector withObject: SlimList_GetNSStringAt(args, 0)];
         } else {
-            return NSStringToCString([result stringValue]);
+            result = [instance performSelector: selector withObject: SlimList_ToNSArray(args)];
         }
-    } else if ([returnType isEqualToString: @"i"]) {
-        return NSStringToCString([NSString stringWithFormat: @"%d", result]);
-    } else {
-        return "OK";
+        if ([returnType isEqualToString: @"@"]) {
+            if([NSStringFromClass([result class]) isEqualToString: @"NSCFString"]) {
+                return NSStringToCString(result);
+            } else {
+                return NSStringToCString([result stringValue]);
+            }
+        } else if ([returnType isEqualToString: @"i"]) {
+            return NSStringToCString([NSString stringWithFormat: @"%d", result]);
+        } else {
+            return "OK";
+        }
+    } @catch (NSException* e) {
+        return NSStringToCString([NSString stringWithFormat: @"__EXCEPTION__:message:<<%@ %@>>", [e name], [e reason]]);
     }
 }
 
