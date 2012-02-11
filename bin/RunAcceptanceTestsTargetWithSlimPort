@@ -1,0 +1,3 @@
+#! /bin/sh
+
+SLIM_PORT=$1 xcodebuild -workspace AscensionHonorCounter.xcodeproj/project.xcworkspace/ -scheme AcceptanceTests -sdk iphonesimulator4.3 -configuration Debug clean build
