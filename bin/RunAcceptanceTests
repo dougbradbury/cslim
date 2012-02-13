@@ -1,5 +1,0 @@
-if [[ $SLIM_PORT ]]; then
-    ./cslim/bin/RunAcceptanceTestsOnSimulator $SLIM_PORT
-else
-    ./cslim/bin/RunAcceptanceTestsHeadless
-fi
