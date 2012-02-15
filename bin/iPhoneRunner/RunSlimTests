@@ -1,0 +1,5 @@
+if [[ $SLIM_PORT ]]; then
+    "./___TARGETNAME___/cslim/bin/iPhoneRunner/RunSlimTestsOnSimulator" $SLIM_PORT
+else
+    "./___TARGETNAME___/cslim/bin/iPhoneRunner/RunSlimTestsHeadless"
+fi
