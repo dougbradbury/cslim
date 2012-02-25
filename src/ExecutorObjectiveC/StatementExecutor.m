@@ -1,4 +1,5 @@
 #import "StatementExecutor.h"
+#import "OCSReturnValue.h"
 
 void StatementExecutor_ReplaceSymbols(StatementExecutor* executor, SlimList* args);
 SEL NSSelectorFromCStringAndLength(char const* methodName, int numberOrArguments);
@@ -71,7 +72,6 @@ char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceNa
     }
     StatementExecutor_ReplaceSymbols(executor, args);
     NSMethodSignature* signature = [instance methodSignatureForSelector: selector];
-    NSString* returnType = [NSString stringWithUTF8String: [signature methodReturnType]];
     id result;
     @try {
         if(length == 0) {
@@ -81,17 +81,7 @@ char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceNa
         } else {
             result = [instance performSelector: selector withObject: SlimList_ToNSArray(args)];
         }
-        if ([returnType isEqualToString: @"@"]) {
-            if([NSStringFromClass([result class]) isEqualToString: @"NSCFString"]) {
-                return NSStringToCString(result);
-            } else {
-                return NSStringToCString([result stringValue]);
-            }
-        } else if ([returnType isEqualToString: @"i"]) {
-            return NSStringToCString([NSString stringWithFormat: @"%d", result]);
-        } else {
-            return "OK";
-        }
+        return NSStringToCString([OCSReturnValue forObjectOrPrimitive: result andMethodSignature: signature]);
     } @catch (NSException* e) {
         return NSStringToCString([NSString stringWithFormat: @"__EXCEPTION__:message:<<%@ %@>>", [e name], [e reason]]);
     }
