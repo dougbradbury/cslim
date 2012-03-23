@@ -6,7 +6,7 @@ Author: Chih Von
 ************
 Fixtures in VCSlim are sets of objects that implement functions used in Fitnesse tests.   See SlimExecutable/Decision.h
 
-Each function returns a std::string which is different from original CSlim implementation. You can dispose of it once you are done with it, period.
+Each function returns an std::string object by value which you can dispose of once you are done with it, period.
 
 
 ****************
