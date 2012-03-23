@@ -7,15 +7,13 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
 
-using namespace std;
-
 SLIM_BEGIN_FIXTURE(Count) 
   SLIM_FUNCTION(count)
   SLIM_FUNCTION(counter)
 SLIM_END_FIXTURE
 
 
-FixtureIntf* Count::Create(Slim::StatementExecutor* executor, Slim::SlimList* args)
+Slim::FixtureIntf* Count::Create(Slim::StatementExecutor* executor, Slim::SlimList* args)
 {
   return new Count();
 }
@@ -36,13 +34,13 @@ void Count::Destroy()
   delete this;
 }
 
-string Count::count(Slim::SlimList* args) 
+std::string Count::count(Slim::SlimList* args) 
 {
   ++m_count;
-  return string();
+  return std::string();
 }
 
-string Count::counter(Slim::SlimList* args) 
+std::string Count::counter(Slim::SlimList* args) 
 {
   return (boost::format("%1%") % m_count).str();
 }

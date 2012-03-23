@@ -2,10 +2,10 @@
 
 #include "Fixture.h"
 
-class Multiplication : public FixtureBase<Multiplication>
+class Multiplication : public Slim::FixtureBase<Multiplication>
 {
 public:
-  typedef FixtureBase<Multiplication>  tSuper;
+  typedef Slim::FixtureBase<Multiplication>  tSuper;
 
   ~Multiplication();
 
@@ -14,7 +14,7 @@ public:
 private:
   friend tSuper;
 
-  static FixtureIntf* Create(Slim::StatementExecutor* executor, Slim::SlimList* args);
+  static Slim::FixtureIntf* Create(Slim::StatementExecutor* executor, Slim::SlimList* args);
 
   // Fixture methods
   std::string setMultiplicand1(Slim::SlimList* args);

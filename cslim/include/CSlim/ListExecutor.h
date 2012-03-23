@@ -11,16 +11,6 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#if 0
-#include "SlimList.h"
-#include "StatementExecutor.h"
-typedef struct ListExecutor ListExecutor;
-
-ListExecutor* ListExecutor_Create(Slim::StatementExecutor*);
-void ListExecutor_Destroy(ListExecutor*);
-SlimList* ListExecutor_Execute(ListExecutor*, SlimList*);
-#endif
-
 namespace Slim
 {
   class StatementExecutor;

@@ -21,8 +21,6 @@
 
 #include <string>
 
-class FixtureIntf;
-
 namespace Slim
 {
   namespace Detail
@@ -31,6 +29,7 @@ namespace Slim
     class Instances;
   }
 
+  class FixtureIntf;
   class SlimList;
   class SymbolTable;
 

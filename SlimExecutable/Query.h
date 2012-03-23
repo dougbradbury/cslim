@@ -2,10 +2,10 @@
 
 #include "Fixture.h"
 
-class EmployeePayRecordsRow : public FixtureBase<EmployeePayRecordsRow>
+class EmployeePayRecordsRow : public Slim::FixtureBase<EmployeePayRecordsRow>
 {
 public:
-  typedef FixtureBase<EmployeePayRecordsRow>  tSuper;
+  typedef Slim::FixtureBase<EmployeePayRecordsRow>  tSuper;
 
   ~EmployeePayRecordsRow();
 
@@ -14,7 +14,7 @@ public:
 private:
   friend tSuper;
 
-  static FixtureIntf* Create(Slim::StatementExecutor* executor, Slim::SlimList* args);
+  static Slim::FixtureIntf* Create(Slim::StatementExecutor* executor, Slim::SlimList* args);
 
   // Fixture methods
   std::string query(Slim::SlimList* args);

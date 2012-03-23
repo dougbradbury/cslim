@@ -2,10 +2,10 @@
 
 #include "Fixture.h"
 
-class Count : public FixtureBase<Count>
+class Count : public Slim::FixtureBase<Count>
 {
 public:
-  typedef FixtureBase<Count>  tSuper;
+  typedef Slim::FixtureBase<Count>  tSuper;
 
   Count();
   ~Count();
@@ -15,7 +15,7 @@ public:
 private:
   friend tSuper;
 
-  static FixtureIntf* Create(Slim::StatementExecutor* executor, Slim::SlimList* args);
+  static Slim::FixtureIntf* Create(Slim::StatementExecutor* executor, Slim::SlimList* args);
 
   // Fixture methods
   std::string count(Slim::SlimList* args);

@@ -2,10 +2,10 @@
 
 #include "Fixture.h"
 
-class Division : public FixtureBase<Division>
+class Division : public Slim::FixtureBase<Division>
 {
 public:
-  typedef FixtureBase<Division>  tSuper;
+  typedef Slim::FixtureBase<Division>  tSuper;
 
   ~Division();
 
@@ -14,7 +14,7 @@ public:
 private:
   friend tSuper;
 
-  static FixtureIntf* Create(Slim::StatementExecutor* executor, Slim::SlimList* args);
+  static Slim::FixtureIntf* Create(Slim::StatementExecutor* executor, Slim::SlimList* args);
 
   // Fixture methods
   std::string setNumerator(Slim::SlimList* args);

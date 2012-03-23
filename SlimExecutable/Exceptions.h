@@ -2,10 +2,10 @@
 
 #include "Fixture.h"
 
-class ExceptionsExample : public FixtureBase<ExceptionsExample>
+class ExceptionsExample : public Slim::FixtureBase<ExceptionsExample>
 {
 public:
-  typedef FixtureBase<ExceptionsExample>  tSuper;
+  typedef Slim::FixtureBase<ExceptionsExample>  tSuper;
 
   ~ExceptionsExample();
 
@@ -14,7 +14,7 @@ public:
 private:
   friend tSuper;
 
-  static FixtureIntf* Create(Slim::StatementExecutor* executor, Slim::SlimList* args);
+  static Slim::FixtureIntf* Create(Slim::StatementExecutor* executor, Slim::SlimList* args);
 
   // Fixture methods
   std::string setTrouble(Slim::SlimList* args);

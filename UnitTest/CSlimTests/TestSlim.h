@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../../SlimExecutable/Fixture.h"
+#include "Fixture.h"
 
-class TestSlim : public FixtureBase<TestSlim>
+class TestSlim : public Slim::FixtureBase<TestSlim>
 {
 public:
-  typedef FixtureBase<TestSlim>  tSuper;
+  typedef Slim::FixtureBase<TestSlim>  tSuper;
 
   TestSlim(Slim::StatementExecutor* executor, Slim::SlimList* args);
 
@@ -14,7 +14,7 @@ public:
 private:
   friend tSuper;
 
-  static FixtureIntf* Create(Slim::StatementExecutor* executor, Slim::SlimList* args);
+  static Slim::FixtureIntf* Create(Slim::StatementExecutor* executor, Slim::SlimList* args);
 
   // Fixture methods
   std::string returnValue(Slim::SlimList* args);

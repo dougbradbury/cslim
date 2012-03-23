@@ -4,14 +4,12 @@
 #include "SlimList.h"
 #include "StatementExecutor.h"
 
-using namespace std;
-
 SLIM_BEGIN_FIXTURE(EmployeePayRecordsRow) 
   SLIM_FUNCTION(query)
 SLIM_END_FIXTURE
 
 
-FixtureIntf* EmployeePayRecordsRow::Create(Slim::StatementExecutor* executor, Slim::SlimList* args)
+Slim::FixtureIntf* EmployeePayRecordsRow::Create(Slim::StatementExecutor* executor, Slim::SlimList* args)
 {
   return new EmployeePayRecordsRow();
 }
@@ -26,7 +24,7 @@ void EmployeePayRecordsRow::Destroy()
   delete this;
 }
 
-string EmployeePayRecordsRow::query(Slim::SlimList* args)
+std::string EmployeePayRecordsRow::query(Slim::SlimList* args)
 {
   Slim::SlimList* id = new Slim::SlimList();
   id->AddString("id");
@@ -43,7 +41,7 @@ string EmployeePayRecordsRow::query(Slim::SlimList* args)
   Slim::SlimList* records = new Slim::SlimList();
   records->AddList(record1);
 
-  string result = Slim::SlimList::Serialize(records);
+  std::string result = Slim::SlimList::Serialize(records);
 
   delete id;
   delete pay;

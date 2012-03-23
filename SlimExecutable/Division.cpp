@@ -7,8 +7,6 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/format.hpp>
 
-using namespace std;
-
 SLIM_BEGIN_FIXTURE(Division) 
   SLIM_FUNCTION(setNumerator)
   SLIM_FUNCTION(setDenominator)
@@ -19,7 +17,7 @@ SLIM_BEGIN_FIXTURE(Division)
 SLIM_END_FIXTURE
 
 
-FixtureIntf* Division::Create(Slim::StatementExecutor* executor, Slim::SlimList* args)
+Slim::FixtureIntf* Division::Create(Slim::StatementExecutor* executor, Slim::SlimList* args)
 {
   return new Division();
 }
@@ -34,38 +32,38 @@ void Division::Destroy()
   delete this;
 }
 
-string Division::setNumerator(Slim::SlimList* args)
+std::string Division::setNumerator(Slim::SlimList* args)
 {
   m_numerator = boost::lexical_cast<float>(args->GetStringAt(0));
-  return string();
+  return std::string();
 }
 
-string Division::setDenominator(Slim::SlimList* args) 
+std::string Division::setDenominator(Slim::SlimList* args) 
 {
   m_denominator = boost::lexical_cast<float>(args->GetStringAt(0));
-  return m_denominator == 0.0 ? SLIM_EXCEPTION("You shouldn't divide by zero now should ya?") : string();
+  return m_denominator == 0.0 ? SLIM_EXCEPTION("You shouldn't divide by zero now should ya?") : std::string();
 }
 
-string Division::Quotient(Slim::SlimList* args) 
+std::string Division::Quotient(Slim::SlimList* args) 
 {
   float quotient = m_numerator / m_denominator;
   return (boost::format("%1%") % quotient).str();
 }
 
 //These are optional.  If they aren't declared, they are ignored
-string Division::execute(Slim::SlimList* args) 
+std::string Division::execute(Slim::SlimList* args) 
 {
-  return string();
+  return std::string();
 }
 
-string Division::reset(Slim::SlimList* args) 
+std::string Division::reset(Slim::SlimList* args) 
 {
   m_denominator = 0.0f;
   m_numerator = 0.0f;
-  return string();
+  return std::string();
 }
 
-string Division::table(Slim::SlimList* args) 
+std::string Division::table(Slim::SlimList* args) 
 {
-  return string();
+  return std::string();
 }

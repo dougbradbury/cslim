@@ -17,19 +17,15 @@
 
 #include "StatementExecutor.h"
 
+#include "Fixture.h"
 #include "SymbolTable.h"
 #include "SlimList.h"
-
-#include "../../../SlimExecutable/Fixture.h"
 
 #include <boost/format.hpp>
 
 #include <assert.h>
 #include <iostream>
 #include <map>
-
-using namespace std;
-
 
 namespace Slim
 {
@@ -63,24 +59,24 @@ namespace Slim
     public:
       ~Instances();
 
-      void SetInstance(char const* instanceName, FixtureIntf* instance);
-      FixtureIntf* GetInstance(char const* instanceName) const;
+      void SetInstance(char const* instanceName, Slim::FixtureIntf* instance);
+      Slim::FixtureIntf* GetInstance(char const* instanceName) const;
       void RemoveInstance(char const* instanceName);
 
     private:
-      std::map<std::string, FixtureIntf*> m_instances;
+      std::map<std::string, Slim::FixtureIntf*> m_instances;
     };
 
     Instances::~Instances()
     {
       std::for_each(m_instances.begin(), m_instances.end(),
-        [](std::pair<std::string, FixtureIntf*> const& instance)
-      {
-        instance.second->Destroy();
-      });
+        [](std::pair<std::string, Slim::FixtureIntf*> const& instance)
+        {
+          instance.second->Destroy();
+        });
     }
 
-    inline void Instances::SetInstance(char const* instanceName, FixtureIntf* instance)
+    inline void Instances::SetInstance(char const* instanceName, Slim::FixtureIntf* instance)
     {
       assert(instance);
       if (m_instances[instanceName])
@@ -90,7 +86,7 @@ namespace Slim
       m_instances[instanceName] = instance;
     }
 
-    inline FixtureIntf* Instances::GetInstance(char const* instanceName) const
+    inline Slim::FixtureIntf* Instances::GetInstance(char const* instanceName) const
     {
       auto it = m_instances.find(instanceName);
       return it != m_instances.end() ? it->second : 0;
@@ -152,7 +148,7 @@ namespace Slim
       symbolTable->ReplaceSymbols(args);
       return instance->Execute(methodName, args);
     }
-    catch (exception const& e)
+    catch (std::exception const& e)
     {
       return (boost::format("__EXCEPTION__:message:<<NO_METHOD_IN_CLASS %1%.>>") % e.what()).str();
     }

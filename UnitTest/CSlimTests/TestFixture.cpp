@@ -2,7 +2,7 @@
 
 #include "TestSlim.h"
 #include "TestSlimAgain.h"
-#include "../../SlimExecutable/Fixtures.h"
+#include "Fixtures.h"
 
 #include <SlimList.h>
 #include <StatementExecutor.h>

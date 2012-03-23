@@ -38,12 +38,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Fixtures.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Fixture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Division.h">
       <Filter>Header Files</Filter>
     </ClInclude>

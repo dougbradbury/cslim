@@ -89,8 +89,6 @@
     <ClInclude Include="Count.h" />
     <ClInclude Include="Division.h" />
     <ClInclude Include="Exceptions.h" />
-    <ClInclude Include="Fixture.h" />
-    <ClInclude Include="Fixtures.h" />
     <ClInclude Include="Multiplication.h" />
     <ClInclude Include="Query.h" />
   </ItemGroup>

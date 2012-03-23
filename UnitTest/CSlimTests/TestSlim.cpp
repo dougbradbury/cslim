@@ -1,13 +1,10 @@
 #include "stdafx.h"
 
 #include "TestSlim.h"
-#include "../../SlimExecutable/Fixtures.h"
+#include "Fixtures.h"
 
 #include <SlimList.h>
 #include <StatementExecutor.h>
-
-using namespace std;
-using namespace Slim;
 
 SLIM_BEGIN_FIXTURE(TestSlim) 
   SLIM_FUNCTION(returnValue)
@@ -22,7 +19,7 @@ SLIM_BEGIN_FIXTURE(TestSlim)
 SLIM_END_FIXTURE
 
 
-FixtureIntf* TestSlim::Create(Slim::StatementExecutor* executor, Slim::SlimList* args)
+Slim::FixtureIntf* TestSlim::Create(Slim::StatementExecutor* executor, Slim::SlimList* args)
 {
   if (args->GetLength() > 1) 
   {
@@ -33,7 +30,7 @@ FixtureIntf* TestSlim::Create(Slim::StatementExecutor* executor, Slim::SlimList*
   return new TestSlim(executor, args);
 }
 
-TestSlim::TestSlim(Slim::StatementExecutor* executor, SlimList* args)
+TestSlim::TestSlim(Slim::StatementExecutor* executor, Slim::SlimList* args)
   : statementExecutor(executor)
   , constructionArg(args->GetStringAt(0))
 {
@@ -45,49 +42,49 @@ void TestSlim::Destroy()
 }
 
 
-std::string TestSlim::noArgs(SlimList* args) 
+std::string TestSlim::noArgs(Slim::SlimList* args) 
 {
   noArgsCalled = 1;
   return "/__VOID__/";
 }
 
-std::string TestSlim::returnValue(SlimList* args) 
+std::string TestSlim::returnValue(Slim::SlimList* args) 
 {
   return "value";
 }
 
-std::string TestSlim::echo(SlimList* args) 
+std::string TestSlim::echo(Slim::SlimList* args) 
 {
   return args->GetStringAt(0);
 }
 
-std::string TestSlim::add(SlimList* args) 
+std::string TestSlim::add(Slim::SlimList* args) 
 {
   return (boost::format("%1%%2%") % args->GetStringAt(0) % args->GetStringAt(1)).str();
 }
 
-std::string TestSlim::null(SlimList* args)
+std::string TestSlim::null(Slim::SlimList* args)
 {
-  return string();
+  return std::string();
 }
 
-std::string TestSlim::setArg(SlimList* args) 
+std::string TestSlim::setArg(Slim::SlimList* args) 
 {
   arg = args->GetStringAt(0);
   return "/__VOID__/";
 }
 
-std::string TestSlim::getArg(SlimList* args) 
+std::string TestSlim::getArg(Slim::SlimList* args) 
 {
   return arg;
 }
 
-std::string TestSlim::getConstructionArg(SlimList* args) 
+std::string TestSlim::getConstructionArg(Slim::SlimList* args) 
 {
   return constructionArg;
 }
 
-std::string TestSlim::returnError(SlimList* args) 
+std::string TestSlim::returnError(Slim::SlimList* args) 
 {
   return statementExecutor->FixtureError("my exception");
 }
