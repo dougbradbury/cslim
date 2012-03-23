@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\CSlim">
+      <UniqueIdentifier>{3d73d04f-363e-4862-8906-dad4e92c440b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ComWin32">
+      <UniqueIdentifier>{0bf25f46-4775-4b84-a9d9-76a04eb8da03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CSlim">
+      <UniqueIdentifier>{663ec955-e148-4d05-bb14-53deda43c8ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Com">
+      <UniqueIdentifier>{fd6f0a43-3fd4-4dc6-8ef1-c2f1fb7eb9f5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\CSlim\ListExecutor.cpp">
+      <Filter>Source Files\CSlim</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CSlim\SlimConnectionHandler.cpp">
+      <Filter>Source Files\CSlim</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CSlim\SlimList.cpp">
+      <Filter>Source Files\CSlim</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CSlim\SlimListDeserializer.cpp">
+      <Filter>Source Files\CSlim</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CSlim\SlimListSerializer.cpp">
+      <Filter>Source Files\CSlim</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CSlim\StatementExecutor.cpp">
+      <Filter>Source Files\CSlim</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CSlim\SymbolTable.cpp">
+      <Filter>Source Files\CSlim</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ComWin32\SocketServer.cpp">
+      <Filter>Source Files\ComWin32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ComWin32\TcpComLink.cpp">
+      <Filter>Source Files\ComWin32</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CSlim\RunFixtures.cpp">
+      <Filter>Source Files\CSlim</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Com\TcpComLink.h">
+      <Filter>Header Files\Com</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Com\SocketServer.h">
+      <Filter>Header Files\Com</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CSlim\ListExecutor.h">
+      <Filter>Header Files\CSlim</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CSlim\SlimConnectionHandler.h">
+      <Filter>Header Files\CSlim</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CSlim\SlimList.h">
+      <Filter>Header Files\CSlim</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CSlim\StatementExecutor.h">
+      <Filter>Header Files\CSlim</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CSlim\SymbolTable.h">
+      <Filter>Header Files\CSlim</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CSlim\SlimMain.h">
+      <Filter>Header Files\CSlim</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
