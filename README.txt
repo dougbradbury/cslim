@@ -27,7 +27,7 @@ private:
   // Fixture states
   . . .
 };
-See SlimExecutable/Division.cpp for example.
+See SlimExecutable/Division.h for example.
 
 
 Each fixture's registered function returns an std::string object by value which cleans up itself nicely when it goes out its scope.
@@ -61,7 +61,7 @@ Now look at the SlimExecutable/Fixturess.cpp file.  This is where you tell the m
 ********************
 The only thing left is the VS2010 solution file.  The solution provided will build the CSlim library and its unit tests.  It will also build an executable from everything in /SlimExecutable.  
 
-VCSlim depends on Boost library, you have to download Boost from ww.boost.org and install it.  Since the build will run unit tests automatically you will need boost::unit_test dll, not just headers.
+VCSlim depends on Boost library, you have to download Boost from www.boost.org and install it.  Since the build will run unit tests automatically you will need boost::unit_test dll, not just headers.
 
 After installed Boost you need to change the Boost include path in "Additional Include Directories" for all projects in the solution, you also need to change the Boost::unit_test dll path in "AAdditional Library Directories" for project CSlimTests.
 
