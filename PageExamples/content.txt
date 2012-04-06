@@ -1,0 +1,7 @@
+!contents -R2 -g -p -f -h
+ 
+!define TEST_SYSTEM {slim}
+!define TEST_RUNNER {c:\cslim_vs2010\release\slimexecutable.exe}
+!define COMMAND_PATTERN {%m}
+ 
+!define SLIM_VERSION {0.0}

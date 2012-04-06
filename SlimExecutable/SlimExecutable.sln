@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SlimExecutable", "SlimExecutable.vcxproj", "{C36263AA-26B2-45F5-9872-0C82717879F0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CSlim", "..\cslim\CSlim.vcxproj", "{5BE24E31-6003-4EAE-876A-96495093B3AC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{A166FC0E-0602-4FF5-BE83-71D6656C553F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CSlimTests", "..\UnitTest\CSlimTests\CSlimTests.vcxproj", "{0972A94C-B97C-45AE-AFB3-E356FDB52732}"
+EndProject
+Global
+	GlobalSection(SourceCodeControl) = preSolution
+		SccNumberOfProjects = 3
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = SlimExecutable.vcxproj
+		SccLocalPath1 = .
+		SccProjectUniqueName2 = ..\\cslim\\CSlim.vcxproj
+		SccLocalPath2 = ..\\cslim
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C36263AA-26B2-45F5-9872-0C82717879F0}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C36263AA-26B2-45F5-9872-0C82717879F0}.Debug|Win32.Build.0 = Debug|Win32
+		{C36263AA-26B2-45F5-9872-0C82717879F0}.Release|Win32.ActiveCfg = Release|Win32
+		{C36263AA-26B2-45F5-9872-0C82717879F0}.Release|Win32.Build.0 = Release|Win32
+		{5BE24E31-6003-4EAE-876A-96495093B3AC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5BE24E31-6003-4EAE-876A-96495093B3AC}.Debug|Win32.Build.0 = Debug|Win32
+		{5BE24E31-6003-4EAE-876A-96495093B3AC}.Release|Win32.ActiveCfg = Release|Win32
+		{5BE24E31-6003-4EAE-876A-96495093B3AC}.Release|Win32.Build.0 = Release|Win32
+		{0972A94C-B97C-45AE-AFB3-E356FDB52732}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0972A94C-B97C-45AE-AFB3-E356FDB52732}.Debug|Win32.Build.0 = Debug|Win32
+		{0972A94C-B97C-45AE-AFB3-E356FDB52732}.Release|Win32.ActiveCfg = Release|Win32
+		{0972A94C-B97C-45AE-AFB3-E356FDB52732}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0972A94C-B97C-45AE-AFB3-E356FDB52732} = {A166FC0E-0602-4FF5-BE83-71D6656C553F}
+	EndGlobalSection
+EndGlobal
