@@ -8,6 +8,8 @@
     if ([returnType isEqualToString: @"@"]) {
         if([NSStringFromClass([result class]) isEqualToString: @"NSCFString"]) {
             return result;
+        } else if([NSStringFromClass([result class]) isEqualToString: @"__NSCFConstantString"]) {
+            return result;
         } else {
             return [result stringValue];
         }
