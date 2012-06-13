@@ -18,6 +18,25 @@ CONTEXT(OCSReturnValueSpec)
                     
                     [expect(result) toBeEqualTo: @"Hello World"];
                 }),
+             it(@"returns the result for class __NSCFString",
+                ^{
+                    signature = forSelector(@selector(methodReturningNSString));
+                    
+                    NSString* stringWithFormat = [NSString stringWithFormat: @"%g", 1234.5];
+                    NSString* result = [OCSReturnValue forObjectOrPrimitive: stringWithFormat andMethodSignature:signature];
+                    
+                    [expect(result) toBeEqualTo: @"1234.5"];
+                }),
+             it(@"returns the result for class __NSCFConstantString",
+                ^{
+                    signature = forSelector(@selector(methodReturningNSString));
+                    
+                    id someString = @"Foobar";
+
+                    NSString* result = [OCSReturnValue forObjectOrPrimitive: someString andMethodSignature:signature];
+                    
+                    [expect(result) toBeEqualTo: @"Foobar"];
+                }),
              it(@"returns the value of an NSNumber",
                 ^{
                     signature = forSelector(@selector(methodReturningNSNumber));
