@@ -4,6 +4,8 @@
     BOOL wasNoArgsCalled;
     NSString* calledWithStringArg;
     NSNumber* calledWithNSNumberArg;
+    NSString* calledWithFirstStringArg;
+    NSString* calledWithSecondStringArg;
 }
 @property (assign) BOOL wasNoArgsCalled;
 @property (nonatomic, retain) NSString* calledWithStringArg;
