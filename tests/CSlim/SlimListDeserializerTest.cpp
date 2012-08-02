@@ -84,6 +84,18 @@ TEST(SlimListDeserializer, canDeserializeCanonicalListWithOneElement)
 	SlimList_Destroy(deserializedList);
 }
 
+//JPR Addition
+TEST(SlimListDeserializer, canDeserializeWithMultibyteCharacters)
+{
+  char const* canonicalList = "[000001:000008:Hi JRÜ€©:]";
+  SlimList* deserializedList = SlimList_Deserialize(canonicalList);
+  CHECK(deserializedList != NULL);
+  LONGS_EQUAL(1, SlimList_GetLength(deserializedList));
+  STRCMP_EQUAL("Hi JRÜ€©", SlimList_GetStringAt(deserializedList, 0));
+  SlimList_Destroy(deserializedList);
+}
+//JPR End Addition
+
 
 TEST(SlimListDeserializer, canDeSerializeListWithOneElement)
 {
@@ -134,11 +146,5 @@ TEST(SlimListDeserializer, getStringWhereThereIsAList)
 
 	SlimList_Destroy(embeddedList);
 }
-//JPR Addition
-TEST(SlimListSerializer, serializeMultibyteCharacters)
-{
-  SlimList_AddString(slimList, "Ü€©phewÜ€©");
-  serializedList = SlimList_Serialize(slimList);
-  STRCMP_EQUAL("[000001:000010:Ü€©phewÜ€©:]", serializedList);
-}
+
 // JPR End Addition
