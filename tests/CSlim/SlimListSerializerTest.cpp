@@ -113,3 +113,11 @@ TEST(SlimListSerializer, serializeNull)
 
 }
 
+//JPR Addition
+TEST(SlimListSerializer, serializeMultibyteCharacters)
+{
+  SlimList_AddString(slimList, "Ü€©phewÜ€©");
+  serializedList = SlimList_Serialize(slimList);
+  STRCMP_EQUAL("[000001:000010:Ü€©phewÜ€©:]", serializedList);
+}
+
