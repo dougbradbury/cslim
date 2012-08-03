@@ -113,7 +113,6 @@ TEST(SlimListSerializer, serializeNull)
 
 }
 
-//JPR Addition
 TEST(SlimListSerializer, serializeMultibyteCharacters)
 {
   SlimList_AddString(slimList, "Ü€©phewÜ€©");

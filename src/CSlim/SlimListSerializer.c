@@ -14,6 +14,17 @@ char* nodeStringAt(SlimList* self, int i)
         return nodeString;
 }
 
+long FieldLength(unsigned char * nodeString)
+{
+        unsigned char *p;
+        long fieldlength=0;
+        for (p=nodeString;*p;p++)
+          if (CSlim_IsCharacter(p) == 1)
+           fieldlength++;
+        return fieldlength;
+}
+
+
 int SlimList_SerializedLength(SlimList* self)
 {
         int length = LIST_OVERHEAD;
@@ -36,16 +47,8 @@ char* SlimList_Serialize(SlimList* self)
 
         for(i = 0; i < listLength; i++)
         {
-                char * nodeString = nodeStringAt(self, i);
-                // jpr strlen returns number of bytes but we want chars
-                // characters 
-                unsigned char *p;
-                long fieldlength=0;
-                for (p=nodeString;*p;p++)
-                  if ((*p < 0x80)||(*p > 0xbf))
-                   fieldlength++;
-
-                write_ptr += sprintf(write_ptr, "%06ld:%s:", fieldlength, nodeString);
+                unsigned char * nodeString = (unsigned char *) nodeStringAt(self, i);
+                write_ptr += sprintf(write_ptr, "%06ld:%s:", FieldLength(nodeString), nodeString);
         }
         strcpy(write_ptr, "]");
         return buf;

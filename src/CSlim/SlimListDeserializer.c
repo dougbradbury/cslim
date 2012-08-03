@@ -17,11 +17,27 @@ int readLength(char const** readPtr)
         return length;
 }
 
+int ByteLength( int characterLength, char const * current )
+{
+        unsigned char const * p;
+        int chars=0;
+        int bytes=0;
+        for( p = (unsigned char const*) current; chars <= characterLength; p++)
+        {
+          bytes++;
+          if( CSlim_IsCharacter(p) == 1 )
+            chars++;
+        }
+        if( chars > characterLength )
+          bytes--;
+        return bytes;
+}
+
 SlimList* SlimList_Deserialize(char const* serializedList)
 {
         int listLength;
         SlimList * list = 0;
-        char const* current = 0;
+        char const * current = 0;
 
         if(serializedList == 0 || strlen(serializedList) == 0)
                 return 0;
@@ -37,26 +53,11 @@ SlimList* SlimList_Deserialize(char const* serializedList)
 
         while (listLength--)
         {
-                int elementLength = readLength(&current);
+                int characterLength = readLength(&current);
                 SKIP(':')
-                // JPR calculate length handling multibyte chars 
-                char *p;
-                int chars=0;
-                int bytes=0;
-                for (p=current;chars<=elementLength;p++)
-                {
-                  bytes++;
-                  if ((*p < 0x80) || (*p > 0xBF))
-                    chars++;
-                }
-                // chars will extend one beyond elementLength so
-                // check and reduce bytes by one.
-                if (chars > elementLength)
-                  bytes--;
-                elementLength=bytes;
-
-                SlimList_AddBuffer(list, current, elementLength);
-                current += elementLength;
+                int byteLength = ByteLength(characterLength, current);
+                SlimList_AddBuffer(list, current, byteLength);
+                current += byteLength;
                 SKIP(':')
         }
 
