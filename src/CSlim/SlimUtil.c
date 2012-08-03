@@ -40,3 +40,9 @@ const char* CSlim_MapToStringFrom(MapStringInt* map, int n)
 	return p->string;
 }
 
+int CSlim_IsCharacter(unsigned char const* byte)
+{
+  if ((*byte < (unsigned char const)0x80) || (*byte > (unsigned char const)0xBF))
+    return 1;
+  return 0;
+}
