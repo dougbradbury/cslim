@@ -16,7 +16,7 @@
             return [result stringValue];
         }
     } else if ([returnType isEqualToString: @"i"]) {
-        return [NSString stringWithFormat: @"%d", result];
+        return [NSString stringWithFormat: @"%i", (int)result];
     } else if ([returnType isEqualToString: @"c"]) {
         if (result) {
             return @"true";
