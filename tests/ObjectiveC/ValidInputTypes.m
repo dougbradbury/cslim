@@ -18,8 +18,4 @@
     self.callWithZeroArgsCalled = YES;
 }
 
--(void) dealloc {
-    [self.calledWith release];
-    [super dealloc];
-}
 @end

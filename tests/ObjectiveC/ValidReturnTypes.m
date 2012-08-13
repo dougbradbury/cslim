@@ -20,7 +20,7 @@
 }
 
 -(RespondsToStringValue*) methodReturningObjectThatRespondsToStringValue {
-    return [[[RespondsToStringValue alloc] init] autorelease];
+    return [[RespondsToStringValue alloc] init];
 }
 
 -(BOOL) methodReturningBOOLYES {

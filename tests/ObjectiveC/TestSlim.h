@@ -7,11 +7,11 @@
     NSString* calledWithFirstStringArg;
     NSString* calledWithSecondStringArg;
 }
-@property (assign) BOOL wasNoArgsCalled;
-@property (nonatomic, retain) NSString* calledWithStringArg;
-@property (nonatomic, retain) NSNumber* calledWithNSNumberArg;
-@property (nonatomic, retain) NSString* calledWithFirstStringArg;
-@property (nonatomic, retain) NSString* calledWithSecondStringArg;
+@property (readwrite, assign) BOOL wasNoArgsCalled;
+@property (nonatomic, strong) NSString* calledWithStringArg;
+@property (nonatomic, strong) NSNumber* calledWithNSNumberArg;
+@property (nonatomic, strong) NSString* calledWithFirstStringArg;
+@property (nonatomic, strong) NSString* calledWithSecondStringArg;
 
 -(id) initWithString: (NSString*) givenString;
 -(id) initWithArray: (NSArray*) givenArray;

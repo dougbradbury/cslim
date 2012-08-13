@@ -68,13 +68,4 @@
     return [NSNumber numberWithInt: 123];
 }
 
--(void) dealloc {
-    [calledWithStringArg release];
-    [calledWithFirstStringArg release];
-    [calledWithSecondStringArg release];
-    [super dealloc];
-}
-
-
-
 @end
