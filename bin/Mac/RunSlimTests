@@ -1,0 +1,5 @@
+if [[ $SLIM_PORT ]]; then
+  "./DerivedData/___PROJECTNAME___/Build/Products/Debug/___TARGETNAME___.app/Contents/MacOS/___TARGETNAME___" $SLIM_PORT
+else
+  "./bin/Mac/RunSlimTestsHeadless"
+fi
