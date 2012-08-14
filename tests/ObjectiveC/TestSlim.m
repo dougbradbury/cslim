@@ -19,6 +19,10 @@
     return self;
 }
 
+-(void) raisesException {
+    [NSException raise: @"Some exception" format: @"with format"];
+}
+
 -(NSString*) noArgs {
     self.wasNoArgsCalled = YES;
     return @"return value";

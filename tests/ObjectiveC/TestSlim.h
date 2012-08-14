@@ -16,6 +16,8 @@
 -(id) initWithString: (NSString*) givenString;
 -(id) initWithArray: (NSArray*) givenArray;
 
+-(void) raisesException;
+
 -(NSString*) noArgs;
 -(NSString*) withStringArg:(NSString*) someString;
 -(void) withNSNumberArg:(NSNumber*) someNSNumber;
