@@ -14,6 +14,13 @@ static OCSStatementExecutor* sharedExecutor = NULL;
     return sharedExecutor;
 }
 
+-(id) init {
+    if ((self = [super init])) {
+        [self reset];
+    }
+    return self;
+}
+
 -(void) reset {
     self.instances = [NSMutableDictionary dictionary];
     self.symbolDictionary = [OCSSymbolDictionary new];
@@ -54,7 +61,7 @@ static OCSStatementExecutor* sharedExecutor = NULL;
             [self.instances setValue: instance forKey: instanceName];
         }
         @catch (NSException* exception) {
-            return [[OCSException exceptionWithMessage: @"COULD_NOT_INVOKE_CONSTRUCTOR %@ xxx.", newClassName] stringValue];
+            return [[OCSException exceptionWithMessage: @"COULD_NOT_INVOKE_CONSTRUCTOR %@[%i].", newClassName, (int)[args count]] stringValue];
         }
         return @"OK";
     }

@@ -81,5 +81,5 @@ SpecKitContext(OCSReturnValueSpec) {
             [ExpectObj(result) toBeEqualTo: @"OK"];
         });
     });
-
+    
 }
