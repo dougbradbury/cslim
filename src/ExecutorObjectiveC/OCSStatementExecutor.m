@@ -34,7 +34,7 @@ static OCSStatementExecutor* sharedExecutor = NULL;
     NSString* newClassName = [self.symbolDictionary replaceSymbolsInString: className];
     Class class = NSClassFromString(newClassName);
     if(class == nil) {
-        [[OCSStatementExecutor sharedExecutor] removeInstanceWithName: instanceName];
+        [self removeInstanceWithName: instanceName];
         return [[OCSException exceptionWithMessage: @"NO_CLASS %@.", newClassName] stringValue];
     } else {
         args = [self.symbolDictionary replaceSymbolsInArray: args];
@@ -51,7 +51,7 @@ static OCSStatementExecutor* sharedExecutor = NULL;
                     instance = [[class alloc] initWithArray: args];
                     break;
             }
-            [[[OCSStatementExecutor sharedExecutor] instances] setValue: instance forKey: instanceName];
+            [self.instances setValue: instance forKey: instanceName];
         }
         @catch (NSException* exception) {
             return [[OCSException exceptionWithMessage: @"COULD_NOT_INVOKE_CONSTRUCTOR %@ xxx.", newClassName] stringValue];
