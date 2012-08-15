@@ -36,12 +36,16 @@
 
 -(NSString*) attemptCall {
     id result;
-    if([self.args count] == 0) {
-        result = [self.instance performSelector: [self selector]];
-    } else if ([self.args count] == 1) {
-        result = [self.instance performSelector: [self selector] withObject: [self.args objectAtIndex: 0]];
-    } else {
-        result = [self.instance performSelector: [self selector] withObject: self.args];
+    switch ([self.args count]) {
+        case 0:
+            result = [self.instance performSelector: [self selector]];
+            break;
+        case 1:
+            result = [self.instance performSelector: [self selector] withObject: [self.args objectAtIndex: 0]];
+            break;
+        default:
+            result = [self.instance performSelector: [self selector] withObject: self.args];
+            break;
     }
     return [OCSReturnValue forObjectOrPrimitive: result andMethodSignature: [self signature]];
 }
