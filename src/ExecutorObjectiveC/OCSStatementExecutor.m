@@ -3,6 +3,7 @@
 #import "OCSException.h"
 #import "OCSSymbolDictionary.h"
 #import "OCSInstance.h"
+#import "OCSMethodCaller.h"
 
 static OCSStatementExecutor* sharedExecutor = NULL;
 
@@ -36,6 +37,10 @@ static OCSStatementExecutor* sharedExecutor = NULL;
     
 }
 
+-(void) setSymbol:(NSString*) symbol toValue:(NSString*) value {
+    [self.symbolDictionary setSymbol: symbol toValue: value];
+}
+
 -(NSString*) makeInstanceWithName:(NSString*) instanceName
                         className:(NSString*) className
                           andArgs:(NSArray*) args {
@@ -50,45 +55,11 @@ static OCSStatementExecutor* sharedExecutor = NULL;
 -(NSString*) callMethod:(NSString*) methodName
      onInstanceWithName:(NSString*) instanceName
                withArgs:(NSArray*) args {
-    id instance = [self instanceWithName: instanceName];
-    int length = (int)[args count];
-    SEL selector = [self selectorFromNSString: methodName andLength: length];
-    if(instance == NULL) {
-        return [[OCSException exceptionWithMessage: @"The instance %@. does not exist", instanceName] stringValue];
-    }
-    if(![instance respondsToSelector: selector]) {
-        return [[OCSException exceptionWithMessage: @"NO_METHOD_IN_CLASS %@[%i] TestSlim.",
-                 methodName,
-                 length] stringValue];
-    }
-    NSArray* updatedArgs = [self.symbolDictionary replaceSymbolsInArray: args];
-    NSMethodSignature* signature = [instance methodSignatureForSelector: selector];
-    id result;
-    @try {
-        if(length == 0) {
-            result = [instance performSelector: selector];
-        } else if (length == 1) {
-            result = [instance performSelector: selector withObject: [updatedArgs objectAtIndex: 0]];
-        } else {
-            result = [instance performSelector: selector withObject: updatedArgs];
-        }
-        return [OCSReturnValue forObjectOrPrimitive: result andMethodSignature: signature];
-    } @catch (NSException* e) {
-        return [[OCSException exceptionWithNSException: e] stringValue];
-    }
-    
-}
-
--(SEL) selectorFromNSString:(NSString*) methodName andLength:(int) numberOrArguments {
-    if (numberOrArguments == 0) {
-        return NSSelectorFromString(methodName);
-    } else {
-        return NSSelectorFromString([NSString stringWithFormat:@"%@:", methodName]);
-    }
-}
-
--(void) setSymbol:(NSString*) symbol toValue:(NSString*) value {
-    [self.symbolDictionary setSymbol: symbol toValue: value];
+    OCSMethodCaller* methodCaller = [OCSMethodCaller withInstance: [self instanceWithName: instanceName]
+                                                     instanceName: instanceName
+                                                       methodName: methodName
+                                                          andArgs: [self.symbolDictionary replaceSymbolsInArray: args]];
+    return [methodCaller call];
 }
 
 @end
