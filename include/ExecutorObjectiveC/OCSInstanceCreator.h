@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-@interface OCSInstance : NSObject
+@interface OCSInstanceCreator : NSObject
 
 @property(nonatomic, strong) NSString* instanceName;
 @property(nonatomic, strong) NSString* className;

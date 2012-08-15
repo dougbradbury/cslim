@@ -1,12 +1,12 @@
-#import "OCSInstance.h"
+#import "OCSInstanceCreator.h"
 #import "OCSException.h"
 
-@implementation OCSInstance
+@implementation OCSInstanceCreator
 
 +(id) instanceWithName:(NSString*) givenInstanceName
              ClassName:(NSString*) givenClassName
                andArgs:(NSArray*) givenArgs {
-    OCSInstance* instance = [self new];
+    OCSInstanceCreator* instance = [self new];
     instance.instanceName = givenInstanceName;
     instance.className = givenClassName;
     instance.args = givenArgs;
