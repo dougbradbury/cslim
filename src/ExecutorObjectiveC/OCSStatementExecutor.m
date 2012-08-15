@@ -2,6 +2,7 @@
 #import "OCSReturnValue.h"
 #import "OCSException.h"
 #import "OCSSymbolDictionary.h"
+#import "OCSInstance.h"
 
 static OCSStatementExecutor* sharedExecutor = NULL;
 
@@ -38,33 +39,12 @@ static OCSStatementExecutor* sharedExecutor = NULL;
 -(NSString*) makeInstanceWithName:(NSString*) instanceName
                         className:(NSString*) className
                           andArgs:(NSArray*) args {
-    NSString* newClassName = [self.symbolDictionary replaceSymbolsInString: className];
-    Class class = NSClassFromString(newClassName);
-    if(class == nil) {
-        [self removeInstanceWithName: instanceName];
-        return [[OCSException exceptionWithMessage: @"NO_CLASS %@.", newClassName] stringValue];
-    } else {
-        args = [self.symbolDictionary replaceSymbolsInArray: args];
-        @try {
-            id instance;
-            switch ([args count]) {
-                case 0:
-                    instance = [[class alloc] init];
-                    break;
-                case 1:
-                    instance = [[class alloc] initWithString: [args objectAtIndex: 0]];
-                    break;
-                default:
-                    instance = [[class alloc] initWithArray: args];
-                    break;
-            }
-            [self.instances setValue: instance forKey: instanceName];
-        }
-        @catch (NSException* exception) {
-            return [[OCSException exceptionWithMessage: @"COULD_NOT_INVOKE_CONSTRUCTOR %@[%i].", newClassName, (int)[args count]] stringValue];
-        }
-        return @"OK";
-    }
+    OCSInstance* ocsInstance = [OCSInstance instanceWithName: instanceName
+                                                   ClassName: [self.symbolDictionary replaceSymbolsInString: className]
+                                                     andArgs: [self.symbolDictionary replaceSymbolsInArray: args]];
+    id createdInstance = [ocsInstance create];
+    [self.instances setValue: createdInstance forKey: instanceName];
+    return [ocsInstance result];
 }
 
 -(NSString*) callMethod:(NSString*) methodName
