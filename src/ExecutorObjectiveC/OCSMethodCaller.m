@@ -35,18 +35,33 @@
 }
 
 -(NSString*) attemptCall {
+    [self setupInvocation];
+    [invocation invoke];
+    return [OCSReturnValue forInvocation: invocation];
+}
+
+-(void) setupInvocation {
     NSMethodSignature* methodSignature = [self.instance methodSignatureForSelector: [self selector]];
-    NSInvocation* invocation = [NSInvocation invocationWithMethodSignature: methodSignature];
+    invocation = [NSInvocation invocationWithMethodSignature: methodSignature];
+    [invocation setTarget: self.instance];
     [invocation setSelector: [self selector]];
-    if ([self.args count] == 1) {
-        id firstArg = [self.args objectAtIndex: 0];
-        [invocation setArgument: &firstArg atIndex: 2];
-    } else if ([self.args count] > 1) {
-        NSArray* argArray = self.args;
-        [invocation setArgument: &argArray atIndex: 2];
+    [self setArgsOnInvocation];
+}
+
+-(void) setArgsOnInvocation {
+    for (int i=0; i<[[self argsForInvocation] count]; i++) {
+        NSString* arg = [[self argsForInvocation] objectAtIndex: i];
+        [invocation setArgument: &arg atIndex: i + 2];
     }
-    [invocation invokeWithTarget: self.instance];
-    return [OCSReturnValue forInvocation: invocation andMethodSignature: methodSignature];
+}
+
+-(NSArray*) argsForInvocation {
+    if ([[self splitMethodName] count] > 1 || [self.args count] == 1) {
+        return self.args;
+    } else if ([[self splitMethodName] count] == 1 && [self.args count] > 1) {
+        return [NSArray arrayWithObjects: self.args, nil];
+    }
+    return [NSArray array];
 }
 
 -(BOOL) instanceIsNULL {
@@ -72,11 +87,21 @@
 }
 
 -(SEL) selector {
-    if ([self.args count] == 0) {
-        return NSSelectorFromString(self.methodName);
+    if ([[self splitMethodName] count] > 1) {
+        NSString* multiMethodName = [[self splitMethodName] componentsJoinedByString: @":"];
+        multiMethodName = [multiMethodName stringByAppendingString: @":"];
+        return NSSelectorFromString(multiMethodName);
     } else {
-        return NSSelectorFromString([NSString stringWithFormat:@"%@:", self.methodName]);
+        if ([self.args count] == 0) {
+            return NSSelectorFromString(self.methodName);
+        } else {
+            return NSSelectorFromString([NSString stringWithFormat:@"%@:", self.methodName]);
+        }
     }
+}
+
+-(NSArray*) splitMethodName {
+    return [self.methodName componentsSeparatedByString: @","];
 }
 
 @end

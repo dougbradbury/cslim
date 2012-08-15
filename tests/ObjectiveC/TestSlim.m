@@ -60,6 +60,17 @@
     return @"return value for multiple strings";
 }
 
+-(void) multiple:(NSString*) firstArg strings:(NSString*) secondArg {
+    self.calledWithFirstStringArg = firstArg;
+    self.calledWithSecondStringArg = secondArg;
+}
+
+-(void) three:(NSString*) firstArg strings:(NSString*) secondArg method:(NSString*) thirdArg {
+    self.calledWithFirstStringArg = firstArg;
+    self.calledWithSecondStringArg = secondArg;
+    self.calledWithThirdStringArg = thirdArg;
+}
+
 -(NSString*) createTestSlimWithString: (NSString*) givenString {
     return givenString;
 }

@@ -1,6 +1,8 @@
 #import <Foundation/Foundation.h>
 
-@interface OCSMethodCaller : NSObject
+@interface OCSMethodCaller : NSObject {
+    NSInvocation* invocation;
+}
 
 @property (nonatomic, strong) id instance;
 @property (nonatomic, strong) NSString* instanceName;

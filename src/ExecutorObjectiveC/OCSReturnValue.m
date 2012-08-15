@@ -3,13 +3,14 @@
 @implementation OCSReturnValue
 
 
-+(NSString*) forInvocation:(NSInvocation*) invocation andMethodSignature:(NSMethodSignature*) signature {
-    if ([[NSString stringWithFormat: @"%s", [signature methodReturnType]] isEqualToString: @"v"]) {
++(NSString*) forInvocation:(NSInvocation*) invocation {
+    if ([self signatureHasReturnTypeVoid: invocation.methodSignature]) {
         return @"OK";
     } else {
         id result;
         [invocation getReturnValue: &result];
-        return [OCSReturnValue forObjectOrPrimitive: result andMethodSignature: signature];
+        return [OCSReturnValue forObjectOrPrimitive: result
+                                 andMethodSignature: invocation.methodSignature];
     }
 }
 
@@ -36,6 +37,10 @@
     } else {
         return @"OK";
     }
+}
+
++(BOOL) signatureHasReturnTypeVoid:(NSMethodSignature*) methodSignature {
+    return [[NSString stringWithFormat: @"%s", [methodSignature methodReturnType]] isEqualToString: @"v"];
 }
 
 @end

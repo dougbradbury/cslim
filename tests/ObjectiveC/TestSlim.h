@@ -12,6 +12,7 @@
 @property (nonatomic, strong) NSNumber* calledWithNSNumberArg;
 @property (nonatomic, strong) NSString* calledWithFirstStringArg;
 @property (nonatomic, strong) NSString* calledWithSecondStringArg;
+@property (nonatomic, strong) NSString* calledWithThirdStringArg;
 
 -(id) initWithString: (NSString*) givenString;
 -(id) initWithArray: (NSArray*) givenArray;
@@ -23,6 +24,9 @@
 -(void) withNSNumberArg:(NSNumber*) someNSNumber;
 -(NSString*) withMultipleArgs:(NSArray*) args;
 -(NSString*) createTestSlimWithString: (NSString*) givenString;
+
+-(void) multiple:(NSString*) firstArg strings:(NSString*) secondArg;
+-(void) three:(NSString*) firstArg strings:(NSString*) secondArg method:(NSString*) thirdArg;
 
 -(NSNumber*) returnsNSNumber;
 

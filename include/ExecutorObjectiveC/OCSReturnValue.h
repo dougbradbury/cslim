@@ -3,7 +3,7 @@
 @interface OCSReturnValue : NSObject {
 }
 
-+(NSString*) forInvocation:(NSInvocation*) invocation andMethodSignature:(NSMethodSignature*) signature;
++(NSString*) forInvocation:(NSInvocation*) invocation;
 +(NSString*) forObjectOrPrimitive:(id) result andMethodSignature:(NSMethodSignature*) signature;
 
 @end
