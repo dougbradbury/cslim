@@ -35,19 +35,18 @@
 }
 
 -(NSString*) attemptCall {
-    id result;
-    switch ([self.args count]) {
-        case 0:
-            result = [self.instance performSelector: [self selector]];
-            break;
-        case 1:
-            result = [self.instance performSelector: [self selector] withObject: [self.args objectAtIndex: 0]];
-            break;
-        default:
-            result = [self.instance performSelector: [self selector] withObject: self.args];
-            break;
+    NSMethodSignature* methodSignature = [self.instance methodSignatureForSelector: [self selector]];
+    NSInvocation* invocation = [NSInvocation invocationWithMethodSignature: methodSignature];
+    [invocation setSelector: [self selector]];
+    if ([self.args count] == 1) {
+        id firstArg = [self.args objectAtIndex: 0];
+        [invocation setArgument: &firstArg atIndex: 2];
+    } else if ([self.args count] > 1) {
+        NSArray* argArray = self.args;
+        [invocation setArgument: &argArray atIndex: 2];
     }
-    return [OCSReturnValue forObjectOrPrimitive: result andMethodSignature: [self signature]];
+    [invocation invokeWithTarget: self.instance];
+    return [OCSReturnValue forInvocation: invocation andMethodSignature: methodSignature];
 }
 
 -(BOOL) instanceIsNULL {
