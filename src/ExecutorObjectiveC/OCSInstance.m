@@ -43,6 +43,7 @@
             self.instance = [[[self classToCreate] alloc] initWithArray: self.args];
             break;
     }
+    self.result = @"OK";
 }
 
 -(void) handleInvalidClassException {

@@ -61,6 +61,12 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [ExpectBool(isTestSlimClass) toBeTrue];
         });
         
+        It(@"returns OK if the instance is successfully created", ^{
+            NSString* result = [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
+            
+            [ExpectObj(result) toBeEqualTo: @"OK"];
+        });
+        
         It(@"returns an error if the wrong number of arguments is passed for make (1 for 0)", ^{
             [args addObject: @"starting param"];
             
@@ -229,7 +235,6 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [ExpectObj(result) toBeEqualTo: @"return value for multiple strings"];
         });
 
-        
         It(@"replaces a symbol with it's value", ^{
             [args addObject: @"hello $v"];
             [executor setSymbol: @"v" toValue: @"bob"];
