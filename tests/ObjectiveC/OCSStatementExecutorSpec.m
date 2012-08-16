@@ -28,7 +28,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
         
         It(@"makes an instance of a class with no arguments", ^{
             [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
-            id test_slim_instance = [executor instanceWithName: @"test_slim"];
+            id test_slim_instance = [executor getInstanceWithName: @"test_slim"];
             
             bool isTestSlimClass = [test_slim_instance isKindOfClass: [TestSlim class]];
             [ExpectBool(isTestSlimClass) toBeTrue];
@@ -37,7 +37,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
         It(@"makes an instance of a class with 1 argument", ^{
             [args addObject: @"starting param"];
             [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
-            TestSlim* test_slim_instance = (TestSlim*)[executor instanceWithName: @"test_slim"];
+            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
             
             [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo: @"starting param"];
         });
@@ -46,7 +46,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [args addObject: @"first param"];
             [args addObject: @"second param"];
             [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
-            TestSlim* test_slim_instance = (TestSlim*)[executor instanceWithName: @"test_slim"];
+            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
             
             [ExpectObj(test_slim_instance.calledWithFirstStringArg) toBeEqualTo: @"first param"];
             [ExpectObj(test_slim_instance.calledWithSecondStringArg) toBeEqualTo: @"second param"];
@@ -55,7 +55,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
         It(@"makes an instance of a class with a symbol in a class name", ^{
             [executor setSymbol: @"part" toValue: @"Test"];
             [executor makeInstanceWithName: @"test_slim" className: @"$partSlim" andArgs: args];
-            TestSlim* test_slim_instance = (TestSlim*)[executor instanceWithName: @"test_slim"];
+            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
             
             bool isTestSlimClass = [test_slim_instance isKindOfClass: [TestSlim class]];
             [ExpectBool(isTestSlimClass) toBeTrue];
@@ -78,8 +78,8 @@ SpecKitContext(OCSStatementExecutorSpec) {
         It(@"makes a different instance of the same class", ^{
             [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
             [executor makeInstanceWithName: @"test_slim_2" className: @"TestSlim" andArgs: args];
-            TestSlim* test_slim_instance = (TestSlim*)[executor instanceWithName: @"test_slim"];
-            TestSlim* test_slim_instance_2 = (TestSlim*)[executor instanceWithName: @"test_slim_2"];
+            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
+            TestSlim* test_slim_instance_2 = (TestSlim*)[executor getInstanceWithName: @"test_slim_2"];
             
             [executor callMethod: @"noArgs" onInstanceWithName: @"test_slim" withArgs: args];
             
@@ -92,7 +92,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
             [executor makeInstanceWithName: @"test_slim" className: @"NoSuchClass" andArgs: args];
             
-            id test_slim_instance = [executor instanceWithName: @"test_slim"];
+            id test_slim_instance = [executor getInstanceWithName: @"test_slim"];
             
             [ExpectObj(test_slim_instance) toBeNil];
         });
@@ -108,7 +108,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [executor setSymbol: @"person" toValue: @"bob"];
             [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
 
-            TestSlim* test_slim_instance = (TestSlim*)[executor instanceWithName: @"test_slim"];
+            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
             [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo: @"hello bob"];
         });
         
@@ -141,7 +141,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
             [executor callMethod: @"noArgs" onInstanceWithName: @"test_slim" withArgs: args];
             
-            TestSlim* test_slim_instance = (TestSlim*)[executor instanceWithName: @"test_slim"];
+            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
             [ExpectBool(test_slim_instance.wasNoArgsCalled) toBeTrue];
         });
         
@@ -149,7 +149,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
             NSString* result = [executor callMethod: @"noArgs" onInstanceWithName: @"test_slim" withArgs: args];
             
-            TestSlim* test_slim_instance = (TestSlim*)[executor instanceWithName: @"test_slim"];
+            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
             [ExpectObj(result) toBeEqualTo: [test_slim_instance noArgs]];
         });
         
@@ -157,7 +157,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
             NSString* result = [executor callMethod: @"noSuchMethod" onInstanceWithName: @"test_slim" withArgs: args];
             
-            [ExpectObj(result) toBeEqualTo: @"__EXCEPTION__:message:<<NO_METHOD_IN_CLASS noSuchMethod[0] TestSlim.>>"];
+            [ExpectObj(result) toBeEqualTo: @"__EXCEPTION__:message:<<NO_METHOD_IN_CLASS noSuchMethod TestSlim.>>"];
         });
         
         It(@"returns an error if calling a method with one agument, but it takes none", ^{
@@ -166,7 +166,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [executor callMethod: @"withStringArg" onInstanceWithName: @"test_slim" withArgs: args];
             
             NSString* result = [executor callMethod: @"noSuchMethod" onInstanceWithName: @"test_slim" withArgs: args];
-            [ExpectObj(result) toBeEqualTo: @"__EXCEPTION__:message:<<NO_METHOD_IN_CLASS noSuchMethod[1] TestSlim.>>"];
+            [ExpectObj(result) toBeEqualTo: @"__EXCEPTION__:message:<<NO_METHOD_IN_CLASS noSuchMethod: TestSlim.>>"];
         });
         
         It(@"calls a function with a string argument", ^{
@@ -174,7 +174,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
             [executor callMethod: @"withStringArg" onInstanceWithName: @"test_slim" withArgs: args];
             
-            TestSlim* test_slim_instance = (TestSlim*)[executor instanceWithName: @"test_slim"];
+            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
             [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo: @"first arg"];
         });
         
@@ -183,7 +183,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
             [executor callMethod: @"withNSNumberArg" onInstanceWithName: @"test_slim" withArgs: args];
             
-            TestSlim* test_slim_instance = (TestSlim*)[executor instanceWithName: @"test_slim"];
+            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
             [ExpectBool(123.45 == [test_slim_instance.calledWithNSNumberArg doubleValue]) toBeTrue];
         });
 
@@ -193,14 +193,14 @@ SpecKitContext(OCSStatementExecutorSpec) {
 
             NSString* result = [executor callMethod: @"noOtherSuchMethod" onInstanceWithName: @"test_slim" withArgs: args];
             
-            [ExpectObj(result) toBeEqualTo: @"__EXCEPTION__:message:<<NO_METHOD_IN_CLASS noOtherSuchMethod[1] TestSlim.>>"];
+            [ExpectObj(result) toBeEqualTo: @"__EXCEPTION__:message:<<NO_METHOD_IN_CLASS noOtherSuchMethod: TestSlim.>>"];
         });
 
         It(@"calls a method with null if no arguments are given, but it takes one", ^{
             [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
             [executor callMethod: @"withStringArg" onInstanceWithName: @"test_slim" withArgs: args];
 
-            TestSlim* test_slim_instance = (TestSlim*)[executor instanceWithName: @"test_slim"];
+            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
             [ExpectBool(test_slim_instance.calledWithStringArg == NULL) toBeTrue];
         });
 
@@ -210,7 +210,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
             [executor callMethod: @"withMultipleArgs" onInstanceWithName: @"test_slim" withArgs: args];
 
-            TestSlim* test_slim_instance = (TestSlim*)[executor instanceWithName: @"test_slim"];
+            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
             [ExpectObj(test_slim_instance.calledWithFirstStringArg) toBeEqualTo: @"first arg"];
             [ExpectObj(test_slim_instance.calledWithSecondStringArg) toBeEqualTo: @"second arg"];
         });
@@ -241,7 +241,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: [NSArray array]];
             [executor callMethod: @"withStringArg" onInstanceWithName: @"test_slim" withArgs: args];
             
-            TestSlim* test_slim_instance = (TestSlim*)[executor instanceWithName: @"test_slim"];
+            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
             [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo: @"hello bob"];
         });
         
@@ -251,7 +251,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: [NSArray array]];
             [executor callMethod: @"withStringArg" onInstanceWithName: @"test_slim" withArgs: args];
             
-            TestSlim* test_slim_instance = (TestSlim*)[executor instanceWithName: @"test_slim"];
+            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
             [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo:@"hello eric person"];
         });
 
@@ -261,7 +261,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: [NSArray array]];
             [executor callMethod: @"withStringArg" onInstanceWithName: @"test_slim" withArgs: args];
             
-            TestSlim* test_slim_instance = (TestSlim*)[executor instanceWithName: @"test_slim"];
+            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
             [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo:@"jim=why"];
         });
         
@@ -272,7 +272,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: [NSArray array]];
             [executor callMethod: @"withStringArg" onInstanceWithName: @"test_slim" withArgs: args];
             
-            TestSlim* test_slim_instance = (TestSlim*)[executor instanceWithName: @"test_slim"];
+            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
             [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo:@"hi bob. Cost:  $12.32 from doug."];
         });
         
@@ -282,7 +282,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: [NSArray array]];
             [executor callMethod: @"withStringArg" onInstanceWithName: @"test_slim" withArgs: args];
             
-            TestSlim* test_slim_instance = (TestSlim*)[executor instanceWithName: @"test_slim"];
+            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
             [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo:@"$"];
         });
         
@@ -292,7 +292,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: [NSArray array]];
             [executor callMethod: @"withStringArg" onInstanceWithName: @"test_slim" withArgs: args];
             
-            TestSlim* test_slim_instance = (TestSlim*)[executor instanceWithName: @"test_slim"];
+            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
             [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo:@"hi bob$"];
         });
         

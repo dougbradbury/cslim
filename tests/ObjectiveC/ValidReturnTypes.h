@@ -1,7 +1,5 @@
 #import <Foundation/Foundation.h>
 
-@interface ValidReturnTypes : NSObject {
-    
-}
+@interface ValidReturnTypes : NSObject
 
 @end

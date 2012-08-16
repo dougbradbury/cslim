@@ -8,7 +8,7 @@ StatementExecutor* StatementExecutor_Create(void) {
 }
 
 void* StatementExecutor_Instance(StatementExecutor* executor, char const* instanceName) {
-    return (__bridge void *)([[OCSStatementExecutor sharedExecutor] instanceWithName: CStringToNSString(instanceName)]);
+    return (__bridge void *)([[OCSStatementExecutor sharedExecutor] getInstanceWithName: CStringToNSString(instanceName)]);
 }
 
 char* StatementExecutor_Make(StatementExecutor* executor, char const* instanceName, char const* className, SlimList* args){

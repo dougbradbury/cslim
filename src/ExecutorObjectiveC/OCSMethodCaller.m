@@ -1,25 +1,25 @@
 #import "OCSMethodCaller.h"
 #import "OCSException.h"
-#import "OCSReturnValue.h"
+#import "OCSInvocation.h"
 
 @implementation OCSMethodCaller
 
 +(id) withInstance:(id) instance
       instanceName:(NSString*) instanceName
         methodName:(NSString*) methodName
-           andArgs:(NSArray*) updatedArgs {
+           andArgs:(NSArray*) args {
     OCSMethodCaller* methodCaller = [self new];
     methodCaller.instance = instance;
     methodCaller.instanceName = instanceName;
     methodCaller.methodName = methodName;
-    methodCaller.args = updatedArgs;
+    methodCaller.args = args;
     return methodCaller;
 }
 
 -(NSString*) call {
-    if([self instanceIsNULL]) {
+    if([self isInstanceNULL]) {
         return [[self instanceMissingException] stringValue];
-    } else if([self methodMissingOnInstance]) {
+    } else if([self isMethodMissingOnInstance]) {
         return [[self methodMissingException] stringValue];
     } else {
         return [self attemptCallWithTryCatch];
@@ -35,40 +35,17 @@
 }
 
 -(NSString*) attemptCall {
-    [self setupInvocation];
-    [invocation invoke];
-    return [OCSReturnValue forInvocation: invocation];
+    OCSInvocation* ocsInvocation = [OCSInvocation invocationWithInstance: self.instance
+                                                              methodName: self.methodName
+                                                            andArguments: self.args];
+    return [ocsInvocation invoke];
 }
 
--(void) setupInvocation {
-    NSMethodSignature* methodSignature = [self.instance methodSignatureForSelector: [self selector]];
-    invocation = [NSInvocation invocationWithMethodSignature: methodSignature];
-    [invocation setTarget: self.instance];
-    [invocation setSelector: [self selector]];
-    [self setArgsOnInvocation];
-}
-
--(void) setArgsOnInvocation {
-    for (int i=0; i<[[self argsForInvocation] count]; i++) {
-        NSString* arg = [[self argsForInvocation] objectAtIndex: i];
-        [invocation setArgument: &arg atIndex: i + 2];
-    }
-}
-
--(NSArray*) argsForInvocation {
-    if ([[self splitMethodName] count] > 1 || [self.args count] == 1) {
-        return self.args;
-    } else if ([[self splitMethodName] count] == 1 && [self.args count] > 1) {
-        return [NSArray arrayWithObjects: self.args, nil];
-    }
-    return [NSArray array];
-}
-
--(BOOL) instanceIsNULL {
+-(BOOL) isInstanceNULL {
     return self.instance == NULL;
 }
 
--(BOOL) methodMissingOnInstance {
+-(BOOL) isMethodMissingOnInstance {
     return ![self.instance respondsToSelector: [self selector]];
 }
 
@@ -77,31 +54,13 @@
 }
 
 -(OCSException*) methodMissingException {
-    return [OCSException exceptionWithMessage: @"NO_METHOD_IN_CLASS %@[%i] TestSlim.",
-            self.methodName,
-            (int)[self.args count]];
-}
-
--(NSMethodSignature*) signature {
-    return [self.instance methodSignatureForSelector: [self selector]];
+    return [OCSException exceptionWithMessage: @"NO_METHOD_IN_CLASS %@ %@.",
+            NSStringFromSelector([self selector]),
+            NSStringFromClass([self.instance class])];
 }
 
 -(SEL) selector {
-    if ([[self splitMethodName] count] > 1) {
-        NSString* multiMethodName = [[self splitMethodName] componentsJoinedByString: @":"];
-        multiMethodName = [multiMethodName stringByAppendingString: @":"];
-        return NSSelectorFromString(multiMethodName);
-    } else {
-        if ([self.args count] == 0) {
-            return NSSelectorFromString(self.methodName);
-        } else {
-            return NSSelectorFromString([NSString stringWithFormat:@"%@:", self.methodName]);
-        }
-    }
-}
-
--(NSArray*) splitMethodName {
-    return [self.methodName componentsSeparatedByString: @","];
+    return [OCSInvocation selectorForString: self.methodName andArgs: self.args];
 }
 
 @end

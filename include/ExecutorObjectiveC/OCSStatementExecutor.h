@@ -9,7 +9,7 @@
 +(id) sharedExecutor;
 -(void) reset;
 
--(id) instanceWithName:(NSString*) instanceName;
+-(id) getInstanceWithName:(NSString*) instanceName;
 -(void) removeInstanceWithName:(NSString*) instanceName;
 
 -(NSString*) makeInstanceWithName:(NSString*) instanceName

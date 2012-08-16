@@ -60,6 +60,16 @@ SpecKitContext(OCSMethodCallerSpec) {
             [ExpectObj([caller call]) toBeEqualTo: @"OK"];
         });
 
+        It(@"returns an error for a multi part method that does not exist", ^{
+            NSArray* args = [NSArray arrayWithObjects: @"first", @"second", @"third", nil];
+            caller = [OCSMethodCaller withInstance: fixture
+                                      instanceName: NULL
+                                        methodName: @"missing,this,method"
+                                           andArgs: args];
+
+            [ExpectObj([caller call]) toBeEqualTo: @"__EXCEPTION__:message:<<NO_METHOD_IN_CLASS missing:this:method: TestSlim.>>"];
+        });
+
     });
     
 }

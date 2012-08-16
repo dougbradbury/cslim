@@ -1,7 +1,4 @@
 #import "OCSStatementExecutor.h"
-#import "OCSReturnValue.h"
-#import "OCSException.h"
-#import "OCSSymbolDictionary.h"
 #import "OCSInstanceCreator.h"
 #import "OCSMethodCaller.h"
 
@@ -28,7 +25,7 @@ static OCSStatementExecutor* sharedExecutor = NULL;
     self.symbolDictionary = [OCSSymbolDictionary new];
 }
 
--(id) instanceWithName:(NSString*) instanceName {
+-(id) getInstanceWithName:(NSString*) instanceName {
     return [self.instances valueForKey: instanceName];
 }
 
@@ -56,7 +53,7 @@ static OCSStatementExecutor* sharedExecutor = NULL;
 -(NSString*) callMethod:(NSString*) methodName
      onInstanceWithName:(NSString*) instanceName
                withArgs:(NSArray*) args {
-    OCSMethodCaller* methodCaller = [OCSMethodCaller withInstance: [self instanceWithName: instanceName]
+    OCSMethodCaller* methodCaller = [OCSMethodCaller withInstance: [self getInstanceWithName: instanceName]
                                                      instanceName: instanceName
                                                        methodName: methodName
                                                           andArgs: [self.symbolDictionary replaceSymbolsInArray: args]];
