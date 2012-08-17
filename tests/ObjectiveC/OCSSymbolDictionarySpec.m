@@ -61,6 +61,20 @@ SpecKitContext(OCSSymbolDictionarySpec) {
             [ExpectObj(replacedString) toBeEqualTo:@"hi bob$"];
         });
         
+        It(@"keeps strange characters in a symbol", ^{
+            [symbolDictionary setSymbol: @"v" toValue: @"Köln"];
+            
+            NSString* replacedString = [symbolDictionary replaceSymbolsInString: @"$v"];
+            [ExpectObj(replacedString) toBeEqualTo: @"Köln"];
+        });
+
+        It(@"keeps strange characters in the given string", ^{
+            [symbolDictionary setSymbol: @"v" toValue: @"hi"];
+            
+            NSString* replacedString = [symbolDictionary replaceSymbolsInString: @"$v Köln"];
+            [ExpectObj(replacedString) toBeEqualTo: @"hi Köln"];
+        });
+
     });
     
     Describe(@"replaceSymbolsInArray", ^{
