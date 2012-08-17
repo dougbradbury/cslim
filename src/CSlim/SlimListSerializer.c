@@ -1,5 +1,6 @@
 #include "SlimList.h"
 #include "SlimListSerializer.h"
+#include "SlimUtil.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>

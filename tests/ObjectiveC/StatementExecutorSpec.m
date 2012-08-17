@@ -40,7 +40,7 @@ SpecKitContext(StatementExecutor)
             StatementExecutor* statementExecutor = StatementExecutor_Create();
             StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", empty);
             
-            NSString* result = [NSString stringWithFormat: @"%s", StatementExecutor_Call(statementExecutor, "test_slim", "withStringArg", args)];
+            NSString* result = [NSString stringWithUTF8String: StatementExecutor_Call(statementExecutor, "test_slim", "withStringArg", args)];
             [ExpectObj(result) toBeEqualTo: @"return value for one string"];
         });
 
@@ -90,14 +90,14 @@ SpecKitContext(StatementExecutor)
             [ExpectObj(result) toBeEqualTo: [[test_slim_instance returnsNSNumber] stringValue]];
         });
 
-        It(@"handles strange characters", ^{
-//            SlimList* args = SlimList_Create();
-//            SlimList_AddString(args, "Köln");
-//            StatementExecutor* statementExecutor = StatementExecutor_Create();
-//            StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", args);
-//            TestSlim* test_slim_instance = (TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
-//            
-//            [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo: @"Köln"];
+        It(@"handles multibyte characters", ^{
+            SlimList* args = SlimList_Create();
+            SlimList_AddString(args, "Köln");
+            StatementExecutor* statementExecutor = StatementExecutor_Create();
+            StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", args);
+            TestSlim* test_slim_instance = (TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
+            
+            [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo: @"Köln"];
         });
     });
 }

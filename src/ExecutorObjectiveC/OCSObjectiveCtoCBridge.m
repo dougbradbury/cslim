@@ -6,7 +6,7 @@ char* NSStringToCString(NSString* string) {
 }
 
 NSString* CStringToNSString(char const* cString) {
-    return [NSString stringWithFormat: @"%s", cString];
+    return [NSString stringWithUTF8String: cString];
 }
 
 NSArray* SlimList_ToNSArray(SlimList* self) {
@@ -19,5 +19,5 @@ NSArray* SlimList_ToNSArray(SlimList* self) {
 }
 
 NSString* SlimList_GetNSStringAt(SlimList* self, int index) {
-    return [NSString stringWithFormat:@"%s", SlimList_GetStringAt(self, index)];
+    return CStringToNSString(SlimList_GetStringAt(self, index));
 }

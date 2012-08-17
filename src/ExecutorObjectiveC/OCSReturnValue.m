@@ -40,7 +40,7 @@
 }
 
 +(BOOL) signatureHasReturnTypeVoid:(NSMethodSignature*) methodSignature {
-    return [[NSString stringWithFormat: @"%s", [methodSignature methodReturnType]] isEqualToString: @"v"];
+    return [[NSString stringWithUTF8String: [methodSignature methodReturnType]] isEqualToString: @"v"];
 }
 
 @end

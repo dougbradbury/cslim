@@ -8,11 +8,15 @@ SpecKitContext(OCSObjectiveCtoCBridgeSpec) {
         
         It(@"converts an NSString to a char*", ^{
             char* string = NSStringToCString(@"some string");
-            [ExpectObj([NSString stringWithFormat: @"%s", string]) toBeEqualTo: @"some string"];
+            [ExpectObj([NSString stringWithUTF8String: string]) toBeEqualTo: @"some string"];
         });
         
         It(@"converts a char* to an NSString*", ^{
             [ExpectObj(CStringToNSString("some string")) toBeEqualTo: @"some string"];
+        });
+        
+        It(@"converts multibyte characters", ^{
+            [ExpectObj(CStringToNSString("Köln")) toBeEqualTo: @"Köln"];
         });
         
     });
@@ -54,6 +58,12 @@ SpecKitContext(OCSObjectiveCtoCBridgeSpec) {
             SlimList_AddString(list, "second");
             [ExpectObj(SlimList_GetNSStringAt(list, 1)) toBeEqualTo: @"second"];
         });
+
+        It(@"gets a string with a multibyte character", ^{
+            SlimList_AddString(list, "Köln");
+            [ExpectObj(SlimList_GetNSStringAt(list, 0)) toBeEqualTo: @"Köln"];
+        });
+        
 
     });
 }
