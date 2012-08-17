@@ -25,7 +25,7 @@
 -(NSString*) withMultipleArgs:(NSArray*) args;
 -(NSString*) createTestSlimWithString: (NSString*) givenString;
 
--(void) multiple:(NSString*) firstArg strings:(NSString*) secondArg;
+-(NSString*) multiple:(NSString*) firstArg strings:(NSString*) secondArg;
 -(void) three:(NSString*) firstArg strings:(NSString*) secondArg method:(NSString*) thirdArg;
 
 -(NSNumber*) returnsNSNumber;

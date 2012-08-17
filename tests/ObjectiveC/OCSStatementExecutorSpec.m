@@ -123,118 +123,24 @@ SpecKitContext(OCSStatementExecutorSpec) {
             executor = [OCSStatementExecutor new];
             args = [NSMutableArray array];
         });
-        
-        It(@"returns an error if the instance does not exists", ^{
-            NSString* result = [executor callMethod: @"anyMethod" onInstanceWithName: @"missing_instance" withArgs: args];
-            
-            [ExpectObj(result) toBeEqualTo: @"__EXCEPTION__:message:<<The instance missing_instance. does not exist>>"];
-        });
-        
-        It(@"returns an error if the called method raises an error", ^{
-            [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
-            NSString* result = [executor callMethod: @"raisesException" onInstanceWithName: @"test_slim" withArgs: args];
-            
-            [ExpectObj(result) toBeEqualTo: @"__EXCEPTION__:message:<<Some exception with format>>"];
-        });
-        
-        It(@"calls a function with no args", ^{
-            [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
-            [executor callMethod: @"noArgs" onInstanceWithName: @"test_slim" withArgs: args];
-            
-            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
-            [ExpectBool(test_slim_instance.wasNoArgsCalled) toBeTrue];
-        });
-        
-        It(@"returns what the method that takes no arguments returns", ^{
-            [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
-            NSString* result = [executor callMethod: @"noArgs" onInstanceWithName: @"test_slim" withArgs: args];
-            
-            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
-            [ExpectObj(result) toBeEqualTo: [test_slim_instance noArgs]];
-        });
-        
-        It(@"returns an error if the function with no arguments does not exist", ^{
-            [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
-            NSString* result = [executor callMethod: @"noSuchMethod" onInstanceWithName: @"test_slim" withArgs: args];
-            
-            [ExpectObj(result) toBeEqualTo: @"__EXCEPTION__:message:<<NO_METHOD_IN_CLASS noSuchMethod TestSlim.>>"];
-        });
-        
-        It(@"returns an error if calling a method with one agument, but it takes none", ^{
-            [args addObject: @"first"];
-            [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
-            [executor callMethod: @"withStringArg" onInstanceWithName: @"test_slim" withArgs: args];
-            
-            NSString* result = [executor callMethod: @"noSuchMethod" onInstanceWithName: @"test_slim" withArgs: args];
-            [ExpectObj(result) toBeEqualTo: @"__EXCEPTION__:message:<<NO_METHOD_IN_CLASS noSuchMethod: TestSlim.>>"];
-        });
-        
+               
         It(@"calls a function with a string argument", ^{
             [args addObject: @"first arg"];
-            [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
+            [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: [NSArray array]];
             [executor callMethod: @"withStringArg" onInstanceWithName: @"test_slim" withArgs: args];
-            
+
             TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
             [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo: @"first arg"];
         });
-        
-        It(@"calls a function with an nsnumber argument", ^{
-            [args addObject: @"123.45"];
-            [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
-            [executor callMethod: @"withNSNumberArg" onInstanceWithName: @"test_slim" withArgs: args];
-            
-            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
-            [ExpectBool(123.45 == [test_slim_instance.calledWithNSNumberArg doubleValue]) toBeTrue];
-        });
 
-        It(@"returns an error if the function with one argument does not exist", ^{
-            [args addObject: @"first arg"];
-            [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
-
-            NSString* result = [executor callMethod: @"noOtherSuchMethod" onInstanceWithName: @"test_slim" withArgs: args];
-            
-            [ExpectObj(result) toBeEqualTo: @"__EXCEPTION__:message:<<NO_METHOD_IN_CLASS noOtherSuchMethod: TestSlim.>>"];
-        });
-
-        It(@"calls a method with null if no arguments are given, but it takes one", ^{
-            [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
-            [executor callMethod: @"withStringArg" onInstanceWithName: @"test_slim" withArgs: args];
-
-            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
-            [ExpectBool(test_slim_instance.calledWithStringArg == NULL) toBeTrue];
-        });
-
-        It(@"calls a function with two string arguments", ^{
-            [args addObject: @"first arg"];
-            [args addObject: @"second arg"];
-            [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
-            [executor callMethod: @"withMultipleArgs" onInstanceWithName: @"test_slim" withArgs: args];
-
-            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
-            [ExpectObj(test_slim_instance.calledWithFirstStringArg) toBeEqualTo: @"first arg"];
-            [ExpectObj(test_slim_instance.calledWithSecondStringArg) toBeEqualTo: @"second arg"];
-        });
-        
         It(@"returns the return value of the called method with one argument", ^{
-            [args addObject: @"some arg"];
-            [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: args];
-            [executor callMethod: @"withStringArg" onInstanceWithName: @"test_slim" withArgs: args];
-
+            [args addObject: @"first arg"];
+            [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: [NSArray array]];
             NSString* result = [executor callMethod: @"withStringArg" onInstanceWithName: @"test_slim" withArgs: args];
             
             [ExpectObj(result) toBeEqualTo: @"return value for one string"];
         });
-       
-        It(@"returns the return value of the called method with multiple arguments", ^{
-            [args addObject: @"first arg"];
-            [args addObject: @"second arg"];            
-            [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: [NSArray array]];
-            
-            NSString* result = [executor callMethod: @"withMultipleArgs" onInstanceWithName: @"test_slim" withArgs: args];
-            
-            [ExpectObj(result) toBeEqualTo: @"return value for multiple strings"];
-        });
-
+        
         It(@"replaces a symbol with it's value", ^{
             [args addObject: @"hello $v"];
             [executor setSymbol: @"v" toValue: @"bob"];

@@ -69,8 +69,6 @@ SpecKitContext(StatementExecutor)
         });
         
         It(@"returns OK when calling a method with return type of void", ^{
-            NSLog(@"HERE1");
-            
             StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", args);
             NSString* result = [NSString stringWithUTF8String: StatementExecutor_Call(statementExecutor, "test_slim", "withVoidReturnType", args)];
             

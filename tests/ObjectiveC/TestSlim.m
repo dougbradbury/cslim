@@ -60,9 +60,10 @@
     return @"return value for multiple strings";
 }
 
--(void) multiple:(NSString*) firstArg strings:(NSString*) secondArg {
+-(NSString*) multiple:(NSString*) firstArg strings:(NSString*) secondArg {
     self.calledWithFirstStringArg = firstArg;
     self.calledWithSecondStringArg = secondArg;
+    return @"something";
 }
 
 -(void) three:(NSString*) firstArg strings:(NSString*) secondArg method:(NSString*) thirdArg {
