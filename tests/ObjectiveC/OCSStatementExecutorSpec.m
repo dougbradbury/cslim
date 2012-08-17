@@ -141,36 +141,6 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [ExpectObj(result) toBeEqualTo: @"return value for one string"];
         });
         
-        It(@"replaces a symbol with it's value", ^{
-            [args addObject: @"hello $v"];
-            [executor setSymbol: @"v" toValue: @"bob"];
-            [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: [NSArray array]];
-            [executor callMethod: @"withStringArg" onInstanceWithName: @"test_slim" withArgs: args];
-            
-            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
-            [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo: @"hello bob"];
-        });
-        
-        It(@"replaces a symbol in the middle", ^{
-            [args addObject: @"hello $v person"];
-            [executor setSymbol: @"v" toValue: @"eric"];
-            [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: [NSArray array]];
-            [executor callMethod: @"withStringArg" onInstanceWithName: @"test_slim" withArgs: args];
-            
-            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
-            [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo:@"hello eric person"];
-        });
-
-        It(@"replaces a symbol with other non-alphanumeric", ^{
-            [args addObject: @"$v=why"];
-            [executor setSymbol: @"v" toValue: @"jim"];
-            [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: [NSArray array]];
-            [executor callMethod: @"withStringArg" onInstanceWithName: @"test_slim" withArgs: args];
-            
-            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
-            [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo:@"jim=why"];
-        });
-        
         It(@"replaces multiple different symbols", ^{
             [args addObject: @"hi $v. Cost:  $12.32 from $e."];
             [executor setSymbol: @"v" toValue: @"bob"];
@@ -181,27 +151,7 @@ SpecKitContext(OCSStatementExecutorSpec) {
             TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
             [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo:@"hi bob. Cost:  $12.32 from doug."];
         });
-        
-        It(@"does not replace a single dollar sign", ^{
-            [args addObject: @"$"];
-            [executor setSymbol: @"v" toValue: @"bob"];
-            [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: [NSArray array]];
-            [executor callMethod: @"withStringArg" onInstanceWithName: @"test_slim" withArgs: args];
-            
-            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
-            [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo:@"$"];
-        });
-        
-        It(@"does not replace a dollar sign at the end of the string", ^{
-            [args addObject: @"hi $v$"];
-            [executor setSymbol: @"v" toValue: @"bob"];
-            [executor makeInstanceWithName: @"test_slim" className: @"TestSlim" andArgs: [NSArray array]];
-            [executor callMethod: @"withStringArg" onInstanceWithName: @"test_slim" withArgs: args];
-            
-            TestSlim* test_slim_instance = (TestSlim*)[executor getInstanceWithName: @"test_slim"];
-            [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo:@"hi bob$"];
-        });
-        
+
     });
     
 }
