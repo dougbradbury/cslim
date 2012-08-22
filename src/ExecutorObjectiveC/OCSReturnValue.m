@@ -2,7 +2,6 @@
 
 @implementation OCSReturnValue
 
-
 +(NSString*) forInvocation:(NSInvocation*) invocation {
     if ([self signatureHasReturnTypeVoid: invocation.methodSignature]) {
         return @"OK";
@@ -14,7 +13,7 @@
     }
 }
 
-+(NSString*)forObjectOrPrimitive:(id) result andMethodSignature:(NSMethodSignature*) signature {
++(NSString*) forObjectOrPrimitive:(id) result andMethodSignature:(NSMethodSignature*) signature {
     NSString* returnType = [NSString stringWithUTF8String: [signature methodReturnType]];
     if ([returnType isEqualToString: @"@"]) {
         if([NSStringFromClass([result class]) isEqualToString: @"NSCFString"]) {

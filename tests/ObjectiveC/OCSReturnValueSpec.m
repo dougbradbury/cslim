@@ -6,80 +6,74 @@ NSMethodSignature* forSelector(SEL selector) {
     return [[[ValidReturnTypes alloc] init] methodSignatureForSelector: selector];
 }
 
+NSInvocation* invocationForMethodNamed(NSString* methodName) {
+    ValidReturnTypes* fixture = [ValidReturnTypes new];
+    NSInvocation* invocation = [NSInvocation invocationWithMethodSignature: forSelector(NSSelectorFromString(methodName))];
+    [invocation setTarget: fixture];
+    [invocation setSelector: NSSelectorFromString(methodName)];
+    [invocation invoke];
+    return invocation;
+}
+
+NSString* classNameFor(NSString* methodName) {
+    return NSStringFromClass([[[ValidReturnTypes new] performSelector: NSSelectorFromString(methodName)] class]);
+}
 SpecKitContext(OCSReturnValueSpec) {
     
-    __block NSMethodSignature* signature;
-    
-    Describe(@"forObjectOrPrimitive", ^{
+    Describe(@"forInvocation", ^{
         
-        It(@"returns the string", ^{
-            signature = forSelector(@selector(methodReturningNSString));
-            NSString* result = [OCSReturnValue forObjectOrPrimitive: @"Hello World"
-                                                 andMethodSignature: signature];
+        __block NSString* result;
+        
+        It(@"returns the result for methodReturningNSString", ^{
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningNSString")];
             
+            [ExpectObj(classNameFor(@"methodReturningNSString")) toBeEqualTo: @"__NSCFConstantString"];
             [ExpectObj(result) toBeEqualTo: @"Hello World"];
         });
         
         It(@"returns the result for class __NSCFString", ^{
-            signature = forSelector(@selector(methodReturningNSString));
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturning__NSCFString")];
             
-            NSString* stringWithFormat = [NSString stringWithFormat: @"%g", 1234.5];
-            NSString* result = [OCSReturnValue forObjectOrPrimitive: stringWithFormat
-                                                 andMethodSignature:signature];
-            
+            [ExpectObj(classNameFor(@"methodReturning__NSCFString")) toBeEqualTo: @"__NSCFString"];
             [ExpectObj(result) toBeEqualTo: @"1234.5"];
         });
         
         It(@"returns the result for class __NSCFConstantString", ^{
-            signature = forSelector(@selector(methodReturningNSString));
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturning__NSCFConstantString")];
             
-            id someString = @"Foobar";
-            
-            NSString* result = [OCSReturnValue forObjectOrPrimitive: someString
-                                                 andMethodSignature:signature];
-            
+            [ExpectObj(classNameFor(@"methodReturning__NSCFConstantString")) toBeEqualTo: @"__NSCFConstantString"];
             [ExpectObj(result) toBeEqualTo: @"Foobar"];
         });
         
         It(@"returns the value of an NSNumber", ^{
-            signature = forSelector(@selector(methodReturningNSNumber));
-            NSString* result = [OCSReturnValue forObjectOrPrimitive: [NSNumber numberWithInt: 123]
-                                                 andMethodSignature: signature];
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed( @"methodReturningNSNumber")];
             
             [ExpectObj(result) toBeEqualTo: @"123"];
         });
         
         It(@"returns the value of an int", ^{
-            signature = forSelector(@selector(methodReturningInt));
-            NSString* result = [OCSReturnValue forObjectOrPrimitive: (id)456
-                                                 andMethodSignature: signature];
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningInt")];
             
             [ExpectObj(result) toBeEqualTo: @"456"];
         });
         
         It(@"returns the value of YES BOOL", ^{
-            signature = forSelector(@selector(methodReturningBOOLYES));
-            NSString* result = [OCSReturnValue forObjectOrPrimitive: (id)YES
-                                                 andMethodSignature: signature];
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningBOOLYES")];
             
             [ExpectObj(result) toBeEqualTo: @"true"];
         });
         
         It(@"returns the value of NO BOOL", ^{
-            signature = forSelector(@selector(methodReturningBOOLNO));
-            NSString* result = [OCSReturnValue forObjectOrPrimitive: (id)NO
-                                                 andMethodSignature: signature];
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningBOOLNO")];
             
             [ExpectObj(result) toBeEqualTo: @"false"];
         });
         
         It(@"returns OK for void", ^{
-            signature = forSelector(@selector(methodReturningVoid));
-            NSString* result = [OCSReturnValue forObjectOrPrimitive: nil
-                                                 andMethodSignature: signature];
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningVoid")];
             
             [ExpectObj(result) toBeEqualTo: @"OK"];
         });
+        
     });
-    
 }

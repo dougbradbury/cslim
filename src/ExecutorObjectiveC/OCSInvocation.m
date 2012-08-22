@@ -1,5 +1,15 @@
 #import "OCSInvocation.h"
 #import "OCSReturnValue.h"
+#import "OCSSelector.h"
+
+@interface OCSInvocation ()
+
+@property (nonatomic, strong) NSInvocation* invocation;
+@property (nonatomic, strong) NSArray* args;
+@property (nonatomic, strong) NSString* methodName;
+@property (nonatomic, strong) id instance;
+
+@end
 
 @implementation OCSInvocation
 
@@ -14,20 +24,21 @@
 -(id) initWithInstance: (id) givenInstance
             methodName: (NSString*) givenMethodName
           andArguments: (NSArray*) givenArgs  {
-    self.args = givenArgs;
-    self.methodName = givenMethodName;
-    self.instance = givenInstance;
-    [self buildInvocation];
+    if ((self = [super init])) {
+        self.args = givenArgs;
+        self.methodName = givenMethodName;
+        self.instance = givenInstance;
+        [self buildInvocation];
+    }
     return self;
 }
 
--(NSString*)invoke {
+-(NSString*) invoke {
     [self.invocation invoke];
     return [OCSReturnValue forInvocation: self.invocation];
-    
 }
 
-- (void)buildInvocation {
+-(void) buildInvocation {
     NSMethodSignature* methodSignature = [self.instance methodSignatureForSelector: [self selector]];
     self.invocation = [NSInvocation invocationWithMethodSignature: methodSignature];
     [self.invocation setTarget: self.instance];
@@ -43,37 +54,21 @@
 }
 
 -(NSArray*) argsForInvocation {
-    if ([[self splitMethodName] count] > 1 || [self.args count] == 1) {
+    if ([self.args count] == [[self methodParts] count]) {
         return self.args;
-    } else if ([[self splitMethodName] count] == 1 && [self.args count] > 1) {
+    } else if ([self.args count] > 1) {
         return [NSArray arrayWithObjects: self.args, nil];
+    } else {
+        return [NSArray array];
     }
-    return [NSArray array];
 }
 
 -(SEL) selector {
-    return [OCSInvocation selectorForString: self.methodName andArgs: self.args];
+    return [OCSSelector selectorForString: self.methodName andArgs: self.args];
 }
 
--(NSArray*) splitMethodName {
-    return [self.methodName componentsSeparatedByString: @","];
+-(NSArray*) methodParts {
+    return [OCSSelector methodParts: self.methodName];
 }
 
-+(SEL) selectorForString:(NSString*) methodName andArgs:(NSArray*) args {
-    if ([[self splitMethodName: methodName] count] > 1) {
-        NSString* multiMethodName = [[self splitMethodName: methodName] componentsJoinedByString: @":"];
-        multiMethodName = [multiMethodName stringByAppendingString: @":"];
-        return NSSelectorFromString(multiMethodName);
-    } else {
-        if ([args count] == 0) {
-            return NSSelectorFromString(methodName);
-        } else {
-            return NSSelectorFromString([NSString stringWithFormat:@"%@:", methodName]);
-        }
-    }
-}
-
-+(NSArray*) splitMethodName:(NSString *) methodName {
-    return [methodName componentsSeparatedByString: @","];
-}
 @end

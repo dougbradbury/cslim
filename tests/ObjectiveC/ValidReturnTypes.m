@@ -11,6 +11,13 @@
     return @"Hello World";
 }
 
+-(NSString*) methodReturning__NSCFString {
+    return [NSString stringWithFormat: @"%g", 1234.5];
+}
+
+-(NSString*) methodReturning__NSCFConstantString {
+    return @"Foobar";
+}
 -(NSNumber*) methodReturningNSNumber {
     return [NSNumber numberWithInt: 123];
 }

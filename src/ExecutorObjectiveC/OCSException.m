@@ -1,5 +1,11 @@
 #import "OCSException.h"
 
+@interface OCSException ()
+
+@property (nonatomic, strong) NSString* message;
+
+@end
+
 @implementation OCSException
 
 +(id) exceptionWithNSException:(NSException*) givenException {
@@ -19,9 +25,13 @@
 
 -(id) initWithFormattedMessage:(NSString*) formattedMessage {
     if ((self = [super init])) {
-        self.stringValue = [NSString stringWithFormat: @"__EXCEPTION__:message:<<%@>>", formattedMessage];
+        self.message = formattedMessage;
     }
     return self;
+}
+
+-(NSString*) stringValue {
+    return [NSString stringWithFormat: @"__EXCEPTION__:message:<<%@>>", self.message];
 }
 
 @end

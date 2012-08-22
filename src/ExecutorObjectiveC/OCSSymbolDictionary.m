@@ -1,5 +1,11 @@
 #import "OCSSymbolDictionary.h"
 
+@interface OCSSymbolDictionary ()
+
+@property(nonatomic, strong) NSMutableDictionary* symbols;
+
+@end
+
 @implementation OCSSymbolDictionary
 
 -(id) init {

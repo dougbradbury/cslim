@@ -1,8 +1,16 @@
 #import "OCSStatementExecutor.h"
+#import "OCSSymbolDictionary.h"
 #import "OCSInstanceCreator.h"
 #import "OCSMethodCaller.h"
 
 static OCSStatementExecutor* sharedExecutor = NULL;
+
+@interface OCSStatementExecutor ()
+
+@property (nonatomic, strong) OCSSymbolDictionary* symbolDictionary;
+@property (nonatomic, strong) NSMutableDictionary* instances;
+
+@end
 
 @implementation OCSStatementExecutor
 

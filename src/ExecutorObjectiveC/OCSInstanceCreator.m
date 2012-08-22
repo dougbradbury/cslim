@@ -1,6 +1,16 @@
 #import "OCSInstanceCreator.h"
 #import "OCSException.h"
 
+@interface OCSInstanceCreator ()
+
+@property(nonatomic, strong) NSString* instanceName;
+@property(nonatomic, strong) NSString* className;
+@property(nonatomic, strong) NSArray* args;
+@property(nonatomic, strong) id instance;
+@property(nonatomic, strong) NSString* result;
+
+@end
+
 @implementation OCSInstanceCreator
 
 +(id) instanceWithName:(NSString*) givenInstanceName

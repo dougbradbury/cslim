@@ -1,6 +1,16 @@
 #import "OCSMethodCaller.h"
 #import "OCSException.h"
 #import "OCSInvocation.h"
+#import "OCSSelector.h"
+
+@interface OCSMethodCaller ()
+
+@property (nonatomic, strong) id instance;
+@property (nonatomic, strong) NSString* instanceName;
+@property (nonatomic, strong) NSString* methodName;
+@property (nonatomic, strong) NSArray* args;
+
+@end
 
 @implementation OCSMethodCaller
 
@@ -60,7 +70,7 @@
 }
 
 -(SEL) selector {
-    return [OCSInvocation selectorForString: self.methodName andArgs: self.args];
+    return [OCSSelector selectorForString: self.methodName andArgs: self.args];
 }
 
 @end
