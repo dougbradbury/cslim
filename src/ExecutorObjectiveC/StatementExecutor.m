@@ -11,7 +11,7 @@ void* StatementExecutor_Instance(StatementExecutor* executor, char const* instan
     return (__bridge void *)([[OCSStatementExecutor sharedExecutor] getInstanceWithName: CStringToNSString(instanceName)]);
 }
 
-char* StatementExecutor_Make(StatementExecutor* executor, char const* instanceName, char const* className, SlimList* args){
+char* StatementExecutor_Make(StatementExecutor* executor, char const* instanceName, char const* className, SlimList* args) {
     return NSStringToCString([[OCSStatementExecutor sharedExecutor] makeInstanceWithName: CStringToNSString(instanceName)
                                                                                className: CStringToNSString(className)
                                                                                  andArgs: SlimList_ToNSArray(args)]);

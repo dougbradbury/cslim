@@ -13,11 +13,9 @@
 
 @implementation OCSInstanceCreator
 
-+(id) instanceWithName:(NSString*) givenInstanceName
-             ClassName:(NSString*) givenClassName
-               andArgs:(NSArray*) givenArgs {
++(id) instanceWithClassName:(NSString*) givenClassName
+                    andArgs:(NSArray*) givenArgs {
     OCSInstanceCreator* instance = [self new];
-    instance.instanceName = givenInstanceName;
     instance.className = givenClassName;
     instance.args = givenArgs;
     return instance;

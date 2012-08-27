@@ -50,9 +50,8 @@ static OCSStatementExecutor* sharedExecutor = NULL;
                         className:(NSString*) className
                           andArgs:(NSArray*) args {
     OCSInstanceCreator* ocsInstance;
-    ocsInstance = [OCSInstanceCreator instanceWithName: instanceName
-                                             ClassName: [self.symbolDictionary replaceSymbolsInString: className]
-                                               andArgs: [self.symbolDictionary replaceSymbolsInArray: args]];
+    ocsInstance = [OCSInstanceCreator instanceWithClassName: [self.symbolDictionary replaceSymbolsInString: className]
+                                                    andArgs: [self.symbolDictionary replaceSymbolsInArray: args]];
     id createdInstance = [ocsInstance create];
     [self.instances setValue: createdInstance forKey: instanceName];
     return [ocsInstance result];
