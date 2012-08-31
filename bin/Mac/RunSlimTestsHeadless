@@ -1,1 +1,1 @@
-java -jar fitnesse.jar -c "AcceptanceTests?suite&format=text"
+java -jar fitnesse-standalone.jar -c "AcceptanceTests?suite&format=text"
