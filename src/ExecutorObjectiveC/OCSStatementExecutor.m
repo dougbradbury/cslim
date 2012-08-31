@@ -2,6 +2,7 @@
 #import "OCSSymbolDictionary.h"
 #import "OCSInstanceCreator.h"
 #import "OCSMethodCaller.h"
+#import "OCSException.h"
 
 static OCSStatementExecutor* sharedExecutor = NULL;
 
@@ -60,11 +61,19 @@ static OCSStatementExecutor* sharedExecutor = NULL;
 -(NSString*) callMethod:(NSString*) methodName
      onInstanceWithName:(NSString*) instanceName
                withArgs:(NSArray*) args {
-    OCSMethodCaller* methodCaller = [OCSMethodCaller withInstance: [self getInstanceWithName: instanceName]
-                                                     instanceName: instanceName
-                                                       methodName: methodName
-                                                          andArgs: [self.symbolDictionary replaceSymbolsInArray: args]];
-    return [methodCaller call];
+    id instance = [self getInstanceWithName: instanceName];
+    if (instance == NULL) {
+        return [[self instanceMissingException: instanceName] stringValue];
+    } else {
+        OCSMethodCaller* methodCaller = [OCSMethodCaller withInstance: instance
+                                                           methodName: methodName
+                                                              andArgs: [self.symbolDictionary replaceSymbolsInArray: args]];
+        return [methodCaller call];
+    }
+}
+
+-(OCSException*) instanceMissingException:(NSString*) instanceName {
+    return [OCSException exceptionWithMessage: @"The instance %@. does not exist", instanceName];
 }
 
 @end

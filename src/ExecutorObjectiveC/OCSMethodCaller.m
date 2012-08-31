@@ -6,7 +6,6 @@
 @interface OCSMethodCaller ()
 
 @property (nonatomic, strong) id instance;
-@property (nonatomic, strong) NSString* instanceName;
 @property (nonatomic, strong) NSString* methodName;
 @property (nonatomic, strong) NSArray* args;
 
@@ -15,21 +14,17 @@
 @implementation OCSMethodCaller
 
 +(id) withInstance:(id) instance
-      instanceName:(NSString*) instanceName
         methodName:(NSString*) methodName
            andArgs:(NSArray*) args {
     OCSMethodCaller* methodCaller = [self new];
     methodCaller.instance = instance;
-    methodCaller.instanceName = instanceName;
     methodCaller.methodName = methodName;
     methodCaller.args = args;
     return methodCaller;
 }
 
 -(NSString*) call {
-    if([self isInstanceNULL]) {
-        return [[self instanceMissingException] stringValue];
-    } else if([self isMethodMissingOnInstance]) {
+    if([self isMethodMissingOnInstance]) {
         return [[self methodMissingException] stringValue];
     } else {
         return [self attemptCallWithTryCatch];
@@ -51,16 +46,8 @@
     return [ocsInvocation invoke];
 }
 
--(BOOL) isInstanceNULL {
-    return self.instance == NULL;
-}
-
 -(BOOL) isMethodMissingOnInstance {
     return ![self.instance respondsToSelector: [self selector]];
-}
-
--(OCSException*) instanceMissingException {
-    return [OCSException exceptionWithMessage: @"The instance %@. does not exist", self.instanceName];
 }
 
 -(OCSException*) methodMissingException {

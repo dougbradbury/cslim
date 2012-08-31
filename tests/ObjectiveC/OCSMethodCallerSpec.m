@@ -18,7 +18,6 @@ SpecKitContext(OCSMethodCallerSpec) {
         
         It(@"calls a function with no args", ^{
             caller = [OCSMethodCaller withInstance: fixture
-                                      instanceName: NULL
                                         methodName: @"noArgs"
                                            andArgs: args];
 
@@ -30,7 +29,6 @@ SpecKitContext(OCSMethodCallerSpec) {
         It(@"calls a function with a string argument", ^{
             args = [NSArray arrayWithObjects: @"first arg", nil];
             caller = [OCSMethodCaller withInstance: fixture
-                                      instanceName: NULL
                                         methodName: @"withStringArg"
                                            andArgs: args];
             
@@ -42,7 +40,6 @@ SpecKitContext(OCSMethodCallerSpec) {
         It(@"calls a function with an nsnumber argument", ^{
             args = [NSArray arrayWithObjects: @"123.45", nil];
             caller = [OCSMethodCaller withInstance: fixture
-                                      instanceName: NULL
                                         methodName: @"withNSNumberArg"
                                            andArgs: args];
             
@@ -54,7 +51,6 @@ SpecKitContext(OCSMethodCallerSpec) {
         It(@"calls a function with two string arguments in an array", ^{
             args = [NSArray arrayWithObjects: @"first arg", @"second arg", nil];
             caller = [OCSMethodCaller withInstance: fixture
-                                      instanceName: NULL
                                         methodName: @"withMultipleArgs"
                                            andArgs: args];
             
@@ -67,7 +63,6 @@ SpecKitContext(OCSMethodCallerSpec) {
         It(@"calls a method taking two arguments as named parameters", ^{
             args = [NSArray arrayWithObjects: @"first", @"second", nil];
             caller = [OCSMethodCaller withInstance: fixture
-                                      instanceName: NULL
                                         methodName: @"multiple,strings"
                                            andArgs: args];
 
@@ -80,7 +75,6 @@ SpecKitContext(OCSMethodCallerSpec) {
         It(@"calls a method taking three arguments", ^{
             args = [NSArray arrayWithObjects: @"first", @"second", @"third", nil];
             caller = [OCSMethodCaller withInstance: fixture
-                                      instanceName: NULL
                                         methodName: @"three,strings,method"
                                            andArgs: args];
             
@@ -93,7 +87,6 @@ SpecKitContext(OCSMethodCallerSpec) {
 
         It(@"calls a method with null if no arguments are given, but it takes one", ^{
             caller = [OCSMethodCaller withInstance: fixture
-                                      instanceName: NULL
                                         methodName: @"withStringArg"
                                            andArgs: args];
 
@@ -108,7 +101,6 @@ SpecKitContext(OCSMethodCallerSpec) {
         
         It(@"returns what the method that takes no arguments returns", ^{
             caller = [OCSMethodCaller withInstance: fixture
-                                      instanceName: NULL
                                         methodName: @"noArgs"
                                            andArgs: args];
 
@@ -118,7 +110,6 @@ SpecKitContext(OCSMethodCallerSpec) {
         It(@"returns the return value of the called method with one argument", ^{
             args = [NSArray arrayWithObjects: @"some arg", nil];
             caller = [OCSMethodCaller withInstance: fixture
-                                      instanceName: NULL
                                         methodName: @"withStringArg"
                                            andArgs: args];
 
@@ -128,7 +119,6 @@ SpecKitContext(OCSMethodCallerSpec) {
         It(@"returns the return value for a method taking two arguments as named parameters", ^{
             args = [NSArray arrayWithObjects: @"first", @"second", nil];
             caller = [OCSMethodCaller withInstance: fixture
-                                      instanceName: NULL
                                         methodName: @"multiple,strings"
                                            andArgs: args];
             
@@ -138,7 +128,6 @@ SpecKitContext(OCSMethodCallerSpec) {
         It(@"returns the return value of the called method with multiple arguments in an array", ^{
             args = [NSArray arrayWithObjects: @"first arg", @"second arg", nil];
             caller = [OCSMethodCaller withInstance: fixture
-                                      instanceName: NULL
                                         methodName: @"withMultipleArgs"
                                            andArgs: args];
             
@@ -149,7 +138,6 @@ SpecKitContext(OCSMethodCallerSpec) {
         It(@"returns OK for a method taking three arguments that returns void", ^{
             args = [NSArray arrayWithObjects: @"first", @"second", @"third", nil];
             caller = [OCSMethodCaller withInstance: fixture
-                                      instanceName: NULL
                                         methodName: @"three,strings,method"
                                            andArgs: args];
             
@@ -161,19 +149,8 @@ SpecKitContext(OCSMethodCallerSpec) {
     Describe(@"handling errors", ^{
         __block OCSException* expectedException;
         
-        It(@"returns an error when the instance is NULL", ^{
-            caller = [OCSMethodCaller withInstance: NULL
-                                      instanceName: @"some_instance"
-                                        methodName: NULL
-                                           andArgs: NULL];
-
-            expectedException = [OCSException exceptionWithMessage: @"The instance some_instance. does not exist"];
-            [ExpectObj([caller call]) toBeEqualTo: [expectedException stringValue]];
-        });
-        
         It(@"returns an error when the method with no args does not exist", ^{
             caller = [OCSMethodCaller withInstance: fixture
-                                      instanceName: NULL
                                         methodName: @"noSuchMethod"
                                            andArgs: NULL];
             
@@ -184,7 +161,6 @@ SpecKitContext(OCSMethodCallerSpec) {
         It(@"returns an error if the function with one argument does not exist", ^{
             args = [NSArray arrayWithObjects: @"first arg", nil];
             caller = [OCSMethodCaller withInstance: fixture
-                                      instanceName: NULL
                                         methodName: @"noOtherSuchMethod"
                                            andArgs: args];
             
@@ -195,7 +171,6 @@ SpecKitContext(OCSMethodCallerSpec) {
         It(@"returns an error if calling a method with one agument, but it takes none", ^{
             args = [NSArray arrayWithObjects: @"first", nil];
             caller = [OCSMethodCaller withInstance: fixture
-                                      instanceName: NULL
                                         methodName: @"noArgs"
                                            andArgs: args];
             
@@ -206,7 +181,6 @@ SpecKitContext(OCSMethodCallerSpec) {
         It(@"returns an error for a multi part method that does not exist", ^{
             args = [NSArray arrayWithObjects: @"first", @"second", @"third", nil];
             caller = [OCSMethodCaller withInstance: fixture
-                                      instanceName: NULL
                                         methodName: @"missing,this,method"
                                            andArgs: args];
             
@@ -217,7 +191,6 @@ SpecKitContext(OCSMethodCallerSpec) {
         It(@"returns an error for a method taking an array that does not exist", ^{
             args  = [NSArray arrayWithObjects: @"first", @"second", @"third", nil];
             caller = [OCSMethodCaller withInstance: fixture
-                                      instanceName: NULL
                                         methodName: @"missingMethod"
                                            andArgs: args];
             
@@ -227,7 +200,6 @@ SpecKitContext(OCSMethodCallerSpec) {
 
         It(@"returns an error if the called method raises an error", ^{
             caller = [OCSMethodCaller withInstance: fixture
-                                      instanceName: NULL
                                         methodName: @"raisesException"
                                            andArgs: args];
             

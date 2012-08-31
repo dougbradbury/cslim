@@ -1,6 +1,7 @@
 #import <SpecKit/SpecKit.h>
 #import "OCSStatementExecutor.h"
 #import "TestSlim.h"
+#import "OCSException.h"
 
 SpecKitContext(OCSStatementExecutorSpec) {
     
@@ -152,6 +153,13 @@ SpecKitContext(OCSStatementExecutorSpec) {
             [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo:@"hi bob. Cost:  $12.32 from doug."];
         });
 
+        It(@"returns an error when the instance is NULL", ^{
+            NSString* result = [executor callMethod: NULL onInstanceWithName: @"some_instance" withArgs: NULL];
+
+            OCSException* expectedException = [OCSException exceptionWithMessage: @"The instance some_instance. does not exist"];
+            [ExpectObj(result) toBeEqualTo: [expectedException stringValue]];
+        });
+        
     });
     
 }
