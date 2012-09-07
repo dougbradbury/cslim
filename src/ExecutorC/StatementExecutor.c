@@ -70,11 +70,26 @@ StatementExecutor* StatementExecutor_Create(void)
 	return self;
 }
 
+static int compareNamesIgnoreUnderScores(const char * name1, const char * name2)
+{
+	while (*name1 && *name2)
+	{
+		if (*name1 == *name2) { name1++; name2++;}
+		else if ((*name1) == '_') name1++;
+		else if (*name2 == '_') name2++;
+		else return 0;
+	}
+	if (*name1 != *name2)
+		return 0;
+	return 1;
+}
+
 InstanceNode* GetInstanceNode(StatementExecutor* executor, char const* instanceName)
 {
 	InstanceNode* instanceNode;
 	for (instanceNode = executor->instances; instanceNode; instanceNode = instanceNode->next) {
-		if (strcmp(instanceNode->name, instanceName) == 0) {
+//			if (strcmp(instanceNode->name, instanceName) == 0) {
+		if (compareNamesIgnoreUnderScores(instanceNode->name, instanceName)) {
 			return instanceNode;
 		}
 	}
@@ -148,7 +163,8 @@ char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceNa
 	{
 		MethodNode* node;
 		for (node = instanceNode->fixture->methods; node; node = node->next) {
-			if (strcmp(methodName, node->name) == 0) {
+			//			if (strcmp(methodName, node->name) == 0) {
+			if (compareNamesIgnoreUnderScores(methodName, node->name)) {
 				replaceSymbols(executor->symbolTable, args);
 				char* retval =  node->method(instanceNode->instance, args);
 				return retval;
@@ -261,7 +277,8 @@ static FixtureNode * findFixture(StatementExecutor* executor, char const* classN
 {
 	FixtureNode* fixtureNode = NULL;
 	for (fixtureNode = executor->fixtures; fixtureNode; fixtureNode = fixtureNode->next) {
-		if (strcmp(fixtureNode->name, className) == 0) {
+//		if (strcmp(fixtureNode->name, className) == 0) {
+		if (compareNamesIgnoreUnderScores(fixtureNode->name, className)) {
 			break;
 		}
 	}

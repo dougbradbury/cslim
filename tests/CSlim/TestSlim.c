@@ -73,6 +73,11 @@ static char* getArg(void* self, SlimList* args) {
 	return me->arg;
 }
 
+static char* getArg_From_Function_With_Underscores(void* self, SlimList* args) {
+	TestSlim* me = (TestSlim*)self;
+	return me->arg;
+}
+
 static char* getConstructionArg(void* self, SlimList* args) {
 	TestSlim* me = (TestSlim*)self;	
 	return me->constructionArg;
@@ -92,6 +97,7 @@ void TestSlim_Register(StatementExecutor* executor)
 	StatementExecutor_RegisterMethod(executor, "TestSlim", "null", null);
 	StatementExecutor_RegisterMethod(executor, "TestSlim", "setArg", setArg);
 	StatementExecutor_RegisterMethod(executor, "TestSlim", "getArg", getArg);
+	StatementExecutor_RegisterMethod(executor, "TestSlim", "getArg_From_Function_With_Underscores", getArg_From_Function_With_Underscores);
 	StatementExecutor_RegisterMethod(executor, "TestSlim", "getConstructionArg", getConstructionArg);
 	StatementExecutor_RegisterMethod(executor, "TestSlim", "returnError", returnError);
 	
