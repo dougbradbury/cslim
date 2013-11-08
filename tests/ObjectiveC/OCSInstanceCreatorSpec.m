@@ -1,8 +1,8 @@
-#import <SpecKit/SpecKit.h>
+#import <OCDSpec2/OCDSpec2.h>
 #import "OCSInstanceCreator.h"
 #import "TestSlim.h"
 
-SpecKitContext(OCSInstanceCreatorSpec) {
+OCDSpec2Context(OCSInstanceCreatorSpec) {
     
     __block OCSInstanceCreator* instanceCreator;
     __block NSMutableArray* args;

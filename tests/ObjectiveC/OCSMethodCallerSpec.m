@@ -1,9 +1,9 @@
-#import <SpecKit/SpecKit.h>
+#import <OCDSpec2/OCDSpec2.h>
 #import "OCSMethodCaller.h"
 #import "OCSException.h"
 #import "TestSlim.h"
 
-SpecKitContext(OCSMethodCallerSpec) {
+OCDSpec2Context(OCSMethodCallerSpec) {
     
     __block TestSlim* fixture;
     __block OCSMethodCaller* caller;

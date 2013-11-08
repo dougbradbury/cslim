@@ -1,8 +1,8 @@
-#import <SpecKit/SpecKit.h>
+#import <OCDSpec2/OCDSpec2.h>
 #import "OCSObjectiveCtoCBridge.h"
 #import "SlimList.h"
 
-SpecKitContext(OCSObjectiveCtoCBridgeSpec) {
+OCDSpec2Context(OCSObjectiveCtoCBridgeSpec) {
     
     Describe(@"converting between c and objective c strings", ^{
         

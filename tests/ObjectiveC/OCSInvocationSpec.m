@@ -1,8 +1,8 @@
-#import <SpecKit/SpecKit.h>
+#import <OCDSpec2/OCDSpec2.h>
 #import "OCSInvocation.h"
 #import "TestSlim.h"
 
-SpecKitContext(OCSInvocationSpec) {
+OCDSpec2Context(OCSInvocationSpec) {
     
     __block TestSlim* instance;
     __block OCSInvocation* invocation;

@@ -1,4 +1,4 @@
-#import <SpecKit/SpecKit.h>
+#import <OCDSpec2/OCDSpec2.h>
 #import "OCSReturnValue.h"
 #import "ValidReturnTypes.h"
 
@@ -18,7 +18,7 @@ NSInvocation* invocationForMethodNamed(NSString* methodName) {
 NSString* classNameFor(NSString* methodName) {
     return NSStringFromClass([[[ValidReturnTypes new] performSelector: NSSelectorFromString(methodName)] class]);
 }
-SpecKitContext(OCSReturnValueSpec) {
+OCDSpec2Context(OCSReturnValueSpec) {
     
     Describe(@"forInvocation", ^{
         

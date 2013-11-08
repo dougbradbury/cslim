@@ -1,7 +1,7 @@
-#import <SpecKit/SpecKit.h>
+#import <OCDSpec2/OCDSpec2.h>
 #import "OCSSelector.h"
 
-SpecKitContext(OCSSelectorSpec) {
+OCDSpec2Context(OCSSelectorSpec) {
   
     __block NSMutableArray* args;
     

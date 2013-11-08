@@ -1,9 +1,9 @@
-#import <SpecKit/SpecKit.h>
+#import <OCDSpec2/OCDSpec2.h>
 #import "OCSStatementExecutor.h"
 #import "TestSlim.h"
 #import "OCSException.h"
 
-SpecKitContext(OCSStatementExecutorSpec) {
+OCDSpec2Context(OCSStatementExecutorSpec) {
     
     Describe(@"+sharedExecutor", ^{
         

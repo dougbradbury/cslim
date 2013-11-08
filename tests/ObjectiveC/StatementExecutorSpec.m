@@ -1,8 +1,8 @@
-#import <SpecKit/SpecKit.h>
+#import <OCDSpec2/OCDSpec2.h>
 #import "StatementExecutor.h"
 #import "TestSlim.h"
 
-SpecKitContext(StatementExecutor)
+OCDSpec2Context(StatementExecutor)
 {
     __block SlimList* empty;
     __block SlimList* args;

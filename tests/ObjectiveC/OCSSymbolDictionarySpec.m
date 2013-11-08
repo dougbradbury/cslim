@@ -1,7 +1,7 @@
-#import <SpecKit/SpecKit.h>
+#import <OCDSpec2/OCDSpec2.h>
 #import "OCSSymbolDictionary.h"
 
-SpecKitContext(OCSSymbolDictionarySpec) {
+OCDSpec2Context(OCSSymbolDictionarySpec) {
 
     __block OCSSymbolDictionary* symbolDictionary;
     

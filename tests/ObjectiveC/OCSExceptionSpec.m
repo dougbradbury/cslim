@@ -1,7 +1,7 @@
-#import <SpecKit/SpecKit.h>
+#import <OCDSpec2/OCDSpec2.h>
 #import "OCSException.h"
 
-SpecKitContext(OCSExceptionSpec) {
+OCDSpec2Context(OCSExceptionSpec) {
     
     __block OCSException* exception;
     
