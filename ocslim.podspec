@@ -6,14 +6,20 @@ Pod::Spec.new do |s|
   s.homepage     = "https://github.com/dougbradbury/cslim"
   s.license      = { :type => 'EPL', :file => 'LICENSE' }
   s.authors      = "Robert Martin", "James Grenning", "Doug Bradbury", "Eric Myer" 
-  s.source       = { :git => "https://github.com/paulstringer/cslim.git", :tag  => "v#{s.version}" }
-  s.source_files  = 'include/Com/*.h', 'include/CSlim/*.h', 'include/ExecutorObjectiveC/*.h', 'src/Com/*.c', 'src/Com/*.c', 'src/CSlim/.c', 'src/ExecutorObjectiveC/*.m', 'fixtures/Main.c'
-  s.public_header_files = ''
+  s.source       = { :git => "https://github.com/paulstringer/cslim.git", :branch => "ocslim" }
+#  s.source       = { :git => "https://github.com/paulstringer/cslim.git", :tag  => "v#{s.version}" }
+    
+  #s.prefix_header_contents = '#include "Fixtures.h"', "SLIM_FIXTURES", "SLIM_END"
+  s.source_files  = 'include/Com/*.h', 'include/CSlim/*.h', 'include/ExecutorObjectiveC/*.h', 'src/Com/*', 'src/CSlim/*', 'src/ExecutorObjectiveC/*', 'fixtures/Main.c'
   s.exclude_files = 'src/ExecutorObjectiveC/OCSReturnValue.m', 'include/ExecutorObjectiveC/OCSReturnValue.h'
-  s.requires_arc = true
+  s.private_header_files = '**/*.h'
   
   s.subspec 'no-arc' do |sp|
   	sp.source_files = 'src/ExecutorObjectiveC/OCSReturnValue.m', 'include/ExecutorObjectiveC/OCSReturnValue.h'
-  	sp.requires_arc = false
+  	sp.compiler_flags = '-fno-objc-arc'
+    sp.private_header_files = '**/*.h'
+    sp.prefix_header_contents = ''
   end
+  
+
 end
