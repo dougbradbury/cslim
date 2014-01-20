@@ -60,7 +60,7 @@ int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 	message[0] = 0;
 	int numbytes;
 
-	if (self->sendFunc(self->comLink, "Slim -- V0.0\n", 13) == -1)
+	if (self->sendFunc(self->comLink, "Slim -- V0.3\n", 13) == -1)
 	{
 		return -1;
 	}
