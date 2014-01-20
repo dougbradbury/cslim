@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 
-  s.name         = "ocslim"
+  s.name         = "cslim"
   s.version      = "1.0.0"
   s.summary      = "An implementation of FitNesse SliM for C and Objective-C"
   s.homepage     = "https://github.com/dougbradbury/cslim"
@@ -17,6 +17,5 @@ Pod::Spec.new do |s|
     sp.private_header_files = '**/*.h'
     sp.prefix_header_contents = ''
   end
-  
 
 end
