@@ -1,0 +1,7 @@
+SLIM_OUTPUT=$(TEST_RUNNER=bin/foo java -jar fitnesse-standalone.jar -c "AcceptanceTests?suite&format=text" | tee /dev/stderr)
+if [[ $SLIM_OUTPUT =~ "Exit-Code: 0" ]] ; then
+  exit 0
+else
+  echo "Failing Tests!"
+  exit 1
+fi

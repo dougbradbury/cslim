@@ -19,6 +19,10 @@
     return self;
 }
 
+-(void) raisesException {
+    [NSException raise: @"Some exception" format: @"with format"];
+}
+
 -(NSString*) noArgs {
     self.wasNoArgsCalled = YES;
     return @"return value";
@@ -56,6 +60,18 @@
     return @"return value for multiple strings";
 }
 
+-(NSString*) multiple:(NSString*) firstArg strings:(NSString*) secondArg {
+    self.calledWithFirstStringArg = firstArg;
+    self.calledWithSecondStringArg = secondArg;
+    return @"something";
+}
+
+-(void) three:(NSString*) firstArg strings:(NSString*) secondArg method:(NSString*) thirdArg {
+    self.calledWithFirstStringArg = firstArg;
+    self.calledWithSecondStringArg = secondArg;
+    self.calledWithThirdStringArg = thirdArg;
+}
+
 -(NSString*) createTestSlimWithString: (NSString*) givenString {
     return givenString;
 }
@@ -67,14 +83,5 @@
 -(NSNumber*) returnsNSNumber {
     return [NSNumber numberWithInt: 123];
 }
-
--(void) dealloc {
-    [calledWithStringArg release];
-    [calledWithFirstStringArg release];
-    [calledWithSecondStringArg release];
-    [super dealloc];
-}
-
-
 
 @end

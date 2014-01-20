@@ -1,0 +1,5 @@
+if [[ $SLIM_PORT ]]; then
+    "./bin/iOS/RunSlimTestsOnSimulator" $SLIM_PORT
+else
+    "./bin/iOS/RunSlimTestsHeadless"
+fi
