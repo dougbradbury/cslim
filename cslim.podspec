@@ -11,7 +11,6 @@ Pod::Spec.new do |s|
   s.source_files  = 'include/Com/*.h', 'include/CSlim/*.h', 'include/ExecutorObjectiveC/*.h', 'src/Com/*', 'src/CSlim/*', 'src/ExecutorObjectiveC/*', 'fixtures/Main.c'
   s.exclude_files = 'src/ExecutorObjectiveC/OCSReturnValue.m', 'include/ExecutorObjectiveC/OCSReturnValue.h'
   s.public_header_files = 'include/ExecutorObjectiveC/OCSObjectiveCtoCBridge.h'
-#  s.private_header_files = '**/*.h'
   
   s.subspec 'no-arc' do |sp|
   	sp.source_files = 'src/ExecutorObjectiveC/OCSReturnValue.m', 'include/ExecutorObjectiveC/OCSReturnValue.h'
