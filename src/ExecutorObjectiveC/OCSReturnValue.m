@@ -1,4 +1,5 @@
 #import "OCSReturnValue.h"
+#import "OCSObjectiveCtoCBridge.h"
 
 @implementation OCSReturnValue
 
@@ -22,6 +23,8 @@
             return result;
         } else if([NSStringFromClass([result class]) isEqualToString: @"__NSCFConstantString"]) {
             return result;
+        } else if([NSStringFromClass([result class]) isEqualToString:@"__NSArrayI"]) {
+            return SerializeNSStringFromNSArray(result);
         } else {
             return [result stringValue];
         }
