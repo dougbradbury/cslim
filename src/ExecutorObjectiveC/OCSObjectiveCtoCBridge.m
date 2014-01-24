@@ -25,6 +25,10 @@ NSString* SlimList_GetNSStringAt(SlimList* self, int index) {
     return CStringToNSString(SlimList_GetStringAt(self, index));
 }
 
+void SlimList_AddNSString(SlimList* self, NSString* string) {
+    SlimList_AddString(self, NSStringToCString(string));
+}
+
 SlimList* NSDictionary_ToSlimList(NSDictionary* self) {
     
     SlimList* list = SlimList_Create();

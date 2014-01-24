@@ -71,6 +71,11 @@ OCDSpec2Context(OCSObjectiveCtoCBridgeSpec) {
                 [ExpectObj(SlimList_GetNSStringAt(list, 0)) toBeEqualTo: @"Köln"];
             });
             
+            It(@"gets a NSString with a multibyte character",^{
+                SlimList_AddNSString(list, @"Köln");
+                [ExpectObj(SlimList_GetNSStringAt(list, 0)) toBeEqualTo: @"Köln"];
+            });
+            
         });
         
         Describe(@"converting NSArray of NSDictionaries to a Slim list",^{
@@ -244,6 +249,26 @@ OCDSpec2Context(OCSObjectiveCtoCBridgeSpec) {
                 SlimList * itemB = SlimList_GetListAt(list, 1);
                 [ExpectObj(SlimList_GetNSStringAt(itemA, 1)) toBeEqualTo:@"123"];
                 [ExpectObj(SlimList_GetNSStringAt(itemB, 1)) toBeEqualTo:@"abc"];
+            });
+            
+        });
+        
+        Describe(@"converting slim list table to a NSArray of Dictionaries",^{
+            
+            __block SlimList* list;
+            
+            BeforeEach(^{
+                list = SlimList_Create();
+            });
+            
+            AfterEach(^{
+                SlimList_Destroy(list);
+                list = nil;
+            });
+            
+            It(@"returns array with table column headers",^{
+               
+                
             });
             
         });

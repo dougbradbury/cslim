@@ -7,11 +7,11 @@ OCDSpec2Context(OCSMethodCallerSpec) {
     
     __block TestSlim* fixture;
     __block OCSMethodCaller* caller;
-    __block NSMutableArray* args;
+    __block NSArray* args;
     
     BeforeEach(^{
         fixture = [TestSlim new];
-        args = [NSMutableArray array];
+        args = [NSArray array];
     });
 
     Describe(@"successfully calling", ^{
