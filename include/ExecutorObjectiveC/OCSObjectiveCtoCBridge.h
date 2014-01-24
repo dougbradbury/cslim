@@ -6,9 +6,5 @@ NSString* CStringToNSString(char const* cString);
 
 NSString* SlimList_GetNSStringAt(SlimList* self, int index);
 NSArray* SlimList_ToNSArray(SlimList* self);
-
-
-
-NSString * SerializeNSStringFromNSArray(NSArray* array);
-BOOL isBOOLObject(id object);
-NSString * stringForBOOLObject(NSNumber * boolNumber);
+SlimList* NSArray_ToSlimList(NSArray* self);
+SlimList* NSDictionary_ToSlimList(NSDictionary* self);

@@ -38,4 +38,21 @@
     return NO;
 }
 
+- (NSArray *)methodReturningArray {
+    return @[@"123"];
+}
+
+- (NSArray *)methodReturningQueryTableResults {
+    return @[ @{ @"key1" : @"value1" }, @{ @"key2" : @"value2" } ];
+}
+
+- (NSNumber *)methodReturning__NSCFBooleanYES {
+    return @YES;
+}
+
+- (NSNumber *)methodReturning__NSCFBooleanNO {
+    return @NO;
+}
+
+
 @end

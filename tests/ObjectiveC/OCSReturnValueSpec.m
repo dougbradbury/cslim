@@ -1,6 +1,8 @@
 #import <OCDSpec2/OCDSpec2.h>
 #import "OCSReturnValue.h"
 #import "ValidReturnTypes.h"
+#import "SlimList.h"
+#import "SlimListSerializer.h"
 
 NSMethodSignature* forSelector(SEL selector) {
     return [[[ValidReturnTypes alloc] init] methodSignatureForSelector: selector];
@@ -18,6 +20,7 @@ NSInvocation* invocationForMethodNamed(NSString* methodName) {
 NSString* classNameFor(NSString* methodName) {
     return NSStringFromClass([[[ValidReturnTypes new] performSelector: NSSelectorFromString(methodName)] class]);
 }
+
 OCDSpec2Context(OCSReturnValueSpec) {
     
     Describe(@"forInvocation", ^{
@@ -75,5 +78,53 @@ OCDSpec2Context(OCSReturnValueSpec) {
             [ExpectObj(result) toBeEqualTo: @"OK"];
         });
         
+        It(@"returns Serialized Slim list for an NSArray", ^{
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningArray")];
+            SlimList* list = SlimList_Create();
+            SlimList_AddString(list, "123");
+            NSString *resultString = [NSString stringWithUTF8String: SlimList_Serialize(list)];
+            SlimList_Destroy(list);
+            [ExpectObj(result) toBeEqualTo:resultString];
+        });
+        
+        It(@"returns Serialized Slim list for an NSArray representing query table results", ^{
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningQueryTableResults")];
+            SlimList* list = SlimList_Create();
+            SlimList* firstDictionary = SlimList_Create();
+            SlimList* secondDictionary = SlimList_Create();
+            SlimList* firstDictionaryKeyValuePair = SlimList_Create();
+            SlimList_AddString(firstDictionaryKeyValuePair, "key1");
+            SlimList_AddString(firstDictionaryKeyValuePair, "value1");
+            SlimList_AddList(firstDictionary, firstDictionaryKeyValuePair);
+            SlimList_AddList(list, firstDictionary);
+            SlimList* secondDictionaryKeyValuePair = SlimList_Create();
+            SlimList_AddString(secondDictionaryKeyValuePair, "key2");
+            SlimList_AddString(secondDictionaryKeyValuePair, "value2");
+            SlimList_AddList(secondDictionary, secondDictionaryKeyValuePair);
+            SlimList_AddList(list, secondDictionary);
+            NSString *resultString = [NSString stringWithUTF8String: SlimList_Serialize(list)];
+            SlimList_Destroy(list);
+            [ExpectObj(result) toBeEqualTo:resultString];
+        });
+        
+        It(@"returns true for @YES", ^{
+            
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturning__NSCFBooleanYES")];
+            
+            [ExpectObj(result) toBeEqualTo: @"true"];
+        });
+        
+        It(@"returns true for @NO", ^{
+            
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturning__NSCFBooleanNO")];
+            
+            [ExpectObj(result) toBeEqualTo: @"false"];
+        });
+        
+        It(@"returns Slim list for NSDictionaries",^{
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturning__NSCFBooleanNO")];
+            
+            [ExpectObj(result) toBeEqualTo: @"false"];
+        });
     });
 }

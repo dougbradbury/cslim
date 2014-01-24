@@ -1,10 +1,8 @@
 #import "OCSObjectiveCtoCBridge.h"
+#import "OCSReturnValue.h"
 #import "SlimList.h"
 #import "SlimListSerializer.h"
 #import <objc/runtime.h>
-
-
-
 
 char* NSStringToCString(NSString* string) {
     return (char*)[string UTF8String];
@@ -27,10 +25,40 @@ NSString* SlimList_GetNSStringAt(SlimList* self, int index) {
     return CStringToNSString(SlimList_GetStringAt(self, index));
 }
 
+SlimList* NSDictionary_ToSlimList(NSDictionary* self) {
+    
+    SlimList* list = SlimList_Create();
+    
+    [self enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        SlimList *pair = SlimList_Create();
+        NSString *kee = [OCSReturnValue forObject:key];
+        NSString *value = [OCSReturnValue forObject:obj];
+        SlimList_AddString(pair, NSStringToCString(kee));
+        SlimList_AddString(pair, NSStringToCString(value));
+        SlimList_AddList(list, pair);
+        SlimList_Destroy(pair);
+    }];
+    
+    return list;
+}
 
+SlimList* NSArray_ToSlimList(NSArray* self) {
+    SlimList *list = SlimList_Create();
+    for (id object in self) {
+        if ([object isKindOfClass:[NSDictionary class]]) {
+            SlimList *result = NSDictionary_ToSlimList(object);
+            SlimList_AddList(list, result);
+            SlimList_Destroy(result);
+        } else {
+            NSString *item = [OCSReturnValue forObject:object];
+            SlimList_AddString(list, NSStringToCString(item));
+        }
+    }
+    return list;
+}
 
-
-
+/*
+ 
 void amendSlimListForSinglePropertyObject(id object, SlimList ** record) {
     SlimList * property = SlimList_Create();
     // key
@@ -114,11 +142,6 @@ void amendSlimListForMultiplePropertyObject(id object, objc_property_t * propert
     }
 }
 
-
-
-
-
-
 NSString * SerializeNSStringFromNSArray(NSArray* array) {
     
     SlimList* records = SlimList_Create();
@@ -144,13 +167,6 @@ NSString * SerializeNSStringFromNSArray(NSArray* array) {
     return output;
 }
 
-
-
-
-
-
-
-
 NSString * stringForBOOLObject(NSNumber * boolNumber) {
     
     if (((NSNumber *)boolNumber).boolValue) {
@@ -161,8 +177,6 @@ NSString * stringForBOOLObject(NSNumber * boolNumber) {
     }
 }
 
-
-
 BOOL isBOOLObject(id object) {
     
     NSString * classString = NSStringFromClass([object class]);
@@ -171,3 +185,30 @@ BOOL isBOOLObject(id object) {
     }
     return NO;
 }
+
+NSString * SerializeNSStringFromNSArray(NSArray* array) {
+    
+    SlimList* records = SlimList_Create();
+    
+    for (id object in array) {
+        
+        SlimList * aRecord = SlimList_Create();
+        
+        unsigned int maxProperties;
+        objc_property_t * properties = class_copyPropertyList([object class], &maxProperties);
+        
+        if (maxProperties > 0) {
+            amendSlimListForMultiplePropertyObject(object, properties, maxProperties, &aRecord);
+        }
+        else {
+            amendSlimListForSinglePropertyObject( object, &aRecord );
+        }
+        
+        SlimList_AddList(records, aRecord);
+    }
+    
+    NSString * output = [NSString stringWithUTF8String: SlimList_Serialize(records)];
+    return output;
+}
+ 
+*/
