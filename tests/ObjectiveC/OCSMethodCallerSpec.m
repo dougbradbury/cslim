@@ -2,6 +2,10 @@
 #import "OCSMethodCaller.h"
 #import "OCSException.h"
 #import "TestSlim.h"
+#import "SlimList.h"
+#import "SlimListSerializer.h"
+#import "OCSObjectiveCtoCBridge.h"
+
 
 OCDSpec2Context(OCSMethodCallerSpec) {
     
@@ -17,6 +21,7 @@ OCDSpec2Context(OCSMethodCallerSpec) {
     Describe(@"successfully calling", ^{
         
         It(@"calls a function with no args", ^{
+            
             caller = [OCSMethodCaller withInstance: fixture
                                         methodName: @"noArgs"
                                            andArgs: args];
@@ -95,6 +100,7 @@ OCDSpec2Context(OCSMethodCallerSpec) {
             [ExpectObj(fixture.calledWithStringArg) toBeNil];
         });
 
+      
     });
     
     Describe(@"returning values", ^{

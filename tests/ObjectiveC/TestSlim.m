@@ -2,7 +2,7 @@
 
 @implementation TestSlim
 
-@synthesize wasNoArgsCalled, calledWithStringArg, calledWithNSNumberArg;
+@synthesize wasNoArgsCalled, calledWithStringArg, calledWithNSNumberArg, calledWithTable;
 @synthesize calledWithFirstStringArg, calledWithSecondStringArg;
 
 -(id) initWithString: (NSString*) givenString {
@@ -38,6 +38,12 @@
 -(void) setString: (NSString*) string {
     self.calledWithStringArg = string;
 }
+
+- (void)setTable:(NSArray*)table {
+    NSLog(@"%@:length:%dcontens:%@",NSStringFromClass(table.class),table.count,table);
+    self.calledWithTable = table;
+}
+
 -(NSString*) getStringArg {
     return self.calledWithStringArg;
 }

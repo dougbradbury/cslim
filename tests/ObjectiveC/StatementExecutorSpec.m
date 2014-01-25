@@ -1,6 +1,7 @@
 #import <OCDSpec2/OCDSpec2.h>
 #import "StatementExecutor.h"
 #import "TestSlim.h"
+#import "OCSlimToObjectiveCBridge.h"
 
 OCDSpec2Context(StatementExecutor)
 {
@@ -17,20 +18,20 @@ OCDSpec2Context(StatementExecutor)
         });
 
         It(@"makes an instance of a class with 1 argument", ^{
+            
             SlimList_AddString(args, "starting param");
             StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", args);
-            TestSlim* test_slim_instance = (TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
+            TestSlim* test_slim_instance = (__bridge TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
 
             [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo: @"starting param"];
         });
-
 
         It(@"calls a function with a string argument", ^{
             SlimList_AddString(args, "first arg");
             StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", empty);
             StatementExecutor_Call(statementExecutor, "test_slim", "withStringArg", args);
 
-            TestSlim* test_slim_instance = (TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
+            TestSlim* test_slim_instance = (__bridge TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
             [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo: @"first arg"];
         });
 
@@ -49,7 +50,7 @@ OCDSpec2Context(StatementExecutor)
             StatementExecutor_SetSymbol(statementExecutor, "person", "bob");
             StatementExecutor_SetSymbol(statementExecutor, "animal", "dog");
             StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", args);
-            TestSlim* test_slim_instance = (TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
+            TestSlim* test_slim_instance = (__bridge TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
 
             [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo: @"hello bob dog"];
         });
@@ -60,7 +61,7 @@ OCDSpec2Context(StatementExecutor)
             StatementExecutor_SetSymbol(statementExecutor, "person", "bob");
             StatementExecutor_SetSymbol(statementExecutor, "animal", "dog");
             StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", args);
-            TestSlim* test_slim_instance = (TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
+            TestSlim* test_slim_instance = (__bridge TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
 
             [ExpectObj(test_slim_instance.calledWithFirstStringArg) toBeEqualTo: @"hello bob dog"];
             [ExpectObj(test_slim_instance.calledWithSecondStringArg) toBeEqualTo: @"hello dog"];
@@ -84,7 +85,7 @@ OCDSpec2Context(StatementExecutor)
         It(@"converts an NSNumber to a string when returning", ^{
             StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", args);
             NSString* result = [NSString stringWithUTF8String: StatementExecutor_Call(statementExecutor, "test_slim", "returnsNSNumber", args)];
-            TestSlim* test_slim_instance = (TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
+            TestSlim* test_slim_instance = (__bridge TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
             [ExpectObj(result) toBeEqualTo: [[test_slim_instance returnsNSNumber] stringValue]];
         });
 
@@ -93,9 +94,50 @@ OCDSpec2Context(StatementExecutor)
             SlimList_AddString(args, "Köln");
             StatementExecutor* statementExecutor = StatementExecutor_Create();
             StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", args);
-            TestSlim* test_slim_instance = (TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
+            TestSlim* test_slim_instance = (__bridge TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
 
             [ExpectObj(test_slim_instance.calledWithStringArg) toBeEqualTo: @"Köln"];
         });
+        
+        It(@"when converts a slimlist table with no rows calls table with empty array",^{
+            
+            SlimList* table = SlimList_Create();
+            
+            SlimList* header = SlimList_Create();
+            SlimList_AddString(header, "FirstName");
+            SlimList_AddList(table, header);
+        
+            StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", table);
+            StatementExecutor_Call(statementExecutor, "test_slim", "setTable", table);
+            TestSlim* test_slim_instance = (__bridge TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
+
+            [ExpectObj(test_slim_instance.calledWithTable) toBeEqualTo:@[]];
+            
+        });
+        
+        It(@"converts a table method call to a NSArray representation of table",^{
+            
+            SlimList *table = SlimList_Create();
+            
+            SlimList *header = SlimList_Create();
+            SlimList_AddString(header, "FirstName");
+            SlimList_AddList(table, header);
+            
+            SlimList *cell = SlimList_Create();
+            SlimList_AddString(cell, "FirstName");
+            SlimList_AddString(cell, "Bob");
+            
+            SlimList *row = SlimList_Create();
+            SlimList_AddList(row, cell);
+            SlimList_AddList(table, row);
+            
+            StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", table);
+            StatementExecutor_Call(statementExecutor, "test_slim", "setTable", table);
+            TestSlim* test_slim_instance = (__bridge TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
+        
+            [ExpectObj(test_slim_instance.calledWithTable) toBeEqualTo:@[ @{@"FirstName":@"Bob"} ]];
+            
+        });
+        
     });
 }
