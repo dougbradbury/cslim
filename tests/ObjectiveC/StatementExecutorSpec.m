@@ -102,13 +102,15 @@ OCDSpec2Context(StatementExecutor)
         It(@"when converts a slimlist table with no rows calls table with empty array",^{
             
             SlimList* table = SlimList_Create();
+            SlimList* tableContents = SlimList_Create();
             
             SlimList* header = SlimList_Create();
             SlimList_AddString(header, "FirstName");
-            SlimList_AddList(table, header);
+            SlimList_AddList(tableContents, header);
+            SlimList_AddList(table, tableContents);
         
             StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", table);
-            StatementExecutor_Call(statementExecutor, "test_slim", "setTable", table);
+            StatementExecutor_Call(statementExecutor, "test_slim", "table", table);
             TestSlim* test_slim_instance = (__bridge TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
 
             [ExpectObj(test_slim_instance.calledWithTable) toBeEqualTo:@[]];
@@ -118,21 +120,20 @@ OCDSpec2Context(StatementExecutor)
         It(@"converts a table method call to a NSArray representation of table",^{
             
             SlimList *table = SlimList_Create();
+            SlimList* tableContents = SlimList_Create();
             
             SlimList *header = SlimList_Create();
             SlimList_AddString(header, "FirstName");
-            SlimList_AddList(table, header);
-            
-            SlimList *cell = SlimList_Create();
-            SlimList_AddString(cell, "FirstName");
-            SlimList_AddString(cell, "Bob");
+            SlimList_AddList(tableContents, header);
             
             SlimList *row = SlimList_Create();
-            SlimList_AddList(row, cell);
-            SlimList_AddList(table, row);
+            SlimList_AddString(row, "Bob");
+            SlimList_AddList(tableContents, row);
+            
+            SlimList_AddList(table, tableContents);
             
             StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", table);
-            StatementExecutor_Call(statementExecutor, "test_slim", "setTable", table);
+            StatementExecutor_Call(statementExecutor, "test_slim", "table", table);
             TestSlim* test_slim_instance = (__bridge TestSlim*)StatementExecutor_Instance(statementExecutor, "test_slim");
         
             [ExpectObj(test_slim_instance.calledWithTable) toBeEqualTo:@[ @{@"FirstName":@"Bob"} ]];

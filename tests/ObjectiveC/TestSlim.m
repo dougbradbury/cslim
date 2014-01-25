@@ -39,8 +39,7 @@
     self.calledWithStringArg = string;
 }
 
-- (void)setTable:(NSArray*)table {
-    NSLog(@"%@:length:%dcontens:%@",NSStringFromClass(table.class),table.count,table);
+- (void) table:(NSArray*)table {
     self.calledWithTable = table;
 }
 

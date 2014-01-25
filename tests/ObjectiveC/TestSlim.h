@@ -32,6 +32,6 @@
 -(void) three:(NSString*) firstArg strings:(NSString*) secondArg method:(NSString*) thirdArg;
 
 -(NSNumber*) returnsNSNumber;
-- (void)setTable:(NSArray*)table;
+- (void)table:(NSArray*)table;
 
 @end

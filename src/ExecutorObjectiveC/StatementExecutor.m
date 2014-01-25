@@ -2,10 +2,10 @@
 #import "OCSStatementExecutor.h"
 #import "OCSObjectiveCtoCBridge.h"
 #import "OCSlimToObjectiveCBridge.h"
+#import "SlimListSerializer.h"
 
 NSArray *NSArrayOf(SlimList *args, char const* methodName)  {
-    if (strcmp(methodName, "setTable")==0) {
-        NSLog(@"Converting SlimList to a Table Result");
+    if (strcmp(methodName, "table")==0) {
         return @[SlimListQueryTable_ToNSArray(args)];
     } else {
         return SlimList_ToNSArray(args);
