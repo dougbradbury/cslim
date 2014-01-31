@@ -65,6 +65,7 @@ static OCSStatementExecutor* sharedExecutor = NULL;
     if (instance == NULL) {
         return [[self instanceMissingException: instanceName] stringValue];
     } else {
+        NSLog(@"args=%@",args);
         OCSMethodCaller* methodCaller = [OCSMethodCaller withInstance: instance
                                                            methodName: methodName
                                                               andArgs: [self.symbolDictionary replaceSymbolsInArray: args]];

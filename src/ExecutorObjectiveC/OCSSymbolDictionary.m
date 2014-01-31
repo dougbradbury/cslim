@@ -28,10 +28,27 @@
     return newString;
 }
 
+-(NSDictionary*) replaceSymbolsInDictionary:(NSDictionary*) givenDictionary {
+    NSMutableDictionary *newDictionary = [[NSMutableDictionary alloc] init];
+    [givenDictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        NSString *newString = [self replaceSymbolsInString:(NSString *)obj];
+        [newDictionary setValue:newString forKey:key];
+    }];
+    return [NSDictionary dictionaryWithDictionary:newDictionary];
+}
+
 -(NSArray*) replaceSymbolsInArray:(NSArray*) args {
     NSMutableArray* updatedArgs = [NSMutableArray array];
-    for (NSString* arg in args) {
-        [updatedArgs addObject: [self replaceSymbolsInString: arg]];
+    for (id arg in args) {
+        if ([arg isKindOfClass:[NSString class]]) {
+            [updatedArgs addObject: [self replaceSymbolsInString: arg]];
+        } else if ([arg isKindOfClass:[NSArray class]]) {
+            [updatedArgs addObject: [self replaceSymbolsInArray:arg] ];
+        } else if ([arg isKindOfClass:[NSDictionary class]]) {
+            [updatedArgs addObject: [self replaceSymbolsInDictionary:arg] ];
+        } else {
+            [updatedArgs addObject:arg];
+        }
     }
     return updatedArgs;
 }
