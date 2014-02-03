@@ -32,9 +32,7 @@
     } else if([NSStringFromClass([object class]) isEqualToString: @"__NSCFConstantString"]) {
         return object;
     } else if ([NSStringFromClass([object class]) isEqualToString:@"__NSArrayI"]) {
-        SlimList *slimlist = NSArray_ToSlimList(object);
-        NSString *result = CStringToNSString(SlimList_Serialize(slimlist));
-        return result;
+        return [self forNSArray:object];
     } else if ([NSStringFromClass([object class]) isEqualToString:@"__NSCFBoolean"]) {
         return ((NSNumber *)object).boolValue ? @"true" : @"false";
     } else {
@@ -54,6 +52,12 @@
 
 +(BOOL) signatureHasReturnTypeVoid:(NSMethodSignature*) methodSignature {
     return [[NSString stringWithUTF8String: [methodSignature methodReturnType]] isEqualToString: @"v"];
+}
+
++ (NSString *) forNSArray:(NSArray *)array {
+    SlimList *slimlist = NSArray_ToSlimList(array);
+    NSString *result = CStringToNSString(SlimList_Serialize(slimlist));
+    return result;
 }
 
 @end
