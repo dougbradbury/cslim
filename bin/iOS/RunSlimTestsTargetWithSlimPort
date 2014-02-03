@@ -1,0 +1,3 @@
+#! /bin/sh
+
+SLIM_PORT=$1 xcodebuild -workspace "___PROJECTNAME___.xcodeproj/project.xcworkspace/" -scheme "___TARGETNAME___" -sdk iphonesimulator -configuration Debug clean build
