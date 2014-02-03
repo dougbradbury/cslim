@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.homepage     = "https://github.com/dougbradbury/cslim"
   s.license      = { :type => 'EPL', :file => 'LICENSE' }
   s.authors      = "Robert Martin", "James Grenning", "Doug Bradbury", "Eric Myer" 
-  s.source       = { :git => "https://github.com/paulstringer/cslim.git" :tag => "#{s.version}"}
+  s.source       = { :git => "https://github.com/paulstringer/cslim.git", :tag => "#{s.version}"}
 
   s.source_files  = 'include/Com/*.h', 'include/CSlim/*.h', 'include/ExecutorObjectiveC/*.h', 'src/Com/*', 'src/CSlim/*', 'src/ExecutorObjectiveC/*', 'fixtures/Main.c'
   s.exclude_files = 'src/ExecutorObjectiveC/OCSReturnValue.m', 'include/ExecutorObjectiveC/OCSReturnValue.h'
