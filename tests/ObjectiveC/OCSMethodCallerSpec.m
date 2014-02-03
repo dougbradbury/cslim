@@ -2,21 +2,26 @@
 #import "OCSMethodCaller.h"
 #import "OCSException.h"
 #import "TestSlim.h"
+#import "SlimList.h"
+#import "SlimListSerializer.h"
+#import "OCSObjectiveCtoCBridge.h"
+
 
 OCDSpec2Context(OCSMethodCallerSpec) {
     
     __block TestSlim* fixture;
     __block OCSMethodCaller* caller;
-    __block NSMutableArray* args;
+    __block NSArray* args;
     
     BeforeEach(^{
         fixture = [TestSlim new];
-        args = [NSMutableArray array];
+        args = [NSArray array];
     });
 
     Describe(@"successfully calling", ^{
         
         It(@"calls a function with no args", ^{
+            
             caller = [OCSMethodCaller withInstance: fixture
                                         methodName: @"noArgs"
                                            andArgs: args];
@@ -95,6 +100,7 @@ OCDSpec2Context(OCSMethodCallerSpec) {
             [ExpectObj(fixture.calledWithStringArg) toBeNil];
         });
 
+      
     });
     
     Describe(@"returning values", ^{
