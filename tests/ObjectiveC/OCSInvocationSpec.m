@@ -37,7 +37,7 @@ OCDSpec2Context(OCSInvocationSpec) {
         });
         
         It(@"calls a method taking one array argument", ^{
-            args = [NSArray arrayWithObjects: @"Foo", @"Bar", nil];
+            args = [NSMutableArray arrayWithObjects: @"Foo", @"Bar", nil];
             invocation = [OCSInvocation invocationWithInstance: instance
                                                     methodName: @"withMultipleArgs"
                                                   andArguments: args];
@@ -49,7 +49,7 @@ OCDSpec2Context(OCSInvocationSpec) {
         });
         
         It(@"calls a method taking two arguments", ^{
-            args = [NSArray arrayWithObjects: @"first", @"second", nil];
+            args = [NSMutableArray arrayWithObjects: @"first", @"second", nil];
             invocation = [OCSInvocation invocationWithInstance: instance
                                                     methodName: @"multiple,strings"
                                                   andArguments: args];
@@ -61,7 +61,7 @@ OCDSpec2Context(OCSInvocationSpec) {
         });
 
         It(@"calls a method with three arguments", ^{
-            args = [NSArray arrayWithObjects: @"first", @"second", @"third", nil];
+            args = [NSMutableArray arrayWithObjects: @"first", @"second", @"third", nil];
             invocation = [OCSInvocation invocationWithInstance: instance
                                                     methodName: @"three,strings,method"
                                                   andArguments: args];
@@ -82,7 +82,7 @@ OCDSpec2Context(OCSInvocationSpec) {
         });
 
         It(@"returns the value returned by the method with two arguments", ^{
-            args = [NSArray arrayWithObjects: @"first", @"second", nil];
+            args = [NSMutableArray arrayWithObjects: @"first", @"second", nil];
             invocation = [OCSInvocation invocationWithInstance: instance
                                                     methodName: @"multiple,strings"
                                                   andArguments: args];

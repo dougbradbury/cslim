@@ -89,6 +89,16 @@ TEST(StatementExecutor, canCallaMethodThatTakesASlimList)
 	STRCMP_EQUAL("hello world", result);
 }
 
+TEST(StatementExecutor, WhereCalledFunctionHasUnderscoresSeparatingNameParts)
+{
+
+	SlimList_AddString(args, "hello world");
+
+	StatementExecutor_Call(statementExecutor, "test_slim", "setArg", args);
+	char* result = StatementExecutor_Call(statementExecutor, "test_slim", "getArgFromFunctionWithUnderscores", empty);
+	STRCMP_EQUAL("hello world", result);
+}
+
 TEST(StatementExecutor, canCallTwoInstancesOfTheSameFixture)
 {
 	SlimList* args2 = SlimList_Create();

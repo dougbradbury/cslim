@@ -1,6 +1,16 @@
 #import "StatementExecutor.h"
 #import "OCSStatementExecutor.h"
 #import "OCSObjectiveCtoCBridge.h"
+#import "OCSlimToObjectiveCBridge.h"
+#import "SlimListSerializer.h"
+
+NSArray *NSArrayOf(SlimList *args, char const* methodName)  {
+    if (strcmp(methodName, "table")==0) {
+        return @[SlimListQueryTable_ToNSArray(args)];
+    } else {
+        return SlimList_ToNSArray(args);
+    }
+}
 
 StatementExecutor* StatementExecutor_Create(void) {
     [[OCSStatementExecutor sharedExecutor] reset];
@@ -20,7 +30,7 @@ char* StatementExecutor_Make(StatementExecutor* executor, char const* instanceNa
 char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceName, char const* methodName, SlimList* args) {
     return NSStringToCString([[OCSStatementExecutor sharedExecutor] callMethod: CStringToNSString(methodName)
                                                             onInstanceWithName: CStringToNSString(instanceName)
-                                                                      withArgs: SlimList_ToNSArray(args)]);
+                                                                      withArgs: NSArrayOf(args, methodName)]);
 }
 
 void StatementExecutor_SetSymbol(StatementExecutor* self, char const* symbol, char const* value) {
@@ -36,3 +46,5 @@ void StatementExecutor_RegisterFixture(StatementExecutor* executor, char const *
 }
 void StatementExecutor_RegisterMethod(StatementExecutor* executor, char const * className, char const * methodName, Method method){
 }
+
+

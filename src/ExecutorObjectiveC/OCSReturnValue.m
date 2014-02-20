@@ -1,4 +1,6 @@
 #import "OCSReturnValue.h"
+#import "OCSObjectiveCtoCBridge.h"
+#import "SlimListSerializer.h"
 
 @implementation OCSReturnValue
 
@@ -16,23 +18,33 @@
 +(NSString*) forObjectOrPrimitive:(id) result andMethodSignature:(NSMethodSignature*) signature {
     NSString* returnType = [NSString stringWithUTF8String: [signature methodReturnType]];
     if ([returnType isEqualToString: @"@"]) {
-        if([NSStringFromClass([result class]) isEqualToString: @"NSCFString"]) {
-            return result;
-        } else if([NSStringFromClass([result class]) isEqualToString: @"__NSCFString"]) {
-            return result;
-        } else if([NSStringFromClass([result class]) isEqualToString: @"__NSCFConstantString"]) {
-            return result;
-        } else {
-            return [result stringValue];
-        }
-    } else if ([returnType isEqualToString: @"i"]) {
-        return [NSString stringWithFormat: @"%i", (int)result];
+        return [self forObject:result];
+    } else {
+        return [self forPrimitive:result withReturnType:returnType];
+    }
+}
+
++ (NSString *) forObject:(id)object {
+    if([NSStringFromClass([object class]) isEqualToString: @"NSCFString"]) {
+        return object;
+    } else if([NSStringFromClass([object class]) isEqualToString: @"__NSCFString"]) {
+        return object;
+    } else if([NSStringFromClass([object class]) isEqualToString: @"__NSCFConstantString"]) {
+        return object;
+    } else if ([NSStringFromClass([object class]) isEqualToString:@"__NSArrayI"]) {
+        return [self forNSArray:object];
+    } else if ([NSStringFromClass([object class]) isEqualToString:@"__NSCFBoolean"]) {
+        return ((NSNumber *)object).boolValue ? @"true" : @"false";
+    } else {
+        return [object stringValue];
+    }
+}
+
++ (NSString *) forPrimitive:(id)primitive withReturnType:(NSString*)returnType {
+    if ([returnType isEqualToString: @"i"]) {
+        return [NSString stringWithFormat: @"%i", (int)primitive];
     } else if ([returnType isEqualToString: @"c"]) {
-        if ((BOOL)result) {
-            return @"true";
-        } else {
-            return @"false";
-        }
+        return ((BOOL)primitive) ? @"true" : @"false";
     } else {
         return @"OK";
     }
@@ -40,6 +52,12 @@
 
 +(BOOL) signatureHasReturnTypeVoid:(NSMethodSignature*) methodSignature {
     return [[NSString stringWithUTF8String: [methodSignature methodReturnType]] isEqualToString: @"v"];
+}
+
++ (NSString *) forNSArray:(NSArray *)array {
+    SlimList *slimlist = NSArray_ToSlimList(array);
+    NSString *result = CStringToNSString(SlimList_Serialize(slimlist));
+    return result;
 }
 
 @end
