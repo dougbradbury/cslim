@@ -98,6 +98,7 @@ CslimExample.  Add this to your CslimExample page:
         !define TEST_SYSTEM {slim}
         !define TEST_RUNNER {<path>/cslim/Cslim_cslim}
         !define COMMAND_PATTERN {%m}
+        !define SLIM_VERSION {0.0}
 
 If you are using a unix based system, make a symbolic link in
 fitnesse/FitNesseRoot/CslimExample pointing to cslim/fixtures/pages, with a
