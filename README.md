@@ -28,15 +28,16 @@ close look at the QueryTableExample.  It makes considerable use of SlimList,
 and the related function SlimList_Serialize;
 
 You can cause a slim exception in any function by returning a message with the
-SLIM_EXCEPTION(reason) macro.  This will turn the cell being executed yellow.
+`SLIM_EXCEPTION(reason)` macro.  This will turn the cell being executed yellow.
 To cause an exception in a Create function (if, for example the wrong number
 of arguments have been given to it), use the
-SLIM_CONSTRUCTOR_ERROR(errorHandler, reason) macro.  See
+`SLIM_CONSTRUCTOR_ERROR(errorHandler, reason)` macro.  See
 Main/ExceptionExample.c for examples of create exceptions.
 
 ## Registration
 
-Notice the CREATE_FIXTURE business at the bottom of the DecisionTableExample.c file.
+Notice the `CREATE_FIXTURE` business at the bottom of the
+DecisionTableExample.c file.
 
         CSLIM_CREATE_FIXTURE(Division)
           CSLIM_FUNCTION(setNumerator)

@@ -11,4 +11,5 @@ typedef struct MapStringInt
 
 int CSlim_MapToIntFrom(MapStringInt*, const char*);
 const char* CSlim_MapToStringFrom(MapStringInt*, int);
+int CSlim_IsCharacter(unsigned char const* byte);
 #endif

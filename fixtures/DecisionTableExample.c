@@ -61,7 +61,7 @@ static char* table(void* void_self, SlimList* args) {
 
 
 
-SLIM_CREATE_FIXTURE(Division) 
+SLIM_CREATE_FIXTURE(Division)
 	SLIM_FUNCTION(setNumerator)
 	SLIM_FUNCTION(setDenominator)
 	SLIM_FUNCTION(Quotient)
