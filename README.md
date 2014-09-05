@@ -1,9 +1,7 @@
 CSlim - An implementation of FitNesse SliM in C
 Authors:  Robert Martin, James Grenning, and Doug Bradbury
 
-************
-* Fixtures *
-************
+## Fixtures
 
 Fixtures in CSlim are sets of functions and a data structure that binds them
 together.   See Main/DecisionTableExample.c
@@ -35,9 +33,7 @@ of arguments have been given to it), use the
 SLIM_CONSTRUCTOR_ERROR(errorHandler, reason) macro.  See
 Main/ExceptionExample.c for examples of create exceptions.
 
-****************
-* Registration *
-****************
+## Registration
 
 Notice the CREATE_FIXTURE business at the bottom of the DecisionTableExample.c file.
 
@@ -77,9 +73,7 @@ setup and tear down, you can use this macro:
 
 SLIM_CREATE_EMPTY_FIXTURE(name)
 
-************
-* Makefile *
-************
+## Makefile
 
 The only thing left is the makefile.  The makefile provided will build the
 CSlim library and its unit tests.  It will also build a second executable from
@@ -91,9 +85,7 @@ To build for windows, uncomment this line in the makefile
 
         # OS_PLATFORM = win
 
-*************************************
-* Running the example fitnesse test *
-*************************************
+## Running the example fitnesse test
 
 You need to download FitNesse from fitnesse.org.  Example pages are in
 cslim/fixtures/pages.  Fire up fitnesse and create a new page like
@@ -114,9 +106,7 @@ command like this:
 You should be able to see the CounterTest, DivisionTest, etc.
 
 
-**************
-* Unit Tests *
-**************
+##  Unit Tests
 
 CSlim was built using CppUTest. You'll have to down load and make CppUTest
 (http://www.cpputest.org/). Put it next to the cslim directory like this:
@@ -125,17 +115,13 @@ CSlim was built using CppUTest. You'll have to down load and make CppUTest
         <path>/CppUTest
 
 
-******************
-* Communications *
-******************
+## Communications
 
 CSlim communicates with FitNesse over a stream socket.  A bsd socket
 implementation of sockets is provided.  You can use CSlim with other socket
 implementations by re-implementing the modules in src/Com
 
-*******
-* C++ *
-*******
+## C++
 
 When using CSlim to test a C++ project, give you fixtures .cpp extensions, but
 make sure to wrap all the fixture methods in an 'extern "C"'  See
