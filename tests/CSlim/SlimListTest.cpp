@@ -174,3 +174,68 @@ TEST(SlimList, getDouble)
   SlimList_AddString(slimList, "2.3");
   DOUBLES_EQUAL(2.3, SlimList_GetDoubleAt(slimList, 0), 0.1);
 }
+
+TEST(SlimList, ToStringForEmptyList)
+{
+  //TODO: extract function for comparing strings etc
+  SlimList* l = SlimList_Create();
+  char* stringVersionOfList = SlimList_ToString(l);
+  STRCMP_EQUAL("[]", stringVersionOfList);
+
+  //TODO: deallocate stringVersionOfList if required..
+
+  SlimList_Destroy(l);
+}
+
+TEST(SlimList, ToStringForSimpleList)
+{
+  SlimList* l = SlimList_Create();
+  SlimList_AddString(l, "a");
+  SlimList_AddString(l, "b");
+  char* stringVersionOfList = SlimList_ToString(l);
+
+  STRCMP_EQUAL("[\"a\", \"b\"]", stringVersionOfList);
+
+  //TODO: deallocate stringVersionOfList if required..
+
+  SlimList_Destroy(l);
+}
+
+TEST(SlimList, ToStringForLongList)
+{
+  //TODO: extract buffer side
+  const int bufferSize = 128;
+  int i;
+
+  SlimList* l = SlimList_Create();
+  for (i = 0; i < bufferSize; i++)
+  {
+    SlimList_AddString(l, "a");
+  }
+
+  SlimList_ToString(l);
+
+  SlimList_Destroy(l);
+}
+//TODO: define end of list
+
+
+//TODO; test for side effects.. - e.g. on repeated calls / consider putting string on stack as caller
+//TODO: test normal string version..
+
+/*
+TEST(SlimList, CanHandleLongLists)
+{
+  SlimList* l = SlimList_Create();
+  SlimList_AddString(l, "1");
+  SlimList_AddString(l, "2");
+
+  CHECK(SlimList_Equals(l, resultList));
+
+  SlimList_Destroy(results);
+  SlimList_Destroy(l);
+}
+*/
+
+
+
