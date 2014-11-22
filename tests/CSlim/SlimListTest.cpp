@@ -169,7 +169,6 @@ TEST(SlimList, ToStringForEmptyList)
 
 TEST(SlimList, toStringForSimpleList)
 {
-	SlimList* slimList = SlimList_Create();
 	SlimList_AddString(slimList, "a");
 	SlimList_AddString(slimList, "b");
 	char* stringVersionOfList = SlimList_ToString(slimList);
@@ -221,7 +220,7 @@ TEST(SlimList, toStringForLongList)
 		SlimList_AddString(slimList, "a");
 	}
 
-	char* listAsAString = SlimList_ToString(l);
+	char* listAsAString = SlimList_ToString(slimList);
 	CSlim_DestroyString(listAsAString);
 }
 

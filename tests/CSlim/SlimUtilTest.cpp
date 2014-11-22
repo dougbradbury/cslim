@@ -22,12 +22,21 @@ TEST(SlimUtil, CanCreateEmptyString)
   CSlim_DestroyString(actual);
 }
 
-
 TEST(SlimUtil, CanConcatenateToAnEmptyString)
 {
   char* actual = CSlim_CreateEmptyString();
   CSlim_ConcatenateString(&actual, "a");
   STRCMP_EQUAL("a", actual);
+
+  CSlim_DestroyString(actual);
+}
+
+TEST(SlimUtil, CanConcatenateToANonEmptyString)
+{
+  char* actual = CSlim_CreateEmptyString();
+  CSlim_ConcatenateString(&actual, "a");
+  CSlim_ConcatenateString(&actual, "b");
+  STRCMP_EQUAL("ab", actual);
 
   CSlim_DestroyString(actual);
 }
