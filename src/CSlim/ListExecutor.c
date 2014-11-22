@@ -43,7 +43,11 @@ char* InvalidCommand(SlimList* instruction) {
 
 char* MalformedInstruction(SlimList* instruction) {
 	static char msg[128];
-	snprintf(msg, (size_t)128, "__EXCEPTION__:message:<<MALFORMED_INSTRUCTION %s.>>", SlimList_ToString(instruction));
+	
+	char* listAsAString = SlimList_ToString(instruction);
+	snprintf(msg, (size_t)128, "__EXCEPTION__:message:<<MALFORMED_INSTRUCTION %s.>>", listAsAString);
+	CSlim_DestroyString(listAsAString);
+
 	return CSlim_BuyString(msg);
 }
 

@@ -20,7 +20,8 @@ SlimList* SlimList_GetHashAt(SlimList* self, int index);
 void SlimList_ReplaceAt(SlimList* self, int index, char const * replacementString);
 void SlimList_AddBuffer(SlimList* self, char const* buffer, int length);
 SlimList* SlimList_GetTailAt(SlimList*, int index);
-char* SlimList_ToString(SlimList*);
+char* SlimList_ToString(SlimList*); /// Use CSlim_DestroyString to deallocate the string
+
 #ifdef __cplusplus
 }
 #endif

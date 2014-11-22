@@ -222,44 +222,29 @@ SlimList* SlimList_GetTailAt(SlimList* self, int index)
 }
 
 char* SlimList_ToString(SlimList* self) {
-  //TODO: extract size / add constant / parameter
-  //TODO: consider using realloc / just making the string long enough
-	static const int stringSize = 128;
-	static char string[128];
-	char buf[stringSize];
-	buf[0] = '\0';
+	char* result = CSlim_CreateEmptyString();
+	CSlim_ConcatenateString(&result, "[");
 
-	int remainingLength = stringSize;
-
-	strncat(buf, "[", remainingLength);
-	remainingLength--;
-
-	int listLength = SlimList_GetLength(self);
+	int length = SlimList_GetLength(self);
 	int i;
-	for (i = 0; i<listLength && remainingLength > 0; i++) {
+	for (i = 0; i < length; i++) {
 		SlimList* sublist = SlimList_GetListAt(self, i);
+
 		if (sublist != NULL) {
-			strncat(buf, SlimList_ToString(sublist), remainingLength);
-			remainingLength -= strlen(SlimList_ToString(sublist));
+			char* subListAsAString = SlimList_ToString(sublist);
+			CSlim_ConcatenateString(&result, subListAsAString);
+			CSlim_DestroyString(subListAsAString);
 		} else {
-
-			strncat(buf, "\"", remainingLength);
-			remainingLength--; //TODO: clean this up / consider implementing stlcat
-
-			strncat(buf, SlimList_GetStringAt(self, i), remainingLength);
-			remainingLength -= strlen(SlimList_GetStringAt(self, i));
-
-			strncat(buf, "\"", remainingLength);
-			remainingLength--;
+			CSlim_ConcatenateString(&result, "\"");
+			CSlim_ConcatenateString(&result, SlimList_GetStringAt(self, i));
+			CSlim_ConcatenateString(&result, "\"");
 		}
-		if (i != (listLength-1)) {
-			strncat(buf, ", ", remainingLength);
-			remainingLength -= strlen(", ");
-		}	
-	}
-	strncat(buf, "]", remainingLength);
-	remainingLength--;
 
-	strncpy(string, buf, stringSize);
-	return string;	
+		if (i != (length-1)) {
+			CSlim_ConcatenateString(&result, ", ");
+		}
+	}
+	CSlim_ConcatenateString(&result, "]");
+
+	return result;
 }

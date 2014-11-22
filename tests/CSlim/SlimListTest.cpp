@@ -4,6 +4,7 @@
 
 extern "C"
 {
+#include "SlimUtil.h"
 #include "SlimList.h"
 }
 
@@ -153,6 +154,7 @@ TEST(SlimList, canGetTail)
   SlimList_Destroy(expected);
 }
 
+//TODO: move this test after other to string tests
 TEST(SlimList, recursiveToString)
 {
  	SlimList_AddString(slimList, "a");
@@ -164,7 +166,9 @@ TEST(SlimList, recursiveToString)
 
   SlimList_AddList(slimList, sublist);
 
-  STRCMP_EQUAL("[\"a\", \"b\", [\"3\", \"4\"]]", SlimList_ToString(slimList));
+  char* listAsAString = SlimList_ToString(slimList);
+  STRCMP_EQUAL("[\"a\", \"b\", [\"3\", \"4\"]]", listAsAString);
+  CSlim_DestroyString(listAsAString);
 
   SlimList_Destroy(sublist);
 }
@@ -177,65 +181,47 @@ TEST(SlimList, getDouble)
 
 TEST(SlimList, ToStringForEmptyList)
 {
-  //TODO: extract function for comparing strings etc
-  SlimList* l = SlimList_Create();
-  char* stringVersionOfList = SlimList_ToString(l);
-  STRCMP_EQUAL("[]", stringVersionOfList);
-
-  //TODO: deallocate stringVersionOfList if required..
-
-  SlimList_Destroy(l);
+	char* listAsAString = SlimList_ToString(slimList);
+	STRCMP_EQUAL("[]", listAsAString);
+	CSlim_DestroyString(listAsAString);
 }
 
-TEST(SlimList, ToStringForSimpleList)
+TEST(SlimList, toStringForSimpleList)
 {
-  SlimList* l = SlimList_Create();
-  SlimList_AddString(l, "a");
-  SlimList_AddString(l, "b");
-  char* stringVersionOfList = SlimList_ToString(l);
+	SlimList* slimList = SlimList_Create();
+	SlimList_AddString(slimList, "a");
+	SlimList_AddString(slimList, "b");
+	char* stringVersionOfList = SlimList_ToString(slimList);
 
-  STRCMP_EQUAL("[\"a\", \"b\"]", stringVersionOfList);
+	STRCMP_EQUAL("[\"a\", \"b\"]", stringVersionOfList);
 
-  //TODO: deallocate stringVersionOfList if required..
-
-  SlimList_Destroy(l);
+	CSlim_DestroyString(stringVersionOfList);
 }
 
-TEST(SlimList, ToStringForLongList)
+TEST(SlimList, toStringDoesNotHaveASideEffectWhichChangesResultsFromPriorCalls)
 {
-  //TODO: extract buffer side
-  const int bufferSize = 128;
-  int i;
+	char* priorString = SlimList_ToString(slimList);
 
-  SlimList* l = SlimList_Create();
-  for (i = 0; i < bufferSize; i++)
-  {
-    SlimList_AddString(l, "a");
-  }
+	SlimList_AddString(slimList, "a");
+	char* listWithAnElementAsASting = SlimList_ToString(slimList);
 
-  SlimList_ToString(l);
+	int areStringsTheSame = (strcmp(priorString, listWithAnElementAsASting) == 0);
+	CHECK_FALSE(areStringsTheSame);
 
-  SlimList_Destroy(l);
+	CSlim_DestroyString(priorString);
+	CSlim_DestroyString(listWithAnElementAsASting);
 }
-//TODO: define end of list
 
-
-//TODO; test for side effects.. - e.g. on repeated calls / consider putting string on stack as caller
-//TODO: test normal string version..
-
-/*
-TEST(SlimList, CanHandleLongLists)
+TEST(SlimList, toStringForLongList)
 {
-  SlimList* l = SlimList_Create();
-  SlimList_AddString(l, "1");
-  SlimList_AddString(l, "2");
+	const int bufferSize = 128; //TODO: consider updating the size given its no longer as relevant
+	int i;
 
-  CHECK(SlimList_Equals(l, resultList));
+	for (i = 0; i < bufferSize; i++)
+	{
+		SlimList_AddString(slimList, "a");
+	}
 
-  SlimList_Destroy(results);
-  SlimList_Destroy(l);
+	char* listAsAString = SlimList_ToString(l);
+	CSlim_DestroyString(listAsAString);
 }
-*/
-
-
-
