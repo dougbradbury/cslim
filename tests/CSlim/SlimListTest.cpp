@@ -4,8 +4,8 @@
 
 extern "C"
 {
-#include "SlimUtil.h"
 #include "SlimList.h"
+#include "SlimUtil.h"
 }
 
 #include "CppUTest/TestHarness.h"
