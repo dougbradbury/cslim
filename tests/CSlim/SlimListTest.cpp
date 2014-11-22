@@ -154,25 +154,6 @@ TEST(SlimList, canGetTail)
   SlimList_Destroy(expected);
 }
 
-//TODO: move this test after other to string tests
-TEST(SlimList, recursiveToString)
-{
- 	SlimList_AddString(slimList, "a");
-	SlimList_AddString(slimList, "b");
-
-  SlimList* sublist = SlimList_Create();
-  SlimList_AddString(sublist, "3");
-  SlimList_AddString(sublist, "4");
-
-  SlimList_AddList(slimList, sublist);
-
-  char* listAsAString = SlimList_ToString(slimList);
-  STRCMP_EQUAL("[\"a\", \"b\", [\"3\", \"4\"]]", listAsAString);
-  CSlim_DestroyString(listAsAString);
-
-  SlimList_Destroy(sublist);
-}
-
 TEST(SlimList, getDouble)
 {
   SlimList_AddString(slimList, "2.3");
@@ -212,6 +193,24 @@ TEST(SlimList, toStringDoesNotHaveASideEffectWhichChangesResultsFromPriorCalls)
 	CSlim_DestroyString(listWithAnElementAsASting);
 }
 
+TEST(SlimList, recursiveToString)
+{
+	SlimList_AddString(slimList, "a");
+	SlimList_AddString(slimList, "b");
+
+	SlimList* sublist = SlimList_Create();
+	SlimList_AddString(sublist, "3");
+	SlimList_AddString(sublist, "4");
+
+	SlimList_AddList(slimList, sublist);
+
+	char* listAsAString = SlimList_ToString(slimList);
+	STRCMP_EQUAL("[\"a\", \"b\", [\"3\", \"4\"]]", listAsAString);
+	CSlim_DestroyString(listAsAString);
+
+	SlimList_Destroy(sublist);
+}
+
 TEST(SlimList, toStringForLongList)
 {
 	const int bufferSize = 128; //TODO: consider updating the size given its no longer as relevant
@@ -225,3 +224,4 @@ TEST(SlimList, toStringForLongList)
 	char* listAsAString = SlimList_ToString(l);
 	CSlim_DestroyString(listAsAString);
 }
+
