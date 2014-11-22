@@ -36,14 +36,11 @@ void CSlim_DestroyString(char* string) {
 void CSlim_ConcatenateString(char** toAppendTo, const char* toAppend) {
 	size_t requiredLength = strlen(*toAppendTo) + strlen(toAppend) + 1;
 
-	//Note: it would be more efficient to use realloc instead of malloc. However CPPUnit has issues with realloc.
-	char *temp = malloc(requiredLength * sizeof(char));
+	char *temp = realloc(*toAppendTo, requiredLength * sizeof(char));
 	assert(temp != NULL);
 
-	strcpy(temp, *toAppendTo);
 	strcat(temp, toAppend);
 
-	CSlim_DestroyString(*toAppendTo);
 	*toAppendTo = temp;
 }
 
