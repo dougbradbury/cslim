@@ -212,10 +212,10 @@ TEST(SlimList, recursiveToString)
 
 TEST(SlimList, toStringForLongList)
 {
-	const int bufferSize = 128; //TODO: consider updating the size given its no longer as relevant
+	const int entries = 128; //TODO: consider updating the size given its no longer as relevant
 	int i;
 
-	for (i = 0; i < bufferSize; i++)
+	for (i = 0; i < entries; i++)
 	{
 		SlimList_AddString(slimList, "a");
 	}
