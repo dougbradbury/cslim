@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 //static local variables
 typedef struct Node Node;
@@ -22,6 +23,7 @@ struct SlimList {
 };
 
 static void insertNode(SlimList* self, Node* node);
+static SlimList * SlimList_GetListAtNode(Node* node);
 
 SlimList* SlimList_Create(void)
 {
@@ -110,11 +112,16 @@ Node * SlimList_GetNodeAt(SlimList* self, int index)
 SlimList * SlimList_GetListAt(SlimList* self, int index)
 {
 	Node * node = SlimList_GetNodeAt(self, index);
-	if (node)
-	{
-		if (node->list == 0)
-			node->list = SlimList_Deserialize(node->string);
-	}
+	return SlimList_GetListAtNode(node);
+}
+
+static SlimList * SlimList_GetListAtNode(Node* node)
+{
+	assert(node != NULL);
+
+	if (node->list == 0)
+		node->list = SlimList_Deserialize(node->string);
+
 	return node->list;
 }
 
@@ -225,10 +232,9 @@ char* SlimList_ToString(SlimList* self) {
 	char* result = CSlim_CreateEmptyString();
 	CSlim_ConcatenateString(&result, "[");
 
-	int length = SlimList_GetLength(self);
-	int i;
-	for (i = 0; i < length; i++) {
-		SlimList* sublist = SlimList_GetListAt(self, i);
+	Node* node;
+	for (node = self->head; node != NULL; node = node->next) {
+		SlimList* sublist = SlimList_GetListAtNode(node);
 
 		if (sublist != NULL) {
 			char* subListAsAString = SlimList_ToString(sublist);
@@ -236,11 +242,11 @@ char* SlimList_ToString(SlimList* self) {
 			CSlim_DestroyString(subListAsAString);
 		} else {
 			CSlim_ConcatenateString(&result, "\"");
-			CSlim_ConcatenateString(&result, SlimList_GetStringAt(self, i));
+			CSlim_ConcatenateString(&result, node->string);
 			CSlim_ConcatenateString(&result, "\"");
 		}
 
-		if (i != (length-1)) {
+		if (node->next != NULL) {
 			CSlim_ConcatenateString(&result, ", ");
 		}
 	}
