@@ -24,7 +24,6 @@ struct SlimList {
 
 
 static void insertNode(SlimList* self, Node* node);
-static SlimList * SlimList_GetListAtNode(Node* node);
 
 SlimList* SlimList_Create(void)
 {
@@ -75,6 +74,7 @@ void SlimList_AddBuffer(SlimList* self, char const* buffer, int length)
 	newNode->string = CSlim_BuyBuf(buffer, length);
 }
 
+
 void SlimList_AddString(SlimList* self, char const* string)
 {
 	SlimList_AddBuffer(self, string, string ? (int)strlen(string) : 0);
@@ -124,20 +124,20 @@ Node* SlimList_GetNodeAt(SlimList* self, int index)
 SlimList * SlimList_GetListAt(SlimList* self, int index)
 {
 	Node * node = SlimList_GetNodeAt(self, index);
-	return SlimList_GetListAtNode(node);
+	return SlimList_Iterator_GetList(node);
 }
 
-static SlimList * SlimList_GetListAtNode(Node* node)
+SlimList* SlimList_Iterator_GetList(SlimListIterator* iterator)
 {
-	assert(node != NULL);
+	assert(iterator != NULL);
 
-	if (node->list == 0)
-		node->list = SlimList_Deserialize(node->string);
+	if (iterator->list == 0)
+		iterator->list = SlimList_Deserialize(iterator->string);
 
-	return node->list;
+	return iterator->list;
 }
 
-char * SlimList_GetStringAt(SlimList* self, int index)
+char* SlimList_GetStringAt(SlimList* self, int index)
 {
 	Node* node = SlimList_GetNodeAt(self, index);
 	if(node == 0)
@@ -253,7 +253,7 @@ char* SlimList_ToString(SlimList* self) {
 
 	Node* node;
 	for (node = self->head; node != NULL; node = node->next) {
-		SlimList* sublist = SlimList_GetListAtNode(node);
+		SlimList* sublist = SlimList_Iterator_GetList(node);
 
 		if (sublist != NULL) {
 			char* subListAsAString = SlimList_ToString(sublist);
