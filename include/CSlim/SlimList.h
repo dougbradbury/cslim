@@ -14,6 +14,7 @@ void SlimList_Destroy(SlimList*);
 SlimListIterator* SlimList_CreateIterator(SlimList*);
 int SlimList_Iterator_HasItem(SlimListIterator*);
 void SlimList_Iterator_Advance(SlimListIterator**);
+void SlimList_Iterator_AdvanceBy(SlimListIterator**, int);
 
 char* SlimList_Iterator_GetString(SlimListIterator*);
 SlimList* SlimList_Iterator_GetList(SlimListIterator*);

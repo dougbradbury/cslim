@@ -59,8 +59,8 @@ int SlimList_Iterator_HasItem(SlimListIterator* iterator) {
 }
 
 void SlimList_Iterator_Advance(SlimListIterator** iterator) {
-	assert(iterator != NULL);
-	*iterator = (*iterator)->next;
+	if (*iterator != NULL)
+		*iterator = (*iterator)->next;
 }
 
 void SlimList_AddBuffer(SlimList* self, char const* buffer, int length)
@@ -241,13 +241,26 @@ static void insertNode(SlimList* self, Node* node)
 	self->length++;
 }
 
+void SlimList_Iterator_AdvanceBy(SlimListIterator** iterator, int amount) {
+	int i;
+	for (i = 0; i < amount; i++) {
+		SlimList_Iterator_Advance(iterator);
+	}
+}
+
 SlimList* SlimList_GetTailAt(SlimList* self, int index)
 {
 	SlimList * tail = SlimList_Create();
-	int length = SlimList_GetLength(self);
-	for(;index < length; index++) {
-		SlimList_AddString(tail, SlimList_GetStringAt(self, index));
+
+	SlimListIterator* iterator = SlimList_CreateIterator(self);
+	SlimList_Iterator_AdvanceBy(&iterator, index);
+
+	while (SlimList_Iterator_HasItem(iterator))
+	{
+		SlimList_AddString(tail, SlimList_Iterator_GetString(iterator));
+		SlimList_Iterator_Advance(&iterator);
 	}
+
 	return tail;
 }
 
