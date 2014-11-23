@@ -17,6 +17,7 @@ void SlimList_Iterator_Advance(SlimListIterator**);
 
 char* SlimList_Iterator_GetString(SlimListIterator*);
 SlimList* SlimList_Iterator_GetList(SlimListIterator*);
+void SlimList_Iterator_Replace(SlimListIterator*, const char*);
 
 extern void SlimList_AddString(SlimList*, char const *);
 void SlimList_AddList(SlimList* self, SlimList* element);

@@ -214,13 +214,17 @@ SlimList* SlimList_GetHashAt(SlimList* self, int index)
 void SlimList_ReplaceAt(SlimList* self, int index, char const * replacementString)
 {
 	Node* node = SlimList_GetNodeAt(self, index);
-	if(node->list != 0){
-		SlimList_Destroy(node->list);
-		node->list = 0;
+	SlimList_Iterator_Replace(node, replacementString);
+}
+
+void SlimList_Iterator_Replace(SlimListIterator* iterator, const char* replacementString) {
+	if (iterator->list != 0) {
+		SlimList_Destroy(iterator->list);
+		iterator->list = 0;
 	}
-	char * newString = CSlim_BuyString(replacementString);
-	free(node->string);
-	node->string = newString;
+	char* newString = CSlim_BuyString(replacementString);
+	free(iterator->string);
+	iterator->string = newString;
 }
 
 static void insertNode(SlimList* self, Node* node)
