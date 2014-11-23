@@ -224,3 +224,39 @@ TEST(SlimList, toStringForLongList)
 	CSlim_DestroyString(listAsAString);
 }
 
+TEST(SlimList, iteratorDoesNotHaveAnItemWhenEmpty)
+{
+	SlimListIterator* iterator = SlimList_CreateIterator(slimList);
+	CHECK_FALSE(SlimList_Iterator_HasItem(iterator));
+}
+
+TEST(SlimList, iteratorHasItem)
+{
+	SlimList_AddString(slimList, "a");
+	SlimListIterator* iterator = SlimList_CreateIterator(slimList);
+
+	CHECK_TRUE(SlimList_Iterator_HasItem(iterator));
+}
+
+TEST(SlimList, iteratorNext)
+{
+	SlimList_AddString(slimList, "a");
+	SlimListIterator* iterator = SlimList_CreateIterator(slimList);
+	SlimList_Iterator_Advance(&iterator);
+
+	CHECK_FALSE(SlimList_Iterator_HasItem(iterator));
+}
+
+
+TEST(SlimList, iteratorGetString)
+{
+	const char* contents = "a";
+	SlimList_AddString(slimList, contents);
+	SlimListIterator* iterator = SlimList_CreateIterator(slimList);
+
+	char *actual =  SlimList_Iterator_GetString(iterator);
+	STRCMP_EQUAL(contents, actual);
+}
+
+
+

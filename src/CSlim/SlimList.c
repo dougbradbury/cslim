@@ -22,6 +22,7 @@ struct SlimList {
 	Node* tail;
 };
 
+
 static void insertNode(SlimList* self, Node* node);
 static SlimList * SlimList_GetListAtNode(Node* node);
 
@@ -50,6 +51,19 @@ void SlimList_Destroy(SlimList* self)
 	free(self);
 }
 
+SlimListIterator* SlimList_CreateIterator(SlimList* list) {
+	return list->head;
+}
+
+int SlimList_Iterator_HasItem(SlimListIterator* iterator) {
+	return iterator != NULL;
+}
+
+void SlimList_Iterator_Advance(SlimListIterator** iterator) {
+	assert(iterator != NULL);
+	*iterator = (*iterator)->next;
+}
+
 void SlimList_AddBuffer(SlimList* self, char const* buffer, int length)
 {
 	Node* newNode = (Node*)malloc(sizeof(Node));
@@ -60,7 +74,6 @@ void SlimList_AddBuffer(SlimList* self, char const* buffer, int length)
 
 	newNode->string = CSlim_BuyBuf(buffer, length);
 }
-
 
 void SlimList_AddString(SlimList* self, char const* string)
 {
@@ -79,7 +92,6 @@ int SlimList_GetLength(SlimList* self)
 	return self->length;
 }
 
-
 int SlimList_Equals(SlimList* self, SlimList* other){
 	Node *p, *q;
 	if (self->length != other->length)
@@ -94,7 +106,7 @@ int SlimList_Equals(SlimList* self, SlimList* other){
 	return 1;
 }
 
-Node * SlimList_GetNodeAt(SlimList* self, int index)
+Node* SlimList_GetNodeAt(SlimList* self, int index)
 {
 	int i;
 	Node* node = self->head;
@@ -130,7 +142,14 @@ char * SlimList_GetStringAt(SlimList* self, int index)
 	Node* node = SlimList_GetNodeAt(self, index);
 	if(node == 0)
 		return 0;
-	return node->string;
+
+	return SlimList_Iterator_GetString(node);
+}
+
+char* SlimList_Iterator_GetString(SlimListIterator* iterator)
+{
+	assert(iterator != NULL);
+	return iterator->string;
 }
 
 double SlimList_GetDoubleAt(SlimList* self, int index)

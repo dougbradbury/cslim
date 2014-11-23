@@ -6,9 +6,16 @@ extern "C" {
 #endif
 
 typedef struct SlimList SlimList;
+typedef struct Node SlimListIterator;
 
 SlimList* SlimList_Create(void);
 void SlimList_Destroy(SlimList*);
+
+SlimListIterator* SlimList_CreateIterator(SlimList*);
+int SlimList_Iterator_HasItem(SlimListIterator*);
+void SlimList_Iterator_Advance(SlimListIterator**);
+char* SlimList_Iterator_GetString(SlimListIterator*);
+
 extern void SlimList_AddString(SlimList*, char const *);
 void SlimList_AddList(SlimList* self, SlimList* element);
 int SlimList_GetLength(SlimList*);
