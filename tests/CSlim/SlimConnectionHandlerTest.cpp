@@ -20,7 +20,7 @@ extern "C"
   int mock_send_func(void * voidSelf, char * msg, int length)
   {
     MockComLink * self = (MockComLink*)voidSelf;
-    strncpy(self->lastSendMsg + self->lastSendIndex, msg, length); //TODO: ensure length doesn't exceed lastSendMsg
+    strncpy(self->lastSendMsg + self->lastSendIndex, msg, length);
     self->lastSendIndex += length;
 
 	int result = length;

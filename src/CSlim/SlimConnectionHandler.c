@@ -59,11 +59,9 @@ int read_size(SlimConnectionHandler* self)
 
 int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 {
-	int numbytes;
 
 	if (self->sendFunc(self->comLink, "Slim -- V0.0\n", 13) == -1)
 	{
-		//TODO: fix memory leak here
 		return -1;
 	}
 
@@ -77,7 +75,7 @@ int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 			free(message);
 			message = (char*)malloc(size_i + (size_t)1);
 			memset(message, 0, (size_t)size_i + (size_t)1);
-			numbytes = self->recvFunc(self->comLink, message, size_i);
+			int numbytes = self->recvFunc(self->comLink, message, size_i);
 			if (numbytes != size_i)
 			{
 				printf("did not receive right number of bytes.  %d expected but received %d\n", size_i, numbytes);
