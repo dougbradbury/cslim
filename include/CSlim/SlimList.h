@@ -22,6 +22,7 @@ void SlimList_Iterator_Replace(SlimListIterator*, const char*);
 
 extern void SlimList_AddString(SlimList*, char const *);
 void SlimList_AddList(SlimList* self, SlimList* element);
+void SlimList_PopHead(SlimList* self);
 int SlimList_GetLength(SlimList*);
 int SlimList_Equals(SlimList* self, SlimList* other);
 SlimList * SlimList_GetListAt(SlimList* self, int index);

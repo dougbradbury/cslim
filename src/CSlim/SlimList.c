@@ -24,6 +24,7 @@ struct SlimList {
 
 
 static void insertNode(SlimList* self, Node* node);
+static void SlimList_DestroyNode(Node* node);
 
 SlimList* SlimList_Create(void)
 {
@@ -36,18 +37,23 @@ void SlimList_Destroy(SlimList* self)
 {
 	Node * node;
 	Node * next;
+
 	for(node = self->head; node; node = next)
 	{
-		if (node->string) 
-			free(node->string);
-		
-		if (node->list)
-			SlimList_Destroy(node->list);
-			
 		next = node->next;
-		free(node);
+		SlimList_DestroyNode(node);
 	}
 	free(self);
+}
+
+static void SlimList_DestroyNode(Node* node) {
+	if (node->string)
+		free(node->string);
+
+	if (node->list)
+		SlimList_Destroy(node->list);
+
+	free(node);
 }
 
 SlimListIterator* SlimList_CreateIterator(SlimList* list) {
@@ -85,6 +91,21 @@ void SlimList_AddList(SlimList* self, SlimList* element)
 	char * embedded = SlimList_Serialize(element);
 	SlimList_AddString(self, embedded);
 	SlimList_Release(embedded);
+}
+
+void SlimList_PopHead(SlimList* self)
+{
+	assert(self->head != NULL);
+
+	Node* previousHead = self->head;
+	self->head = previousHead->next;
+
+	if (self->tail == previousHead)
+		self->tail = NULL;
+
+	self->length--;
+
+	SlimList_DestroyNode(previousHead);
 }
 
 int SlimList_GetLength(SlimList* self)

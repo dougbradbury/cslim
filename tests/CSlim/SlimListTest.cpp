@@ -224,6 +224,26 @@ TEST(SlimList, toStringForLongList)
 	CSlim_DestroyString(listAsAString);
 }
 
+TEST(SlimList, CanPopHeadOnListWithOneEntry)
+{
+	SlimList_AddString(slimList, "a");
+	SlimList_PopHead(slimList);
+	CHECK_EQUAL(0, SlimList_GetLength(slimList));
+}
+
+TEST(SlimList, CanInsertAfterPoppingListWithEntries)
+{
+	SlimList_AddString(slimList, "a");
+	SlimList_AddString(slimList, "a");
+
+	SlimList_PopHead(slimList);
+	SlimList_PopHead(slimList);
+
+	SlimList_AddString(slimList, "a");
+	SlimList_AddString(slimList, "a");
+	CHECK_EQUAL(2, SlimList_GetLength(slimList));
+}
+
 TEST(SlimList, iteratorDoesNotHaveAnItemWhenEmpty)
 {
 	SlimListIterator* iterator = SlimList_CreateIterator(slimList);
