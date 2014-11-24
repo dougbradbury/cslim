@@ -268,9 +268,9 @@ char* SlimList_ToString(SlimList* self) {
 	char* result = CSlim_CreateEmptyString();
 	CSlim_ConcatenateString(&result, "[");
 
-	Node* node;
-	for (node = self->head; node != NULL; node = node->next) {
-		SlimList* sublist = SlimList_Iterator_GetList(node);
+	SlimListIterator* iterator = SlimList_CreateIterator(self);
+	while (SlimList_Iterator_HasItem(iterator)) {
+		SlimList* sublist = SlimList_Iterator_GetList(iterator);
 
 		if (sublist != NULL) {
 			char* subListAsAString = SlimList_ToString(sublist);
@@ -278,13 +278,14 @@ char* SlimList_ToString(SlimList* self) {
 			CSlim_DestroyString(subListAsAString);
 		} else {
 			CSlim_ConcatenateString(&result, "\"");
-			CSlim_ConcatenateString(&result, node->string);
+			CSlim_ConcatenateString(&result, SlimList_Iterator_GetString(iterator));
 			CSlim_ConcatenateString(&result, "\"");
 		}
 
-		if (node->next != NULL) {
+		if (iterator->next != NULL) {
 			CSlim_ConcatenateString(&result, ", ");
 		}
+		SlimList_Iterator_Advance(&iterator);
 	}
 	CSlim_ConcatenateString(&result, "]");
 
