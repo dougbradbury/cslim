@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 //static local variables
 typedef struct Node Node;
@@ -21,7 +22,9 @@ struct SlimList {
 	Node* tail;
 };
 
+
 static void insertNode(SlimList* self, Node* node);
+static void SlimList_DestroyNode(Node* node);
 
 SlimList* SlimList_Create(void)
 {
@@ -34,18 +37,36 @@ void SlimList_Destroy(SlimList* self)
 {
 	Node * node;
 	Node * next;
+
 	for(node = self->head; node; node = next)
 	{
-		if (node->string) 
-			free(node->string);
-		
-		if (node->list)
-			SlimList_Destroy(node->list);
-			
 		next = node->next;
-		free(node);
+		SlimList_DestroyNode(node);
 	}
 	free(self);
+}
+
+static void SlimList_DestroyNode(Node* node) {
+	if (node->string)
+		free(node->string);
+
+	if (node->list)
+		SlimList_Destroy(node->list);
+
+	free(node);
+}
+
+SlimListIterator* SlimList_CreateIterator(SlimList* list) {
+	return list->head;
+}
+
+int SlimList_Iterator_HasItem(SlimListIterator* iterator) {
+	return iterator != NULL;
+}
+
+void SlimList_Iterator_Advance(SlimListIterator** iterator) {
+	if (*iterator != NULL)
+		*iterator = (*iterator)->next;
 }
 
 void SlimList_AddBuffer(SlimList* self, char const* buffer, int length)
@@ -72,11 +93,25 @@ void SlimList_AddList(SlimList* self, SlimList* element)
 	SlimList_Release(embedded);
 }
 
+void SlimList_PopHead(SlimList* self)
+{
+	assert(self->head != NULL);
+
+	Node* previousHead = self->head;
+	self->head = previousHead->next;
+
+	if (self->tail == previousHead)
+		self->tail = NULL;
+
+	self->length--;
+
+	SlimList_DestroyNode(previousHead);
+}
+
 int SlimList_GetLength(SlimList* self)
 {
 	return self->length;
 }
-
 
 int SlimList_Equals(SlimList* self, SlimList* other){
 	Node *p, *q;
@@ -92,7 +127,7 @@ int SlimList_Equals(SlimList* self, SlimList* other){
 	return 1;
 }
 
-Node * SlimList_GetNodeAt(SlimList* self, int index)
+Node* SlimList_GetNodeAt(SlimList* self, int index)
 {
 	int i;
 	Node* node = self->head;
@@ -110,20 +145,32 @@ Node * SlimList_GetNodeAt(SlimList* self, int index)
 SlimList * SlimList_GetListAt(SlimList* self, int index)
 {
 	Node * node = SlimList_GetNodeAt(self, index);
-	if (node)
-	{
-		if (node->list == 0)
-			node->list = SlimList_Deserialize(node->string);
-	}
-	return node->list;
+	return SlimList_Iterator_GetList(node);
 }
 
-char * SlimList_GetStringAt(SlimList* self, int index)
+SlimList* SlimList_Iterator_GetList(SlimListIterator* iterator)
+{
+	assert(iterator != NULL);
+
+	if (iterator->list == 0)
+		iterator->list = SlimList_Deserialize(iterator->string);
+
+	return iterator->list;
+}
+
+char* SlimList_GetStringAt(SlimList* self, int index)
 {
 	Node* node = SlimList_GetNodeAt(self, index);
 	if(node == 0)
 		return 0;
-	return node->string;
+
+	return SlimList_Iterator_GetString(node);
+}
+
+char* SlimList_Iterator_GetString(SlimListIterator* iterator)
+{
+	assert(iterator != NULL);
+	return iterator->string;
 }
 
 double SlimList_GetDoubleAt(SlimList* self, int index)
@@ -188,13 +235,17 @@ SlimList* SlimList_GetHashAt(SlimList* self, int index)
 void SlimList_ReplaceAt(SlimList* self, int index, char const * replacementString)
 {
 	Node* node = SlimList_GetNodeAt(self, index);
-	if(node->list != 0){
-		SlimList_Destroy(node->list);
-		node->list = 0;
+	SlimList_Iterator_Replace(node, replacementString);
+}
+
+void SlimList_Iterator_Replace(SlimListIterator* iterator, const char* replacementString) {
+	if (iterator->list != 0) {
+		SlimList_Destroy(iterator->list);
+		iterator->list = 0;
 	}
-	char * newString = CSlim_BuyString(replacementString);
-	free(node->string);
-	node->string = newString;
+	char* newString = CSlim_BuyString(replacementString);
+	free(iterator->string);
+	iterator->string = newString;
 }
 
 static void insertNode(SlimList* self, Node* node)
@@ -211,37 +262,53 @@ static void insertNode(SlimList* self, Node* node)
 	self->length++;
 }
 
+void SlimList_Iterator_AdvanceBy(SlimListIterator** iterator, int amount) {
+	int i;
+	for (i = 0; i < amount; i++) {
+		SlimList_Iterator_Advance(iterator);
+	}
+}
+
 SlimList* SlimList_GetTailAt(SlimList* self, int index)
 {
 	SlimList * tail = SlimList_Create();
-	int length = SlimList_GetLength(self);
-	for(;index < length; index++) {
-		SlimList_AddString(tail, SlimList_GetStringAt(self, index));
+
+	SlimListIterator* iterator = SlimList_CreateIterator(self);
+	SlimList_Iterator_AdvanceBy(&iterator, index);
+
+	while (SlimList_Iterator_HasItem(iterator))
+	{
+		SlimList_AddString(tail, SlimList_Iterator_GetString(iterator));
+		SlimList_Iterator_Advance(&iterator);
 	}
+
 	return tail;
 }
 
 char* SlimList_ToString(SlimList* self) {
-	static char string[128];
-	char buf[128];
-	buf[0] = '\0';
-	strncat(buf, "[", 128);
-	int length = SlimList_GetLength(self);
-	int i;
-	for (i = 0; i<length; i++) {
-		SlimList* sublist = SlimList_GetListAt(self, i);
+	char* result = CSlim_CreateEmptyString();
+	CSlim_ConcatenateString(&result, "[");
+
+	SlimListIterator* iterator = SlimList_CreateIterator(self);
+	while (SlimList_Iterator_HasItem(iterator)) {
+		SlimList* sublist = SlimList_Iterator_GetList(iterator);
+
 		if (sublist != NULL) {
-			strncat(buf, SlimList_ToString(sublist), 128);
+			char* subListAsAString = SlimList_ToString(sublist);
+			CSlim_ConcatenateString(&result, subListAsAString);
+			CSlim_DestroyString(subListAsAString);
 		} else {
-			strncat(buf, "\"", 128);
-			strncat(buf, SlimList_GetStringAt(self, i), 128);
-			strncat(buf, "\"", 128);
+			CSlim_ConcatenateString(&result, "\"");
+			CSlim_ConcatenateString(&result, SlimList_Iterator_GetString(iterator));
+			CSlim_ConcatenateString(&result, "\"");
 		}
-		if (i != (length-1)) {
-			strncat(buf, ", ", 128);
-		}	
+
+		if (iterator->next != NULL) {
+			CSlim_ConcatenateString(&result, ", ");
+		}
+		SlimList_Iterator_Advance(&iterator);
 	}
-	strncat(buf, "]", 128);
-	strncpy(string, buf, 128);
-	return string;	
+	CSlim_ConcatenateString(&result, "]");
+
+	return result;
 }

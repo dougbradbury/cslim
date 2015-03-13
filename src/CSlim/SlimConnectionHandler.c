@@ -39,41 +39,43 @@ void SlimConnectionHandler_RegisterSlimMessageHandler(SlimConnectionHandler* sel
 int read_size(SlimConnectionHandler* self)
 {
 	char size[7];
-	size_t size_i = 0;
+	int size_i = 0;
 	char colon;
 	memset(size, (size_t)0, (size_t)7);
 
-	if (self->recvFunc(self->comLink, size, 6) == 6)
+	int receiveResult = self->recvFunc(self->comLink, size, 6);
+	if (receiveResult == 6)
 	{
 		if ((self->recvFunc(self->comLink, &colon, 1)) == 1 && colon == ':')
 		{
 			size_i = atoi(size);
 		}
+	} else if (receiveResult == -1) {
+		size_i = -1;;
 	}
-	return (int)size_i;
+	return size_i;
 }
 
 
 int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 {
-	char * message = (char*)malloc((size_t)3);
-	message[0] = 0;
-	int numbytes;
 
 	if (self->sendFunc(self->comLink, "Slim -- V0.0\n", 13) == -1)
 	{
 		return -1;
 	}
 
+	char* message = NULL;
 	while(1)
 	{
 		int size_i = read_size(self);
+
 		if (size_i > 0)
 		{
 			free(message);
 			message = (char*)malloc(size_i + (size_t)1);
 			memset(message, 0, (size_t)size_i + (size_t)1);
-			numbytes = self->recvFunc(self->comLink, message, size_i);
+			int numbytes = self->recvFunc(self->comLink, message, size_i);
 			if (numbytes != size_i)
 			{
 				printf("did not receive right number of bytes.  %d expected but received %d\n", size_i, numbytes);
@@ -92,6 +94,9 @@ int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 			free(length_buffer);
 			send_result = self->sendFunc(self->comLink, response_message, response_length);
 			SlimList_Release(response_message);
+		} else if (size_i == -1)
+		{
+			break;
 		}
 	}
 	free(message);

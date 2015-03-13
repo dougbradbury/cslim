@@ -5,14 +5,18 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+static char* stringForNullNode = "null";
+
 enum {LIST_OVERHEAD=9, ELEMENT_OVERHEAD=8};
 
-char* nodeStringAt(SlimList* self, int i)
+static char* GetStringWithNullAsANormalString(SlimListIterator* iterator)
 {
-        char * nodeString = SlimList_GetStringAt(self, i);
-        if (nodeString == NULL)
-                nodeString = "null";
-        return nodeString;
+	char* nodeString = SlimList_Iterator_GetString(iterator);
+
+	if (nodeString == NULL)
+		nodeString = stringForNullNode;
+
+	return nodeString;
 }
 
 long FieldLength(unsigned char * nodeString)
@@ -25,16 +29,18 @@ long FieldLength(unsigned char * nodeString)
         return fieldlength;
 }
 
-
 int SlimList_SerializedLength(SlimList* self)
 {
-        int length = LIST_OVERHEAD;
-        int i;
-        for(i = 0; i < SlimList_GetLength(self); i++)
-        {
-                length += strlen(nodeStringAt(self, i)) + ELEMENT_OVERHEAD;
-        }
-        return length;
+	int length = LIST_OVERHEAD;
+
+	SlimListIterator* iterator = SlimList_CreateIterator(self);
+	while (SlimList_Iterator_HasItem(iterator)) {
+		length += strlen(GetStringWithNullAsANormalString(iterator)) + ELEMENT_OVERHEAD;
+
+		SlimList_Iterator_Advance(&iterator);
+	}
+
+	return length;
 }
 
 char* SlimList_Serialize(SlimList* self)
@@ -42,14 +48,15 @@ char* SlimList_Serialize(SlimList* self)
         char* buf = (char*)malloc(SlimList_SerializedLength(self)+1);
         char* write_ptr = buf;
         int listLength = SlimList_GetLength(self);
-        int i;
 
         write_ptr += sprintf(write_ptr, "[%06d:", listLength);
 
-        for(i = 0; i < listLength; i++)
-        {
-                unsigned char * nodeString = (unsigned char *) nodeStringAt(self, i);
-                write_ptr += sprintf(write_ptr, "%06ld:%s:", FieldLength(nodeString), nodeString);
+        SlimListIterator* iterator = SlimList_CreateIterator(self);
+        while (SlimList_Iterator_HasItem(iterator)) {
+        	unsigned char * nodeString = (unsigned char *) GetStringWithNullAsANormalString(iterator);
+        	write_ptr += sprintf(write_ptr, "%06ld:%s:", FieldLength(nodeString), nodeString);
+        	
+        	SlimList_Iterator_Advance(&iterator);
         }
         strcpy(write_ptr, "]");
         return buf;

@@ -43,7 +43,11 @@ char* InvalidCommand(SlimList* instruction) {
 
 char* MalformedInstruction(SlimList* instruction) {
 	static char msg[128];
-	snprintf(msg, (size_t)128, "__EXCEPTION__:message:<<MALFORMED_INSTRUCTION %s.>>", SlimList_ToString(instruction));
+	
+	char* listAsAString = SlimList_ToString(instruction);
+	snprintf(msg, (size_t)128, "__EXCEPTION__:message:<<MALFORMED_INSTRUCTION %s.>>", listAsAString);
+	CSlim_DestroyString(listAsAString);
+
 	return CSlim_BuyString(msg);
 }
 
@@ -105,15 +109,16 @@ char* Dispatch(ListExecutor* self, SlimList* instruction) {
 SlimList* ListExecutor_Execute(ListExecutor* self, SlimList* instructions)
 {
 	SlimList* results = SlimList_Create();
-	int numberOfInstructions = SlimList_GetLength(instructions);
-	int n;
-	for (n=0; n<numberOfInstructions; n++) {
-		SlimList* instruction = SlimList_GetListAt(instructions, n);
+
+	SlimListIterator* iterator = SlimList_CreateIterator(instructions);
+	while (SlimList_Iterator_HasItem(iterator)) {
+		SlimList* instruction = SlimList_Iterator_GetList(iterator);
 		char* id = SlimList_GetStringAt(instruction, 0);
 		char* result = Dispatch(self, instruction);
 		AddResult(results, id, result);
-		if (result)
-			free(result);
+
+		free(result);
+		SlimList_Iterator_Advance(&iterator);
 	}
 
 	return results;

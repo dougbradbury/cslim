@@ -180,21 +180,22 @@ char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceNa
 }
 
 void replaceSymbols(SymbolTable* symbolTable, SlimList* list) {
-	int i;
-	for (i=0; i<SlimList_GetLength(list); i++) {
-		char* string = SlimList_GetStringAt(list, i);
+    SlimListIterator* iterator = SlimList_CreateIterator(list);
+    while (SlimList_Iterator_HasItem(iterator)) {
+		char* string = SlimList_Iterator_GetString(iterator);
 		SlimList* embeddedList = SlimList_Deserialize(string);
 		if (embeddedList == NULL) {
 			char* replacedString = replaceString(symbolTable, string);
-			SlimList_ReplaceAt(list, i, replacedString);
+			SlimList_Iterator_Replace(iterator, replacedString);
 			free(replacedString);
 		} else {
 			replaceSymbols(symbolTable, embeddedList);
 			char* serializedReplacedList = SlimList_Serialize(embeddedList);
-			SlimList_ReplaceAt(list, i, serializedReplacedList);
+			SlimList_Iterator_Replace(iterator, serializedReplacedList);
 			SlimList_Destroy(embeddedList);
 			SlimList_Release(serializedReplacedList);
 		}
+		SlimList_Iterator_Advance(&iterator);
 	}
 }
 
