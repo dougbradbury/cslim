@@ -11,7 +11,7 @@
         id result;
         [invocation getReturnValue: &result];
         return [OCSReturnValue forObjectOrPrimitive: result
-                                 andMethodSignature: invocation.methodSignature];
+                          andMethodSignature: invocation.methodSignature];
     }
 }
 
@@ -31,6 +31,8 @@
         return object;
     } else if([NSStringFromClass([object class]) isEqualToString: @"__NSCFConstantString"]) {
         return object;
+    } else if ([NSStringFromClass([object class]) isEqualToString:@"NSTaggedPointerString"]) {
+        return object;
     } else if ([NSStringFromClass([object class]) isEqualToString:@"__NSArrayI"]) {
         return [self forNSArray:object];
     } else if ([NSStringFromClass([object class]) isEqualToString:@"__NSCFBoolean"]) {
@@ -43,7 +45,7 @@
 + (NSString *) forPrimitive:(id)primitive withReturnType:(NSString*)returnType {
     if ([returnType isEqualToString: @"i"]) {
         return [NSString stringWithFormat: @"%i", (int)primitive];
-    } else if ([returnType isEqualToString: @"c"]) {
+    } else if ([returnType isEqualToString: @"c"] || [returnType isEqualToString:@"B"]) {
         return ((BOOL)primitive) ? @"true" : @"false";
     } else {
         return @"OK";

@@ -33,12 +33,17 @@ OCDSpec2Context(OCSReturnValueSpec) {
             [ExpectObj(classNameFor(@"methodReturningNSString")) toBeEqualTo: @"__NSCFConstantString"];
             [ExpectObj(result) toBeEqualTo: @"Hello World"];
         });
+  
+        It(@"returns the result for class NSTaggedPointerString", ^{
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturning__NSTaggedPointerString")];
+            [ExpectObj(classNameFor(@"methodReturning__NSTaggedPointerString")) toBeEqualTo: @"NSTaggedPointerString"];
+            [ExpectObj(result) toBeEqualTo: @"1234.5"];
+        });
         
         It(@"returns the result for class __NSCFString", ^{
             result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturning__NSCFString")];
-            
             [ExpectObj(classNameFor(@"methodReturning__NSCFString")) toBeEqualTo: @"__NSCFString"];
-            [ExpectObj(result) toBeEqualTo: @"1234.5"];
+            [ExpectObj(result) toBeEqualTo: @"Hello World"];
         });
         
         It(@"returns the result for class __NSCFConstantString", ^{
@@ -70,6 +75,18 @@ OCDSpec2Context(OCSReturnValueSpec) {
             result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningBOOLNO")];
             
             [ExpectObj(result) toBeEqualTo: @"false"];
+        });
+        
+        It(@"returns the value of false Bool", ^{
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningBoolFalse")];
+            
+            [ExpectObj(result) toBeEqualTo: @"false"];
+        });
+        
+        It(@"returns the value of true Bool", ^{
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningBoolTrue")];
+            
+            [ExpectObj(result) toBeEqualTo: @"true"];
         });
         
         It(@"returns OK for void", ^{

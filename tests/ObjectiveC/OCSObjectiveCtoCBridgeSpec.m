@@ -143,14 +143,14 @@ OCDSpec2Context(OCSObjectiveCtoCBridgeSpec) {
                 list = NSArray_ToSlimList(@[ @{@"employee number":@(1429), @"first name":@"Bob"},
                                              @{@"employee number":@(8832), @"first name":@"James"}
                                              ]);
-                SlimList *dictionaryA = SlimList_GetListAt(SlimList_GetListAt(list, 0), 0);
-                SlimList *dictionaryB = SlimList_GetListAt(SlimList_GetListAt(list, 0), 1);
+                SlimList *dictionaryA = SlimList_GetListAt(SlimList_GetListAt(list, 0), 1);
+                SlimList *dictionaryB = SlimList_GetListAt(SlimList_GetListAt(list, 0), 0);
                 [ExpectObj(SlimList_GetNSStringAt(dictionaryA, 0)) toBeEqualTo:@"employee number"];
                 [ExpectObj(SlimList_GetNSStringAt(dictionaryA, 1)) toBeEqualTo:@"1429"];
                 [ExpectObj(SlimList_GetNSStringAt(dictionaryB, 0)) toBeEqualTo:@"first name"];
                 [ExpectObj(SlimList_GetNSStringAt(dictionaryB, 1)) toBeEqualTo:@"Bob"];
-                SlimList *dictionaryAA = SlimList_GetListAt(SlimList_GetListAt(list, 1), 0);
-                SlimList *dictionaryBB = SlimList_GetListAt(SlimList_GetListAt(list, 1), 1);
+                SlimList *dictionaryAA = SlimList_GetListAt(SlimList_GetListAt(list, 1), 1);
+                SlimList *dictionaryBB = SlimList_GetListAt(SlimList_GetListAt(list, 1), 0);
                 [ExpectObj(SlimList_GetNSStringAt(dictionaryAA, 0)) toBeEqualTo:@"employee number"];
                 [ExpectObj(SlimList_GetNSStringAt(dictionaryAA, 1)) toBeEqualTo:@"8832"];
                 [ExpectObj(SlimList_GetNSStringAt(dictionaryBB, 0)) toBeEqualTo:@"first name"];
