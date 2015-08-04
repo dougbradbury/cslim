@@ -10,17 +10,18 @@ int main(int argc, const char * argv[]) {
 
 Slim * slim;
 
-void runSlimServer() {
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), ^{
-        const char * slimPort = slimPortArg();
-        exit(runSlimSocketServer(slimPort));
-    });
-}
-
 const char * slimPortArg() {
     NSArray *args = [[NSProcessInfo processInfo] arguments];
     const char * port = [ args[1] cStringUsingEncoding:NSASCIIStringEncoding] ;
     return port;
+}
+
+void runSlimServer() {
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), ^{
+        const char * slimPort = slimPortArg();
+        int result = runSlimSocketServer(slimPort);
+        exit(result);
+    });
 }
 
 int connection_handler(int socket) {
