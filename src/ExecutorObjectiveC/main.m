@@ -12,7 +12,7 @@ Slim * slim;
 
 void runSlimServer() {
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), ^{
-        const char * slimPort = slimPortArg()
+        const char * slimPort = slimPortArg();
         exit(runSlimSocketServer(slimPort));
     });
 }
