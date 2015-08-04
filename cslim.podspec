@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "cslim"
-  s.version      = "1.0.3"
+  s.version      = "1.0.2"
   s.summary      = "An implementation of FitNesse SliM for C and Objective-C"
   s.homepage     = "https://github.com/dougbradbury/cslim"
   s.license      = { :type => 'EPL', :file => 'LICENSE' }
