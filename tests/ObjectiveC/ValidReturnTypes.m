@@ -11,8 +11,12 @@
     return @"Hello World";
 }
 
+-(NSString*) methodReturning__NSTaggedPointerString {
+    return [NSString stringWithFormat:@"%g",1234.5];
+}
+
 -(NSString*) methodReturning__NSCFString {
-    return [NSString stringWithFormat: @"%g", 1234.5];
+    return [[NSMutableString alloc] initWithString:@"Hello World"];
 }
 
 -(NSString*) methodReturning__NSCFConstantString {
@@ -36,6 +40,14 @@
 
 -(BOOL) methodReturningBOOLNO {
     return NO;
+}
+
+-(_Bool)methodReturningBoolFalse {
+    return false;
+}
+
+-(_Bool)methodReturningBoolTrue {
+    return true;
 }
 
 - (NSArray *)methodReturningArray {
