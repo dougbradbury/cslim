@@ -45,9 +45,19 @@ char* StatementExecutor_Make(StatementExecutor* executor, char const* instanceNa
             if(length == 0) {
                 instance = [[class alloc] init];
             } else if(length == 1) {
-                instance = [[class alloc] initWithString: SlimList_GetNSStringAt(args, 0)];
+                if([[class alloc] respondsToSelector:@selector(initWithString:)]) {
+                    instance = [[class alloc] initWithString: SlimList_GetNSStringAt(args, 0)];
+                }
+                else {
+                    instance = [[class alloc] initWithParam: SlimList_GetNSStringAt(args, 0)];
+                }
             } else {
-                instance = [[class alloc] initWithArray: SlimList_ToNSArray(args)];
+                if([[class alloc] respondsToSelector:@selector(initWithArray:)]) {
+                    instance = [[class alloc] initWithArray: SlimList_ToNSArray(args)];
+                }
+                else {
+                    instance = [[class alloc] initWithArrayOfParams: SlimList_ToNSArray(args)];
+                }
             }
             [executor->instances setValue: instance
                                    forKey: [NSString stringWithFormat: @"%s", instanceName]];
@@ -88,7 +98,7 @@ char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceNa
                 return NSStringToCString([result stringValue]);
             }
         } else if ([returnType isEqualToString: @"i"]) {
-            return NSStringToCString([NSString stringWithFormat: @"%d", result]);
+            return NSStringToCString([NSString stringWithFormat: @"%@", result]);
         } else {
             return "OK";
         }
