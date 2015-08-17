@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.authors      = "Robert Martin", "James Grenning", "Doug Bradbury", "Eric Myer" 
   s.source       = { :git => "https://github.com/paulstringer/cslim.git", :tag  => "v#{s.version}" }
   s.source_files = 'include/Com/*.h', 'include/CSlim/*.h', 'include/ExecutorObjectiveC/*.h', 'src/Com/*', 'src/CSlim/*', 'src/ExecutorObjectiveC/*'
-  s.ios.source_files = 'src/ExecutorObjectiveC/main.c'
+  s.ios.source_files = 'src/ExecutorObjectiveC/Main.c'
   s.osx.source_files = 'src/ExecutorObjectiveC/main.m'
   s.private_header_files = "**/*.h"
 end
