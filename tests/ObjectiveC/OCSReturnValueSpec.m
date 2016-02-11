@@ -54,9 +54,9 @@ OCDSpec2Context(OCSReturnValueSpec) {
         });
         
         It(@"returns the result for a native Swift string class (_NSContigousString)", ^{
-            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturning__SwiftString")];
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningSwiftString")];
             
-            [ExpectObj(classNameFor(@"methodReturning__SwiftString")) toBeEqualTo: @"Swift._NSContiguousString"];
+            [ExpectObj(classNameFor(@"methodReturningSwiftString")) toBeEqualTo: @"Swift._NSContiguousString"];
             [ExpectObj(result) toBeEqualTo: @"Hello Swift"];
         });
         
