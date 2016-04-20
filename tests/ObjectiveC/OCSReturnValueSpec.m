@@ -3,6 +3,7 @@
 #import "ValidReturnTypes.h"
 #import "SlimList.h"
 #import "SlimListSerializer.h"
+//#import "MacSpecs-Swift.h"
 
 NSMethodSignature* forSelector(SEL selector) {
     return [[[ValidReturnTypes alloc] init] methodSignatureForSelector: selector];
@@ -56,7 +57,8 @@ OCDSpec2Context(OCSReturnValueSpec) {
         It(@"returns the result for a native Swift string class (_NSContigousString)", ^{
             result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningSwiftString")];
             
-            [ExpectObj(classNameFor(@"methodReturningSwiftString")) toBeEqualTo: @"Swift._NSContiguousString"];
+            
+            [ExpectStr(classNameFor(@"methodReturningSwiftString")) toContain:@"_NSContiguousString"];
             [ExpectObj(result) toBeEqualTo: @"Hello Swift"];
         });
         

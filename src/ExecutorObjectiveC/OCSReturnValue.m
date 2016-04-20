@@ -33,7 +33,7 @@
         return object;
     } else if ([NSStringFromClass([object class]) isEqualToString:@"NSTaggedPointerString"]) {
         return object;
-    } else if ([NSStringFromClass([object class]) isEqualToString:@"Swift._NSContiguousString"]) {
+    } else if ([NSStringFromClass([object class]) containsString:@"_NSContiguousString"]) {
         return object;
     } else if ([NSStringFromClass([object class]) isEqualToString:@"__NSArrayI"]) {
         return [self forNSArray:object];
