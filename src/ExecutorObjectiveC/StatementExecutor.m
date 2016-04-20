@@ -1,4 +1,5 @@
 #import "StatementExecutor.h"
+#import "AcceptanceTests-swift.h"
 
 void StatementExecutor_ReplaceSymbols(StatementExecutor* executor, SlimList* args);
 SEL NSSelectorFromCStringAndLength(char const* methodName, int numberOrArguments);
@@ -15,12 +16,12 @@ struct StatementExecutor
 };
 
 StatementExecutor* StatementExecutor_Create(void) {
-	StatementExecutor* self = (StatementExecutor*)malloc(sizeof(StatementExecutor));
-	memset(self, 0, sizeof(StatementExecutor));
+    StatementExecutor* self = (StatementExecutor*)malloc(sizeof(StatementExecutor));
+    memset(self, 0, sizeof(StatementExecutor));
     self->pool = [[NSAutoreleasePool alloc] init];
     self->instances = [[NSMutableDictionary dictionary] retain];
     self->symbols = [[NSMutableDictionary dictionary] retain];
-	return self;
+    return self;
 }
 
 void* StatementExecutor_Instance(StatementExecutor* executor, char const* instanceName) {
@@ -29,6 +30,8 @@ void* StatementExecutor_Instance(StatementExecutor* executor, char const* instan
 
 char* StatementExecutor_Make(StatementExecutor* executor, char const* instanceName, char const* className, SlimList* args){
     NSString* newClassName = [NSString stringWithFormat: @"%s", className];
+    NSLog(@"[SOURCE] - Invoked StatementExecutor.m Classname: %@", newClassName);
+    
     for(NSString* symbol in [[executor->symbols keyEnumerator] allObjects]) {
         newClassName = [newClassName stringByReplacingOccurrencesOfString: [NSString stringWithFormat: @"$%@", symbol]
                                                                withString: [executor->symbols objectForKey: symbol]];
@@ -92,15 +95,19 @@ char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceNa
             result = [instance performSelector: selector withObject: SlimList_ToNSArray(args)];
         }
         if ([returnType isEqualToString: @"@"]) {
-            if([NSStringFromClass([result class]) isEqualToString: @"NSCFString"]) {
+            if([NSStringFromClass([result class]) isEqualToString: @"__NSCFString"]) {
+                return NSStringToCString(result);
+            } if([NSStringFromClass([result class]) isEqualToString: @"NSTaggedPointerString"]) {
                 return NSStringToCString(result);
             } else {
                 return NSStringToCString([result stringValue]);
             }
+        } else if ([returnType isEqualToString: @"c"] || [returnType isEqualToString: @"B"]) {
+            return NSStringToCString([NSString stringWithFormat: @"%s", result ? "true" : "false"]);
         } else if ([returnType isEqualToString: @"i"]) {
             return NSStringToCString([NSString stringWithFormat: @"%@", result]);
         } else {
-            return "OK";
+            return "true";
         }
     } @catch (NSException* e) {
         return NSStringToCString([NSString stringWithFormat: @"__EXCEPTION__:message:<<%@ %@>>", [e name], [e reason]]);
