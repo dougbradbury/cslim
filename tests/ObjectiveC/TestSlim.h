@@ -4,15 +4,23 @@
     BOOL wasNoArgsCalled;
     NSString* calledWithStringArg;
     NSNumber* calledWithNSNumberArg;
+    NSString* calledWithFirstStringArg;
+    NSString* calledWithSecondStringArg;
+    NSArray* calledWithTable;
 }
-@property (assign) BOOL wasNoArgsCalled;
-@property (nonatomic, retain) NSString* calledWithStringArg;
-@property (nonatomic, retain) NSNumber* calledWithNSNumberArg;
-@property (nonatomic, retain) NSString* calledWithFirstStringArg;
-@property (nonatomic, retain) NSString* calledWithSecondStringArg;
+
+@property (readwrite, assign) BOOL wasNoArgsCalled;
+@property (nonatomic, strong) NSString* calledWithStringArg;
+@property (nonatomic, strong) NSNumber* calledWithNSNumberArg;
+@property (nonatomic, strong) NSString* calledWithFirstStringArg;
+@property (nonatomic, strong) NSString* calledWithSecondStringArg;
+@property (nonatomic, strong) NSString* calledWithThirdStringArg;
+@property (nonatomic, strong) NSArray* calledWithTable;
 
 -(id) initWithString: (NSString*) givenString;
 -(id) initWithArray: (NSArray*) givenArray;
+
+-(void) raisesException;
 
 -(NSString*) noArgs;
 -(NSString*) withStringArg:(NSString*) someString;
@@ -20,6 +28,10 @@
 -(NSString*) withMultipleArgs:(NSArray*) args;
 -(NSString*) createTestSlimWithString: (NSString*) givenString;
 
+-(NSString*) multiple:(NSString*) firstArg strings:(NSString*) secondArg;
+-(void) three:(NSString*) firstArg strings:(NSString*) secondArg method:(NSString*) thirdArg;
+
 -(NSNumber*) returnsNSNumber;
+- (void)table:(NSArray*)table;
 
 @end
