@@ -10,20 +10,6 @@ int main(int argc, const char * argv[]) {
 
 Slim * slim;
 
-const char * slimPortArg() {
-    NSArray *args = [[NSProcessInfo processInfo] arguments];
-    const char * port = [ args[1] cStringUsingEncoding:NSASCIIStringEncoding] ;
-    return port;
-}
-
-void runSlimServer() {
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), ^{
-        const char * slimPort = slimPortArg();
-        int result = runSlimSocketServer(slimPort);
-        exit(result);
-    });
-}
-
 int connection_handler(int socket) {
     int result = 0;
     TcpComLink * comLink = TcpComLink_Create(socket);
@@ -35,8 +21,13 @@ int connection_handler(int socket) {
     return result;
 }
 
+const char * slimPortArg() {
+    NSArray *args = [[NSProcessInfo processInfo] arguments];
+    const char * port = [ args[1] cStringUsingEncoding:NSASCIIStringEncoding] ;
+    return port;
+}
+
 int runSlimSocketServer(const char * arg) {
-    
     slim = Slim_Create();
     SocketServer* server = SocketServer_Create();
     SocketServer_register_handler(server, &connection_handler);
@@ -47,6 +38,16 @@ int runSlimSocketServer(const char * arg) {
     Slim_Destroy(slim);
     return result;
 }
+
+void runSlimServer() {
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), ^{
+        const char * slimPort = slimPortArg();
+        int result = runSlimSocketServer(slimPort);
+        exit(result);
+    });
+}
+
+
 
 @interface OCSlimNSApplicationRunner : NSApplication
 @end
