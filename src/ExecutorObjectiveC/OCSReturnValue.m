@@ -35,7 +35,7 @@
         return object;
     } else if ([NSStringFromClass([object class]) containsString:@"_NSContiguousString"]) {
         return object;
-    } else if ([NSStringFromClass([object class]) isEqualToString:@"__NSArrayI"]) {
+    } else if ([NSStringFromClass([object class]) containsString:@"Array"]) {
         return [self forNSArray:object];
     } else if ([NSStringFromClass([object class]) isEqualToString:@"__NSCFBoolean"]) {
         return ((NSNumber *)object).boolValue ? @"true" : @"false";
