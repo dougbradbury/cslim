@@ -50,6 +50,10 @@
     return true;
 }
 
+- (NSArray *)methodReturningOneElementArray {
+    return @[@"123"];
+}
+
 - (NSArray *)methodReturningTwoElementArray {
     return @[@"123", @"456"];
 }

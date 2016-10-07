@@ -116,7 +116,17 @@ OCDSpec2Context(OCSReturnValueSpec) {
             
             [ExpectObj(result) toBeEqualTo: @"OK"];
         });
-        
+
+        It(@"returns Serialized Slim list for a one element NSArray", ^{
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningOneElementArray")];
+            SlimList* list = SlimList_Create();
+            SlimList_AddString(list, "123");
+            NSString *resultString = [NSString stringWithUTF8String: SlimList_Serialize(list)];
+            SlimList_Destroy(list);
+            [ExpectObj(result) toBeEqualTo:resultString];
+        });
+
+
         It(@"returns Serialized Slim list for a two element NSArray", ^{
             result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningTwoElementArray")];
             SlimList* list = SlimList_Create();
