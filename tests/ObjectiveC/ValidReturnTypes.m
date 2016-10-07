@@ -50,8 +50,8 @@
     return true;
 }
 
-- (NSArray *)methodReturningArray {
-    return @[@"123"];
+- (NSArray *)methodReturningTwoElementArray {
+    return @[@"123", @"456"];
 }
 
 - (NSArray *)methodReturningQueryTableResults {

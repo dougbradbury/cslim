@@ -99,16 +99,29 @@ OCDSpec2Context(OCSReturnValueSpec) {
             [ExpectObj(result) toBeEqualTo: @"true"];
         });
         
+        It(@"returns the value of Swift true Bool", ^{
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningSwiftBoolTrue")];
+            
+            [ExpectObj(result) toBeEqualTo: @"true"];
+        });
+        
+        It(@"returns the value of Swift false Bool", ^{
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningSwiftBoolFalse")];
+            
+            [ExpectObj(result) toBeEqualTo: @"false"];
+        });
+        
         It(@"returns OK for void", ^{
             result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningVoid")];
             
             [ExpectObj(result) toBeEqualTo: @"OK"];
         });
         
-        It(@"returns Serialized Slim list for an NSArray", ^{
-            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningArray")];
+        It(@"returns Serialized Slim list for a two element NSArray", ^{
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningTwoElementArray")];
             SlimList* list = SlimList_Create();
             SlimList_AddString(list, "123");
+            SlimList_AddString(list, "456");
             NSString *resultString = [NSString stringWithUTF8String: SlimList_Serialize(list)];
             SlimList_Destroy(list);
             [ExpectObj(result) toBeEqualTo:resultString];
