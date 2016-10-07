@@ -6,11 +6,11 @@ extension ValidReturnTypes {
         return "Hello Swift"
     }
     
-    func methodReturningSwiftC99BoolTrue() -> Bool {
+    func methodReturningSwiftBoolTrue() -> Bool {
         return true
     }
     
-    func methodReturningSwiftC99BoolFalse() -> Bool {
+    func methodReturningSwiftBoolFalse() -> Bool {
         return false
     }
     
