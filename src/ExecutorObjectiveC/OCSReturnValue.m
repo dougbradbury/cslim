@@ -5,24 +5,16 @@
 @implementation OCSReturnValue
 
 +(NSString*) forInvocation:(NSInvocation*) invocation {
-    if ([self signatureHasReturnTypeVoid: invocation.methodSignature]) {
+    if ([self invocationHasReturnTypeVoid: invocation]) {
         return @"OK";
-    } else if ([self signatureHasReturnTypeObject:invocation.methodSignature]){
-        id result;
-        [invocation getReturnValue: &result];
-        return [OCSReturnValue forObject:result];
+    } else if ([self invocationHasReturnTypeObject:invocation]){
+        return [OCSReturnValue forReturnTypeObjectInvocation:invocation];
     } else {
-        return [OCSReturnValue forPrimitiveReturnTypeInvocation:invocation];
+        return [OCSReturnValue forReturnTypePrimitiveInvocation:invocation];
     }
 }
 
-+(BOOL) signatureHasReturnTypeObject:(NSMethodSignature *)signature {
-    NSString* returnType = [NSString stringWithUTF8String: [signature methodReturnType]];
-    return [returnType isEqualToString:@"@"];
-}
-
-+ (NSString *) forObjectReturnTypeInvocation:(NSInvocation *) invocation {
-    
++ (NSString *) forReturnTypeObjectInvocation:(NSInvocation *) invocation {
     id object;
     [invocation getReturnValue: &object];
     return [OCSReturnValue forObject:object];
@@ -48,8 +40,9 @@
     }
 }
 
-+ (NSString *) forPrimitiveReturnTypeInvocation:(NSInvocation *)invocation {
-    NSString* returnType = [NSString stringWithUTF8String: [invocation.methodSignature methodReturnType]];
++ (NSString *) forReturnTypePrimitiveInvocation:(NSInvocation *)invocation {
+    
+    NSString* returnType = [self returnTypeStringForInvocation:invocation];
     
     if ([returnType isEqualToString: @"i"] || [returnType isEqualToString:@"q"]) {
         int result;
@@ -73,15 +66,22 @@
     
 }
 
-
-+(BOOL) signatureHasReturnTypeVoid:(NSMethodSignature*) methodSignature {
-    return [[NSString stringWithUTF8String: [methodSignature methodReturnType]] isEqualToString: @"v"];
-}
-
 + (NSString *) forNSArray:(NSArray *)array {
     SlimList *slimlist = NSArray_ToSlimList(array);
     NSString *result = CStringToNSString(SlimList_Serialize(slimlist));
     return result;
+}
+
++(BOOL) invocationHasReturnTypeObject:(NSInvocation *)invocation {
+    return [[self returnTypeStringForInvocation:invocation] isEqualToString:@"@"];
+}
+
++ (BOOL) invocationHasReturnTypeVoid:(NSInvocation *) invocation {
+    return [[self returnTypeStringForInvocation: invocation] isEqualToString: @"v"];
+}
+
++ (NSString *) returnTypeStringForInvocation:(NSInvocation *)invocation {
+    return [NSString stringWithUTF8String: [invocation.methodSignature methodReturnType]];
 }
 
 @end
