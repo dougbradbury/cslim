@@ -1,8 +1,8 @@
 #import <Cocoa/Cocoa.h>
-#include <cslim/Slim.h>
-#include <cslim/SocketServer.h>
-#include <cslim/SlimConnectionHandler.h>
-#include <cslim/TcpComLink.h>
+#include <CSlim/Slim.h>
+#include <CSlim/SocketServer.h>
+#include <CSlim/SlimConnectionHandler.h>
+#include <CSlim/TcpComLink.h>
 
 int main(int argc, const char * argv[]) {
     return NSApplicationMain(argc, argv);
