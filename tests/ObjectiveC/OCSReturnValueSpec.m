@@ -75,6 +75,36 @@ OCDSpec2Context(OCSReturnValueSpec) {
             [ExpectObj(result) toBeEqualTo: @"456"];
         });
         
+        It(@"returns the value of a float", ^{
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningFloat")];
+            
+            [ExpectObj(result) toBeEqualTo: @"3.14159"];
+        });
+        
+        It(@"returns the value of a double", ^{
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningDouble")];
+            
+            [ExpectObj(result) toBeEqualTo: @"123.45"];
+        });
+        
+        It(@"returns the value of a Swift Double", ^{
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningSwiftDouble")];
+            
+            [ExpectObj(result) toBeEqualTo: @"123.45"];
+        });
+        
+        It(@"returns the value of a Swift Float", ^{
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningSwiftFloat")];
+            
+            [ExpectObj(result) toBeEqualTo: @"3.14159"];
+        });
+
+        It(@"returns the value of a Swift Int", ^{
+            result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningSwiftInt")];
+            
+            [ExpectObj(result) toBeEqualTo: @"789"];
+        });
+        
         It(@"returns the value of YES BOOL", ^{
             result = [OCSReturnValue forInvocation: invocationForMethodNamed(@"methodReturningBOOLYES")];
             

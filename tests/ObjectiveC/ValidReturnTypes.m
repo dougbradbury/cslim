@@ -30,6 +30,14 @@
     return 456;
 }
 
+- (double) methodReturningDouble {
+    return 123.45;
+}
+
+- (float) methodReturningFloat {
+    return  3.14159;
+}
+
 -(RespondsToStringValue*) methodReturningObjectThatRespondsToStringValue {
     return [[RespondsToStringValue alloc] init];
 }

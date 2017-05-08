@@ -7,21 +7,25 @@
 +(NSString*) forInvocation:(NSInvocation*) invocation {
     if ([self signatureHasReturnTypeVoid: invocation.methodSignature]) {
         return @"OK";
-    } else {
+    } else if ([self signatureHasReturnTypeObject:invocation.methodSignature]){
         id result;
         [invocation getReturnValue: &result];
-        return [OCSReturnValue forObjectOrPrimitive: result
-                          andMethodSignature: invocation.methodSignature];
+        return [OCSReturnValue forObject:result];
+    } else {
+        return [OCSReturnValue forPrimitiveReturnTypeInvocation:invocation];
     }
 }
 
-+(NSString*) forObjectOrPrimitive:(id) result andMethodSignature:(NSMethodSignature*) signature {
++(BOOL) signatureHasReturnTypeObject:(NSMethodSignature *)signature {
     NSString* returnType = [NSString stringWithUTF8String: [signature methodReturnType]];
-    if ([returnType isEqualToString: @"@"]) {
-        return [self forObject:result];
-    } else {
-        return [self forPrimitive:result withReturnType:returnType];
-    }
+    return [returnType isEqualToString:@"@"];
+}
+
++ (NSString *) forObjectReturnTypeInvocation:(NSInvocation *) invocation {
+    
+    id object;
+    [invocation getReturnValue: &object];
+    return [OCSReturnValue forObject:object];
 }
 
 + (NSString *) forObject:(id)object {
@@ -44,15 +48,31 @@
     }
 }
 
-+ (NSString *) forPrimitive:(id)primitive withReturnType:(NSString*)returnType {
-    if ([returnType isEqualToString: @"i"]) {
-        return [NSString stringWithFormat: @"%i", (int)primitive];
++ (NSString *) forPrimitiveReturnTypeInvocation:(NSInvocation *)invocation {
+    NSString* returnType = [NSString stringWithUTF8String: [invocation.methodSignature methodReturnType]];
+    
+    if ([returnType isEqualToString: @"i"] || [returnType isEqualToString:@"q"]) {
+        int result;
+        [invocation getReturnValue: &result];
+        return [[NSNumber numberWithInt:result] stringValue];
+    } else if ([returnType isEqualToString: @"d"]) {
+        double result;
+        [invocation getReturnValue: &result];
+        return [[NSNumber numberWithDouble:result] stringValue];
     } else if ([returnType isEqualToString: @"c"] || [returnType isEqualToString:@"B"]) {
-        return ((BOOL)primitive) ? @"true" : @"false";
+        BOOL result;
+        [invocation getReturnValue: &result];
+        return result ? @"true" : @"false";
+    } else if ([returnType isEqualToString:@"f"]) {
+        float result;
+        [invocation getReturnValue: &result];
+        return [[NSNumber numberWithFloat:result] stringValue];
     } else {
         return @"OK";
     }
+    
 }
+
 
 +(BOOL) signatureHasReturnTypeVoid:(NSMethodSignature*) methodSignature {
     return [[NSString stringWithUTF8String: [methodSignature methodReturnType]] isEqualToString: @"v"];
