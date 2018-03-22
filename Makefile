@@ -72,7 +72,7 @@ else
   LDFLAGS += 
 endif
 
-LD_LIBRARIES += -lstdc++
+LD_LIBRARIES += -lstdc++ -lm
 
 
 OTHER_MAKEFILE_TO_INCLUDE = $(CSLIM_HOME)/build/CSlimServerMakefile
