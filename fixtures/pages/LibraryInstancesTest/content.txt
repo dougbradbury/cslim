@@ -1,0 +1,17 @@
+|library    |
+|Echo Loudly|
+
+|script|Count              |
+|count                     |
+|check |echo   |hello|HELLO|
+|check |counter|1          |
+
+|library|
+|Echo   |
+
+|script|Count                  |
+|count                         |
+|count                         |
+|check |echo   |goodbye|goodbye|
+|check |repeat |HELLO          |
+|check |counter|2              |

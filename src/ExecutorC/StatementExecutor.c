@@ -42,7 +42,8 @@ typedef struct symbolNode {
 struct StatementExecutor
 {
 	FixtureNode* fixtures;
-	InstanceNode* instances;	
+	InstanceNode* instances;
+	InstanceNode* libraryInstances;
 	SymbolTable * symbolTable;
 	char message[120];
 	char const* userMessage;
@@ -53,6 +54,10 @@ struct StatementExecutor
 static void destroyInstances(InstanceNode*);
 static void destroyFixtures(FixtureNode*);
 static void destroyMethods(MethodNode*);
+static int isLibraryInstanceName(const char* instanceName);
+static void pushInstance(InstanceNode** stack, InstanceNode* instanceNode);
+static MethodNode* findMethodNode(MethodNode* methodNodes, const char* methodName);
+static char* invokeMethodOnInstanceWithArguments(StatementExecutor* executor, MethodNode* methodNode, InstanceNode* instanceNode, SlimList* args);
 void replaceSymbols(SymbolTable*, SlimList*);
 static char* replaceString(SymbolTable*, char*);
 static char* replaceStringFrom(SymbolTable*, char*, char*);
@@ -98,6 +103,7 @@ InstanceNode* GetInstanceNode(StatementExecutor* executor, char const* instanceN
 
 void StatementExecutor_Destroy(StatementExecutor* self)
 {
+	destroyInstances(self->libraryInstances);
 	destroyInstances(self->instances);
 	destroyFixtures(self->fixtures);
 	SymbolTable_Destroy(self->symbolTable);
@@ -137,8 +143,11 @@ char* StatementExecutor_Make(StatementExecutor* executor, char const* instanceNa
 	FixtureNode* fixtureNode = findFixture(executor, className);
 	if (fixtureNode) {
 		InstanceNode* instanceNode = (InstanceNode* )malloc(sizeof(InstanceNode));
-		instanceNode->next = executor->instances;
-		executor->instances = instanceNode;
+		if (isLibraryInstanceName(instanceName)) {
+			pushInstance(&(executor->libraryInstances), instanceNode);
+		} else {
+			pushInstance(&(executor->instances), instanceNode);
+		}
 		instanceNode->name = instanceName;
 		instanceNode->fixture = fixtureNode;
 		replaceSymbols(executor->symbolTable, args);
@@ -161,15 +170,18 @@ char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceNa
 	InstanceNode* instanceNode = GetInstanceNode(executor, instanceName);
 	if (instanceNode)
 	{
-		MethodNode* node;
-		for (node = instanceNode->fixture->methods; node; node = node->next) {
-			//			if (strcmp(methodName, node->name) == 0) {
-			if (compareNamesIgnoreUnderScores(methodName, node->name)) {
-				replaceSymbols(executor->symbolTable, args);
-				char* retval =  node->method(instanceNode->instance, args);
-				return retval;
+		MethodNode* methodNode = findMethodNode(instanceNode->fixture->methods, methodName);
+		if (methodNode) {
+			return invokeMethodOnInstanceWithArguments(executor, methodNode, instanceNode, args);
+		}
+
+		for (InstanceNode* libraryInstanceNode = executor->libraryInstances; libraryInstanceNode; libraryInstanceNode = libraryInstanceNode->next) {
+			methodNode = findMethodNode(libraryInstanceNode->fixture->methods, methodName);
+			if (methodNode) {
+				return invokeMethodOnInstanceWithArguments(executor, methodNode, libraryInstanceNode, args);
 			}
 		}
+
 		char * formatString = "__EXCEPTION__:message:<<NO_METHOD_IN_CLASS %.32s[%d] %.32s.>>";
 		snprintf(executor->message, 120, formatString, methodName, SlimList_GetLength(args), instanceNode->fixture->name);
 		return executor->message;
@@ -177,6 +189,34 @@ char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceNa
 	char * formatString = "__EXCEPTION__:message:<<NO_INSTANCE %.32s.>>";
 	snprintf(executor->message, 120, formatString, instanceName);
 	return executor->message;
+}
+
+static int isLibraryInstanceName(const char* instanceName)
+{
+	return CSlim_StringStartsWith(instanceName, "library");
+}
+
+static void pushInstance(InstanceNode** stack, InstanceNode* instanceNode)
+{
+	instanceNode->next = *stack;
+	*stack = instanceNode;
+}
+
+static MethodNode* findMethodNode(MethodNode* methodNodes, const char* methodName)
+{
+	MethodNode* node = NULL;
+	for (node = methodNodes; node; node = node->next) {
+		if (compareNamesIgnoreUnderScores(methodName, node->name)) {
+			break;
+		}
+	}
+	return node;
+}
+
+static char* invokeMethodOnInstanceWithArguments(StatementExecutor* executor, MethodNode* methodNode, InstanceNode* instanceNode, SlimList* args)
+{
+	replaceSymbols(executor->symbolTable, args);
+	return methodNode->method(instanceNode->instance, args);
 }
 
 void replaceSymbols(SymbolTable* symbolTable, SlimList* list) {
