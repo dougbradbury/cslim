@@ -54,13 +54,14 @@ struct StatementExecutor
 static void destroyInstances(InstanceNode*);
 static void destroyFixtures(FixtureNode*);
 static void destroyMethods(MethodNode*);
+static FixtureNode* replaceSymbolsAndFindFixture(StatementExecutor* executor, const char* className);
 static int isLibraryInstanceName(const char* instanceName);
 static void pushInstance(InstanceNode** stack, InstanceNode* instanceNode);
 static MethodNode* findMethodNode(MethodNode* methodNodes, const char* methodName);
 static char* invokeMethodOnInstanceWithArguments(StatementExecutor* executor, MethodNode* methodNode, InstanceNode* instanceNode, SlimList* args);
 void replaceSymbols(SymbolTable*, SlimList*);
-static char* replaceString(SymbolTable*, char*);
-static char* replaceStringFrom(SymbolTable*, char*, char*);
+static char* replaceString(SymbolTable*, const char*);
+static char* replaceStringFrom(SymbolTable*, const char*, const char*);
 static int lengthOfSymbol(char *);
 static FixtureNode * findFixture(StatementExecutor* executor, char const * className);
 static void Null_Destroy(void* self);
@@ -140,7 +141,7 @@ static void destroyMethods(MethodNode* head) {
 }
 
 char* StatementExecutor_Make(StatementExecutor* executor, char const* instanceName, char const* className, SlimList* args){
-	FixtureNode* fixtureNode = findFixture(executor, className);
+	FixtureNode* fixtureNode = replaceSymbolsAndFindFixture(executor, className);
 	if (fixtureNode) {
 		InstanceNode* instanceNode = (InstanceNode* )malloc(sizeof(InstanceNode));
 		if (isLibraryInstanceName(instanceName)) {
@@ -191,6 +192,14 @@ char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceNa
 	return executor->message;
 }
 
+static FixtureNode* replaceSymbolsAndFindFixture(StatementExecutor* executor, const char* className)
+{
+	char* replacedClassName = replaceString(executor->symbolTable, className);
+	FixtureNode* fixtureNode = findFixture(executor, replacedClassName);
+	free(replacedClassName);
+	return fixtureNode;
+}
+
 static int isLibraryInstanceName(const char* instanceName)
 {
 	return CSlim_StringStartsWith(instanceName, "library");
@@ -239,11 +248,11 @@ void replaceSymbols(SymbolTable* symbolTable, SlimList* list) {
 	}
 }
 
-static char* replaceString(SymbolTable* symbolTable, char* string) {
+static char* replaceString(SymbolTable* symbolTable, const char* string) {
 	return replaceStringFrom(symbolTable, string, string);
 }
 
-static char* replaceStringFrom(SymbolTable* symbolTable, char* string, char* from) {
+static char* replaceStringFrom(SymbolTable* symbolTable, const char* string, const char* from) {
 	char * dollarSign = strpbrk(from, "$");
 	if (dollarSign)
 	{

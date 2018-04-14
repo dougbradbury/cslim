@@ -1,0 +1,26 @@
+|script  |Echo         |
+|$ECHO=  |echo|Echo    |
+|$LOUDLY=|echo|Loudly  |
+|$DIV=   |echo|Division|
+|$ROW=   |echo|Row     |
+
+|script|$ECHO       |
+|check |echo|123|123|
+
+|script|$ECHO_Loudly|
+|check |echo|abc|ABC|
+
+|script|Echo_$LOUDLY|
+|check |echo|def|DEF|
+
+|script|$ECHO_$LOUDLY|
+|check |echo |ghi|GHI|
+
+
+|$DIV                           |
+|numerator|denominator|Quotient?|
+|10       |5          |2        |
+
+!|Query: EmployeePayRecords$ROW|
+|id            |pay            |
+|1             |1000           |

@@ -217,6 +217,35 @@ TEST(StatementExecutor, canReplaceSymbolsInSubSubLists)
 	SlimList_Destroy(returnedSubList);
 }
 
+TEST(StatementExecutor, canCreateFixtureWithSymbolAsClassName)
+{
+	StatementExecutor_SetSymbol(statementExecutor, "fixtureName", "Test_Slim");
+	char* makeResponse = StatementExecutor_Make(statementExecutor, "instanceName", "$fixtureName", empty);
+	STRCMP_EQUAL("OK", makeResponse);
+}
+
+TEST(StatementExecutor, shouldNotAllowAMakeOnANonexistentClassReferencedBySymbol)
+{
+	StatementExecutor_SetSymbol(statementExecutor, "fixtureName", "NoSuchClass");
+	char* makeResponse = StatementExecutor_Make(statementExecutor, "instanceName", "$fixtureName", empty);
+	STRCMP_EQUAL("__EXCEPTION__:message:<<NO_CLASS $fixtureName.>>", makeResponse);
+}
+
+TEST(StatementExecutor, canCreateFixtureWithSymbolInClassName)
+{
+	StatementExecutor_SetSymbol(statementExecutor, "test", "Test");
+	char* makeResponse = StatementExecutor_Make(statementExecutor, "instanceName", "$test_Slim", empty);
+	STRCMP_EQUAL("OK", makeResponse);
+}
+
+TEST(StatementExecutor, canCreateFixtureWithMultipleSymbolsInClassName)
+{
+	StatementExecutor_SetSymbol(statementExecutor, "test", "Test");
+	StatementExecutor_SetSymbol(statementExecutor, "slim", "Slim");
+	char* makeResponse = StatementExecutor_Make(statementExecutor, "instanceName", "$test_$slim", empty);
+	STRCMP_EQUAL("OK", makeResponse);
+}
+
 TEST(StatementExecutor, canCreateFixtureWithArguments) 
 {
 	SlimList* constructionArgs = SlimList_Create();
@@ -264,6 +293,15 @@ TEST(StatementExecutor, fixtureConstructionFailsWithUserErrorMessage)
 	STRCMP_EQUAL("__EXCEPTION__:message:<<COULD_NOT_INVOKE_CONSTRUCTOR TestSlim xxx.>>", result);
 	
 	SlimList_Destroy(constructionArgs);
+}
+
+TEST(StatementExecutor, fixtureReferencedBySymbolConstructionFailsWithUserErrorMessage)
+{
+	StatementExecutor_SetSymbol(statementExecutor, "fixtureName", "Test_Slim");
+	SlimList_AddString(args, "arg0");
+	SlimList_AddString(args, "arg1");
+	char* makeResponse = StatementExecutor_Make(statementExecutor, "instanceName", "$fixtureName", args);
+	STRCMP_EQUAL("__EXCEPTION__:message:<<COULD_NOT_INVOKE_CONSTRUCTOR $fixtureName xxx.>>", makeResponse);
 }
 
 TEST(StatementExecutor, fixtureCanReturnError) 

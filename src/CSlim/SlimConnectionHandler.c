@@ -60,7 +60,7 @@ int read_size(SlimConnectionHandler* self)
 int SlimConnectionHandler_Run(SlimConnectionHandler* self)
 {
 
-	if (self->sendFunc(self->comLink, "Slim -- V0.1\n", 13) == -1)
+	if (self->sendFunc(self->comLink, "Slim -- V0.2\n", 13) == -1)
 	{
 		return -1;
 	}
