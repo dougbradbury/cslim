@@ -1,0 +1,3 @@
+|script|Echo                |
+|check |echo|hello  |hello  |
+|check |echo|goodbye|goodbye|

@@ -44,6 +44,11 @@ void CSlim_ConcatenateString(char** toAppendTo, const char* toAppend) {
 	*toAppendTo = temp;
 }
 
+int CSlim_StringStartsWith(const char* string, const char* prefix)
+{
+	return strncmp(string, prefix, strlen(prefix)) == 0;
+}
+
 int CSlim_MapToIntFrom(MapStringInt* map, const char* name)
 {
 	MapStringInt* p = map;

@@ -101,7 +101,7 @@ TEST(SlimConnectionHandler, ShouldSendVersion)
 
   SlimConnectionHandler_Run(slimConnectionHandler);
   
-  STRCMP_EQUAL("Slim -- V0.0\n", comLink.lastSendMsg);
+  STRCMP_EQUAL("Slim -- V0.1\n", comLink.lastSendMsg);
 }
 
 TEST(SlimConnectionHandler, ShouldReadMessageAndCallSlimHandler)
@@ -114,7 +114,7 @@ TEST(SlimConnectionHandler, ShouldReadMessageAndCallSlimHandler)
   
   SlimConnectionHandler_Run(slimConnectionHandler);
   
-  STRCMP_EQUAL("Slim -- V0.0\n000007:ghijklm", comLink.lastSendMsg);
+  STRCMP_EQUAL("Slim -- V0.1\n000007:ghijklm", comLink.lastSendMsg);
   STRCMP_EQUAL("abcdef", sentSlimMessage);
   CHECK_EQUAL(mockMessageHandler, sentMsgHandler);
 }

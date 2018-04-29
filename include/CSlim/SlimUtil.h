@@ -10,6 +10,7 @@ char * CSlim_BuyString(char const*);
 
 char* CSlim_CreateEmptyString(void);
 void CSlim_ConcatenateString(char**, const char*);
+int CSlim_StringStartsWith(const char* string, const char* prefix);
 void CSlim_DestroyString(char*);
 
 typedef struct MapStringInt

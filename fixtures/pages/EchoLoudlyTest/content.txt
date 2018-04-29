@@ -1,0 +1,6 @@
+|script|Echo Loudly           |
+|check |repeat|               |
+|check |echo  |hello  |HELLO  |
+|check |repeat|HELLO          |
+|check |echo  |goodbye|GOODBYE|
+|check |repeat|GOODBYE        |

@@ -40,3 +40,16 @@ TEST(SlimUtil, CanConcatenateToANonEmptyString)
 
   CSlim_DestroyString(actual);
 }
+
+TEST(SlimUtil, StringStartsWith)
+{
+    CHECK(CSlim_StringStartsWith("", ""));
+    CHECK_FALSE(CSlim_StringStartsWith("", "a"));
+    CHECK_FALSE(CSlim_StringStartsWith("a", "ab"));
+    CHECK(CSlim_StringStartsWith("a", ""));
+    CHECK(CSlim_StringStartsWith("a", "a"));
+    CHECK(CSlim_StringStartsWith("ab", "a"));
+    CHECK_FALSE(CSlim_StringStartsWith("a", "b"));
+    CHECK(CSlim_StringStartsWith("abc", "ab"));
+    CHECK_FALSE(CSlim_StringStartsWith("abc", "ac"));
+}

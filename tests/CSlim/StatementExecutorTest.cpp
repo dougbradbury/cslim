@@ -1,4 +1,5 @@
 #include "CppUTest/TestHarness.h"
+#include "CppUTestExt/MockSupport.h"
 
 extern "C"
 {
@@ -291,4 +292,218 @@ TEST(StatementExecutor, canHaveNullResult)
 {
 	char* result = StatementExecutor_Call(statementExecutor, "test_slim", "null", args);
 	POINTERS_EQUAL(0, result);  
+}
+
+TEST_GROUP(StatementExecutorWithLibraryInstances)
+{
+    StatementExecutor *statementExecutor;
+    SlimList* noArgs;
+
+    void setup()
+    {
+        statementExecutor = StatementExecutor_Create();
+        noArgs = SlimList_Create();
+        StatementExecutor_AddFixture(statementExecutor, &RegisterMockFixtureWith1Method);
+        StatementExecutor_AddFixture(statementExecutor, &RegisterMockFixtureWith2Methods);
+        StatementExecutor_AddFixture(statementExecutor, &RegisterMockFixtureWith3Methods);
+    }
+
+    void teardown()
+    {
+        mock().clear();
+        SlimList_Destroy(noArgs);
+        StatementExecutor_Destroy(statementExecutor);
+    }
+
+    struct MockFixture
+    {
+        char* method1(SlimList* args)
+        {
+            return const_cast<char*>(mock().actualCall("method1")
+                                           .onObject(this)
+                                           .withParameter("args", args)
+                                           .returnStringValue());
+        }
+
+        char* method2(SlimList* args)
+        {
+            return const_cast<char*>(mock().actualCall("method2")
+                                           .onObject(this)
+                                           .withParameter("args", args)
+                                           .returnStringValue());
+        }
+
+        char* method3(SlimList* args)
+        {
+            return const_cast<char*>(mock().actualCall("method3")
+                                           .onObject(this)
+                                           .withParameter("args", args)
+                                           .returnStringValue());
+        }
+    };
+
+    static void* createMockFixture(StatementExecutor*, SlimList*)
+    {
+        return mock().actualCall("createMockFixture")
+                     .returnPointerValue();
+    }
+
+    static void destroyMockFixture(void* mockFixture)
+    {
+        delete reinterpret_cast<MockFixture*>(mockFixture);
+    }
+
+    static char* invokeMethod1(void* mockFixture, SlimList* args)
+    {
+        return reinterpret_cast<MockFixture*>(mockFixture)->method1(args);
+    }
+
+    static char* invokeMethod2(void* mockFixture, SlimList* args)
+    {
+        return reinterpret_cast<MockFixture*>(mockFixture)->method2(args);
+    }
+
+    static char* invokeMethod3(void* mockFixture, SlimList* args)
+    {
+        return reinterpret_cast<MockFixture*>(mockFixture)->method3(args);
+    }
+
+    static void RegisterMockFixtureWith1Method(StatementExecutor* statementExecutor)
+    {
+        StatementExecutor_RegisterFixture(statementExecutor, "MockFixtureWith1Method", &createMockFixture, &destroyMockFixture);
+        StatementExecutor_RegisterMethod(statementExecutor, "MockFixtureWith1Method", "method1", &invokeMethod1);
+    }
+
+    static void RegisterMockFixtureWith2Methods(StatementExecutor* statementExecutor)
+    {
+        StatementExecutor_RegisterFixture(statementExecutor, "MockFixtureWith2Methods", &createMockFixture, &destroyMockFixture);
+        StatementExecutor_RegisterMethod(statementExecutor, "MockFixtureWith2Methods", "method1", &invokeMethod1);
+        StatementExecutor_RegisterMethod(statementExecutor, "MockFixtureWith2Methods", "method2", &invokeMethod2);
+    }
+
+    static void RegisterMockFixtureWith3Methods(StatementExecutor* statementExecutor)
+    {
+        StatementExecutor_RegisterFixture(statementExecutor, "MockFixtureWith3Methods", &createMockFixture, &destroyMockFixture);
+        StatementExecutor_RegisterMethod(statementExecutor, "MockFixtureWith3Methods", "method1", &invokeMethod1);
+        StatementExecutor_RegisterMethod(statementExecutor, "MockFixtureWith3Methods", "method2", &invokeMethod2);
+        StatementExecutor_RegisterMethod(statementExecutor, "MockFixtureWith3Methods", "method3", &invokeMethod3);
+    }
+};
+
+TEST(StatementExecutorWithLibraryInstances, callsMethodOnInstanceFirst)
+{
+    MockFixture* standardInstance = new MockFixture;
+    MockFixture* libraryInstance = new MockFixture;
+
+    mock().expectOneCall("createMockFixture")
+          .andReturnValue(standardInstance);
+    mock().expectOneCall("createMockFixture")
+          .andReturnValue(libraryInstance);
+    mock().expectOneCall("method1")
+          .onObject(standardInstance)
+          .withParameter("args", noArgs)
+          .andReturnValue("OK");
+
+    StatementExecutor_Make(statementExecutor, "standardInstance", "MockFixtureWith1Method", noArgs);
+    StatementExecutor_Make(statementExecutor, "libraryInstance", "MockFixtureWith2Methods", noArgs);
+    char* result = StatementExecutor_Call(statementExecutor, "standardInstance", "method1", noArgs);
+
+    STRCMP_EQUAL("OK", result);
+    mock().checkExpectations();
+}
+
+TEST(StatementExecutorWithLibraryInstances, callsMethodOnLibraryInstanceWhenNotFoundOnGivenInstance)
+{
+    MockFixture* standardInstance = new MockFixture;
+    MockFixture* libraryInstance = new MockFixture;
+
+    mock().expectOneCall("createMockFixture")
+          .andReturnValue(standardInstance);
+    mock().expectOneCall("createMockFixture")
+          .andReturnValue(libraryInstance);
+    mock().expectOneCall("method2")
+          .onObject(libraryInstance)
+          .withParameter("args", noArgs)
+          .andReturnValue("OK");
+
+    StatementExecutor_Make(statementExecutor, "standardInstance", "MockFixtureWith1Method", noArgs);
+    StatementExecutor_Make(statementExecutor, "libraryInstance", "MockFixtureWith2Methods", noArgs);
+    char* result = StatementExecutor_Call(statementExecutor, "standardInstance", "method2", noArgs);
+
+    STRCMP_EQUAL("OK", result);
+    mock().checkExpectations();
+}
+
+TEST(StatementExecutorWithLibraryInstances, callsMethodOnTopOfLibraryInstanceStackWhenNotFoundOnGivenInstance)
+{
+    MockFixture* standardInstance = new MockFixture;
+    MockFixture* libraryInstanceA = new MockFixture;
+    MockFixture* libraryInstanceB = new MockFixture;
+
+    mock().expectOneCall("createMockFixture")
+          .andReturnValue(standardInstance);
+    mock().expectOneCall("createMockFixture")
+          .andReturnValue(libraryInstanceA);
+    mock().expectOneCall("createMockFixture")
+          .andReturnValue(libraryInstanceB);
+    mock().expectOneCall("method2")
+          .onObject(libraryInstanceB)
+          .withParameter("args", noArgs)
+          .andReturnValue("OK");
+
+    StatementExecutor_Make(statementExecutor, "standardInstance", "MockFixtureWith1Method", noArgs);
+    StatementExecutor_Make(statementExecutor, "libraryInstanceA", "MockFixtureWith3Methods", noArgs);
+    StatementExecutor_Make(statementExecutor, "libraryInstanceB", "MockFixtureWith2Methods", noArgs);
+    char* result = StatementExecutor_Call(statementExecutor, "standardInstance", "method2", noArgs);
+
+    STRCMP_EQUAL("OK", result);
+    mock().checkExpectations();
+}
+
+TEST(StatementExecutorWithLibraryInstances, callsMethodOnBottomOfLibraryInstanceStackWhenNotFoundOnGivenInstance)
+{
+    MockFixture* standardInstance = new MockFixture;
+    MockFixture* libraryInstanceA = new MockFixture;
+    MockFixture* libraryInstanceB = new MockFixture;
+
+    mock().expectOneCall("createMockFixture")
+          .andReturnValue(standardInstance);
+    mock().expectOneCall("createMockFixture")
+          .andReturnValue(libraryInstanceA);
+    mock().expectOneCall("createMockFixture")
+          .andReturnValue(libraryInstanceB);
+    mock().expectOneCall("method3")
+          .onObject(libraryInstanceA)
+          .withParameter("args", noArgs)
+          .andReturnValue("OK");
+
+    StatementExecutor_Make(statementExecutor, "standardInstance", "MockFixtureWith1Method", noArgs);
+    StatementExecutor_Make(statementExecutor, "libraryInstanceA", "MockFixtureWith3Methods", noArgs);
+    StatementExecutor_Make(statementExecutor, "libraryInstanceB", "MockFixtureWith2Methods", noArgs);
+    char* result = StatementExecutor_Call(statementExecutor, "standardInstance", "method3", noArgs);
+
+    STRCMP_EQUAL("OK", result);
+    mock().checkExpectations();
+}
+
+TEST(StatementExecutorWithLibraryInstances, callMethodThatDoesNotExistOnGivenInstanceOrLibraryInstancesReturnsException)
+{
+    MockFixture* standardInstance = new MockFixture;
+    MockFixture* libraryInstanceA = new MockFixture;
+    MockFixture* libraryInstanceB = new MockFixture;
+
+    mock().expectOneCall("createMockFixture")
+          .andReturnValue(standardInstance);
+    mock().expectOneCall("createMockFixture")
+          .andReturnValue(libraryInstanceA);
+    mock().expectOneCall("createMockFixture")
+          .andReturnValue(libraryInstanceB);
+
+    StatementExecutor_Make(statementExecutor, "standardInstance", "MockFixtureWith1Method", noArgs);
+    StatementExecutor_Make(statementExecutor, "libraryInstanceA", "MockFixtureWith3Methods", noArgs);
+    StatementExecutor_Make(statementExecutor, "libraryInstanceB", "MockFixtureWith2Methods", noArgs);
+    char* result = StatementExecutor_Call(statementExecutor, "standardInstance", "method4", noArgs);
+
+    STRCMP_EQUAL("__EXCEPTION__:message:<<NO_METHOD_IN_CLASS method4[0] MockFixtureWith1Method.>>", result);
+    mock().checkExpectations();
 }
