@@ -54,15 +54,16 @@ struct StatementExecutor
 static void destroyInstances(InstanceNode*);
 static void destroyFixtures(FixtureNode*);
 static void destroyMethods(MethodNode*);
+static FixtureNode* findFixture(StatementExecutor* executor, const char* classNameWithSymbols);
 static int isLibraryInstanceName(const char* instanceName);
 static void pushInstance(InstanceNode** stack, InstanceNode* instanceNode);
 static MethodNode* findMethodNode(MethodNode* methodNodes, const char* methodName);
 static char* invokeMethodOnInstanceWithArguments(StatementExecutor* executor, MethodNode* methodNode, InstanceNode* instanceNode, SlimList* args);
 void replaceSymbols(SymbolTable*, SlimList*);
-static char* replaceString(SymbolTable*, char*);
-static char* replaceStringFrom(SymbolTable*, char*, char*);
+static char* replaceString(SymbolTable*, const char*);
+static char* replaceStringFrom(SymbolTable*, const char*, const char*);
 static int lengthOfSymbol(char *);
-static FixtureNode * findFixture(StatementExecutor* executor, char const * className);
+static FixtureNode * findFixtureByName(StatementExecutor* executor, char const * className);
 static void Null_Destroy(void* self);
 static void* Null_Create(StatementExecutor* executor, SlimList* args);
 
@@ -191,6 +192,14 @@ char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceNa
 	return executor->message;
 }
 
+static FixtureNode* findFixture(StatementExecutor* executor, const char* classNameWithSymbols)
+{
+	char* className = replaceString(executor->symbolTable, classNameWithSymbols);
+	FixtureNode* fixtureNode = findFixtureByName(executor, className);
+	free(className);
+	return fixtureNode;
+}
+
 static int isLibraryInstanceName(const char* instanceName)
 {
 	return CSlim_StringStartsWith(instanceName, "library");
@@ -239,11 +248,11 @@ void replaceSymbols(SymbolTable* symbolTable, SlimList* list) {
 	}
 }
 
-static char* replaceString(SymbolTable* symbolTable, char* string) {
+static char* replaceString(SymbolTable* symbolTable, const char* string) {
 	return replaceStringFrom(symbolTable, string, string);
 }
 
-static char* replaceStringFrom(SymbolTable* symbolTable, char* string, char* from) {
+static char* replaceStringFrom(SymbolTable* symbolTable, const char* string, const char* from) {
 	char * dollarSign = strpbrk(from, "$");
 	if (dollarSign)
 	{
@@ -300,7 +309,7 @@ void StatementExecutor_AddFixture(StatementExecutor* executor, Fixture fixture) 
 }
 
 void StatementExecutor_RegisterFixture(StatementExecutor* executor, char const * className, Constructor constructor, Destructor destructor){
-	FixtureNode* fixtureNode = findFixture(executor, className);
+	FixtureNode* fixtureNode = findFixtureByName(executor, className);
 	if (!fixtureNode)
 	{
 		fixtureNode = (FixtureNode*)malloc(sizeof(FixtureNode));
@@ -314,7 +323,7 @@ void StatementExecutor_RegisterFixture(StatementExecutor* executor, char const *
 	fixtureNode->destructor = destructor;
 }
 
-static FixtureNode * findFixture(StatementExecutor* executor, char const* className)
+static FixtureNode * findFixtureByName(StatementExecutor* executor, char const* className)
 {
 	FixtureNode* fixtureNode = NULL;
 	for (fixtureNode = executor->fixtures; fixtureNode; fixtureNode = fixtureNode->next) {
@@ -327,10 +336,10 @@ static FixtureNode * findFixture(StatementExecutor* executor, char const* classN
 }
 
 void StatementExecutor_RegisterMethod(StatementExecutor* executor, char const * className, char const * methodName, Method method){
-	FixtureNode* fixtureNode = findFixture(executor, className);
+	FixtureNode* fixtureNode = findFixtureByName(executor, className);
 	if (fixtureNode == NULL) {
 		StatementExecutor_RegisterFixture(executor, className, Null_Create, Null_Destroy);
-		fixtureNode = findFixture(executor, className);
+		fixtureNode = findFixtureByName(executor, className);
 	}
 		
 	MethodNode* node = (MethodNode*)malloc(sizeof(MethodNode));
