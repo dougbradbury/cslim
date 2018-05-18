@@ -54,7 +54,7 @@ struct StatementExecutor
 static void destroyInstances(InstanceNode*);
 static void destroyFixtures(FixtureNode*);
 static void destroyMethods(MethodNode*);
-static FixtureNode* replaceSymbolsAndFindFixture(StatementExecutor* executor, const char* className);
+static FixtureNode* findFixture(StatementExecutor* executor, const char* classNameWithSymbols);
 static int isLibraryInstanceName(const char* instanceName);
 static void pushInstance(InstanceNode** stack, InstanceNode* instanceNode);
 static MethodNode* findMethodNode(MethodNode* methodNodes, const char* methodName);
@@ -63,7 +63,7 @@ void replaceSymbols(SymbolTable*, SlimList*);
 static char* replaceString(SymbolTable*, const char*);
 static char* replaceStringFrom(SymbolTable*, const char*, const char*);
 static int lengthOfSymbol(char *);
-static FixtureNode * findFixture(StatementExecutor* executor, char const * className);
+static FixtureNode * findFixtureByName(StatementExecutor* executor, char const * className);
 static void Null_Destroy(void* self);
 static void* Null_Create(StatementExecutor* executor, SlimList* args);
 
@@ -141,7 +141,7 @@ static void destroyMethods(MethodNode* head) {
 }
 
 char* StatementExecutor_Make(StatementExecutor* executor, char const* instanceName, char const* className, SlimList* args){
-	FixtureNode* fixtureNode = replaceSymbolsAndFindFixture(executor, className);
+	FixtureNode* fixtureNode = findFixture(executor, className);
 	if (fixtureNode) {
 		InstanceNode* instanceNode = (InstanceNode* )malloc(sizeof(InstanceNode));
 		if (isLibraryInstanceName(instanceName)) {
@@ -192,11 +192,11 @@ char* StatementExecutor_Call(StatementExecutor* executor, char const* instanceNa
 	return executor->message;
 }
 
-static FixtureNode* replaceSymbolsAndFindFixture(StatementExecutor* executor, const char* className)
+static FixtureNode* findFixture(StatementExecutor* executor, const char* classNameWithSymbols)
 {
-	char* replacedClassName = replaceString(executor->symbolTable, className);
-	FixtureNode* fixtureNode = findFixture(executor, replacedClassName);
-	free(replacedClassName);
+	char* className = replaceString(executor->symbolTable, classNameWithSymbols);
+	FixtureNode* fixtureNode = findFixtureByName(executor, className);
+	free(className);
 	return fixtureNode;
 }
 
@@ -309,7 +309,7 @@ void StatementExecutor_AddFixture(StatementExecutor* executor, Fixture fixture) 
 }
 
 void StatementExecutor_RegisterFixture(StatementExecutor* executor, char const * className, Constructor constructor, Destructor destructor){
-	FixtureNode* fixtureNode = findFixture(executor, className);
+	FixtureNode* fixtureNode = findFixtureByName(executor, className);
 	if (!fixtureNode)
 	{
 		fixtureNode = (FixtureNode*)malloc(sizeof(FixtureNode));
@@ -323,7 +323,7 @@ void StatementExecutor_RegisterFixture(StatementExecutor* executor, char const *
 	fixtureNode->destructor = destructor;
 }
 
-static FixtureNode * findFixture(StatementExecutor* executor, char const* className)
+static FixtureNode * findFixtureByName(StatementExecutor* executor, char const* className)
 {
 	FixtureNode* fixtureNode = NULL;
 	for (fixtureNode = executor->fixtures; fixtureNode; fixtureNode = fixtureNode->next) {
@@ -336,10 +336,10 @@ static FixtureNode * findFixture(StatementExecutor* executor, char const* classN
 }
 
 void StatementExecutor_RegisterMethod(StatementExecutor* executor, char const * className, char const * methodName, Method method){
-	FixtureNode* fixtureNode = findFixture(executor, className);
+	FixtureNode* fixtureNode = findFixtureByName(executor, className);
 	if (fixtureNode == NULL) {
 		StatementExecutor_RegisterFixture(executor, className, Null_Create, Null_Destroy);
-		fixtureNode = findFixture(executor, className);
+		fixtureNode = findFixtureByName(executor, className);
 	}
 		
 	MethodNode* node = (MethodNode*)malloc(sizeof(MethodNode));
