@@ -4,9 +4,7 @@
 #include "SlimList.h"
 #include "Fixtures.h"
 
-typedef struct ExceptionsExample
-{
-} ExceptionsExample;
+typedef void ExceptionsExample;
 
 void* ExceptionsExample_Create(StatementExecutor* errorHandler, SlimList* args)
 {
@@ -15,8 +13,8 @@ void* ExceptionsExample_Create(StatementExecutor* errorHandler, SlimList* args)
 		return NULL;
 	}
 
-	ExceptionsExample* self = (ExceptionsExample*)malloc(sizeof(ExceptionsExample));
-	memset(self, 0, sizeof(ExceptionsExample));
+	ExceptionsExample* self = (ExceptionsExample*)malloc(1);
+	memset(self, 0, 1);
 	return self;
 }
 
