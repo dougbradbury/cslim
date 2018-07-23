@@ -1,8 +1,10 @@
 #ifndef SLIMUTILS_H
 #define SLIMUTILS_H
 
+#ifndef CPP_COMPILING
 #ifdef __cplusplus
 extern "C" {
+#endif
 #endif
 
 char * CSlim_BuyBuf(char const*, int);
@@ -23,8 +25,10 @@ int CSlim_MapToIntFrom(MapStringInt*, const char*);
 const char* CSlim_MapToStringFrom(MapStringInt*, int);
 int CSlim_IsCharacter(unsigned char const* byte);
 
+#ifndef CPP_COMPILING
 #ifdef __cplusplus
 }
+#endif
 #endif
 
 #endif

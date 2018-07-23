@@ -2,10 +2,7 @@
 #include <string.h>
 #include <iostream>
 
-extern "C"
-{
 #include "SlimUtil.h"
-}
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTest/TestHarness_c.h"

@@ -1,13 +1,9 @@
 #include "CppUTest/TestHarness.h"
 
-
-extern "C"
-{
 #include "ListExecutor.h"
 #include "SlimList.h"
 #include "StatementExecutor.h"
 #include "TestSlim.h"
-}
 
 TEST_GROUP(ListExecutor)
 {

@@ -1,5 +1,8 @@
 #include "CppUTest/TestHarness.h"
+
 #include "SlimList.h"
+#include "SlimConnectionHandler.h"
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -7,7 +10,6 @@
 
 extern "C"
 {
-  #include "SlimConnectionHandler.h"
   #include "CppUTest/TestHarness_c.h"
   
   struct MockComLink {

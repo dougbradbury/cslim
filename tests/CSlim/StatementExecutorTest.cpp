@@ -1,15 +1,13 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
-extern "C"
-{
 #include "StatementExecutor.h"
 #include "TestSlim.h"
 #include "SlimList.h"
 #include "SlimListDeserializer.h"
+
 #include <string.h>
 #include <stdio.h>
-}
 
 TEST_GROUP(StatementExecutor)
 {

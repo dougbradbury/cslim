@@ -1,8 +1,10 @@
 #ifndef D_SlimList_H
 #define D_SlimList_H
 
+#ifndef CPP_COMPILING
 #ifdef __cplusplus
 extern "C" {
+#endif
 #endif
 
 typedef struct SlimList SlimList;
@@ -34,9 +36,10 @@ void SlimList_AddBuffer(SlimList* self, char const* buffer, int length);
 SlimList* SlimList_GetTailAt(SlimList*, int index);
 char* SlimList_ToString(SlimList*); /// Use CSlim_DestroyString to deallocate the string
 
+#ifndef CPP_COMPILING
 #ifdef __cplusplus
 }
 #endif
-
+#endif
 
 #endif

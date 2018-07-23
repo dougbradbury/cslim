@@ -1,6 +1,12 @@
 #ifndef D_StatementExecutor_H
 #define D_StatementExecutor_H
 
+#ifndef CPP_COMPILING
+#ifdef __cplusplus
+extern "C" {
+#endif
+#endif
+
 #include "SlimList.h"
 
 typedef struct StatementExecutor StatementExecutor;
@@ -23,5 +29,11 @@ void StatementExecutor_SetSymbol(StatementExecutor*, char const* symbol, char co
 
 void StatementExecutor_ConstructorError(StatementExecutor* executor, char const* message);
 char* StatementExecutor_FixtureError(char const* message);
+
+#ifndef CPP_COMPILING
+#ifdef __cplusplus
+}
+#endif
+#endif
 
 #endif
