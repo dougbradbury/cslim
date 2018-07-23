@@ -67,7 +67,7 @@ TEST(SlimListSerializer, canCopyAList)
 	SlimList* copy = SlimList_Create();
 	int i;
 	for (i=0; i<SlimList_GetLength(slimList); i++) {
-		char* string = SlimList_GetStringAt(slimList, i);
+		const char* string = SlimList_GetStringAt(slimList, i);
 		SlimList_AddString(copy, string);
 	}
 	char * serialCopy = SlimList_Serialize(copy);

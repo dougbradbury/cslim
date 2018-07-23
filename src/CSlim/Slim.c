@@ -44,7 +44,7 @@ char * Slim_HandleMessage(void* voidSelf, char * message)
   return response;
 }
 
-int Slim_HandleConnection(Slim* self, void* comLink, com_func_t send, com_func_t recv)
+int Slim_HandleConnection(Slim* self, void* comLink, com_func_send_t send, com_func_recv_t recv)
 {
   int result = 0;
   SlimConnectionHandler* connection = SlimConnectionHandler_Create(send, recv, comLink);

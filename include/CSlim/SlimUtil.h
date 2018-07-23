@@ -7,13 +7,13 @@ extern "C" {
 #endif
 #endif
 
-char * CSlim_BuyBuf(char const*, int);
-char * CSlim_BuyString(char const*);
+const char * CSlim_BuyBuf(char const*, int);
+const char * CSlim_BuyString(char const*);
 
-char* CSlim_CreateEmptyString(void);
-void CSlim_ConcatenateString(char**, const char*);
+const char* CSlim_CreateEmptyString(void);
+void CSlim_ConcatenateString(const char**, const char*);
 int CSlim_StringStartsWith(const char* string, const char* prefix);
-void CSlim_DestroyString(char*);
+void CSlim_DestroyString(const char*);
 
 typedef struct MapStringInt
 {

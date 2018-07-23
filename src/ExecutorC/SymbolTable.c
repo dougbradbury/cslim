@@ -5,8 +5,8 @@
 
 typedef struct symbolNode {
 	struct symbolNode* next;
-	char* name;
-	char* value;
+	const char* name;
+	const char* value;
 } SymbolNode;
 
 struct SymbolTable
@@ -26,15 +26,15 @@ void SymbolTable_Destroy(SymbolTable* self)
 	SymbolNode* node;
 	for (node = self->head; node;) {
 		SymbolNode* nextSymbolNode = node->next;
-		free(node->name);
-		free(node->value);
+		free((void*)node->name);
+		free((void*)node->value);
 		free(node);
 		node = nextSymbolNode;
 	}	
 	free(self);
 }
 
-char * SymbolTable_FindSymbol(SymbolTable* self, char const * name, int length) {
+const char * SymbolTable_FindSymbol(SymbolTable* self, char const * name, int length) {
 	SymbolNode* node;
 	for (node = self->head; node; node = node->next)
 	{
@@ -54,7 +54,7 @@ void SymbolTable_SetSymbol(SymbolTable* self, char const * symbol, char const * 
 
 int SymbolTable_GetSymbolLength(SymbolTable* self, char const* symbol, int length)
 {
-	char * symbolValue = SymbolTable_FindSymbol(self, symbol, length);
+	const char * symbolValue = SymbolTable_FindSymbol(self, symbol, length);
 	if (symbolValue == NULL)
 		return -1;
 	return strlen(symbolValue);

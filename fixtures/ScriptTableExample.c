@@ -23,13 +23,13 @@ void Count_Destroy(void* self)
 	free(self);
 }
 
-static char* count(void* void_self, SlimList* args) {
+static const char* count(void* void_self, SlimList* args) {
 	Count* self = (Count*)void_self;
 	self->count++;
 	return "";
 }
 
-static char* counter(void* void_self, SlimList* args) {
+static const char* counter(void* void_self, SlimList* args) {
 	Count* self = (Count*)void_self;
 	snprintf(self->result, 32, "%d", self->count);
 	return self->result;

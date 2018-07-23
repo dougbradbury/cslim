@@ -41,7 +41,7 @@ TEST(StatementExecutor, canCallFunctionWithNoArguments)
 
 TEST(StatementExecutor, cantCallFunctionThatDoesNotExist)
 {
-	char* result = StatementExecutor_Call(statementExecutor, "test_slim", "noSuchMethod", args);
+	const char* result = StatementExecutor_Call(statementExecutor, "test_slim", "noSuchMethod", args);
 	STRCMP_EQUAL("__EXCEPTION__:message:<<NO_METHOD_IN_CLASS noSuchMethod[0] TestSlim.>>", result);
 
 	result = StatementExecutor_Call(statementExecutor, "test_slim", "noOtherSuchMethod", args);
@@ -50,7 +50,7 @@ TEST(StatementExecutor, cantCallFunctionThatDoesNotExist)
 
 TEST(StatementExecutor, shouldTruncateReallyLongNamedFunctionThatDoesNotExistTo32)
 {
-	char * result = StatementExecutor_Call(statementExecutor, "test_slim", "noOtherSuchMethod123456789022345678903234567890423456789052345678906234567890", args);
+	const char* result = StatementExecutor_Call(statementExecutor, "test_slim", "noOtherSuchMethod123456789022345678903234567890423456789052345678906234567890", args);
 	CHECK(strlen(result) < 120);
 	STRCMP_EQUAL("__EXCEPTION__:message:<<NO_METHOD_IN_CLASS noOtherSuchMethod123456789022345[0] TestSlim.>>", result);	
 }
@@ -58,24 +58,24 @@ TEST(StatementExecutor, shouldTruncateReallyLongNamedFunctionThatDoesNotExistTo3
 TEST(StatementExecutor, shouldKnowNumberofArgumentsforNonExistantFunction)
 {
 	SlimList_AddString(args, "BlahBlah");
-	char* result = StatementExecutor_Call(statementExecutor, "test_slim", "noSuchMethod", args);
+	const char* result = StatementExecutor_Call(statementExecutor, "test_slim", "noSuchMethod", args);
 	STRCMP_EQUAL("__EXCEPTION__:message:<<NO_METHOD_IN_CLASS noSuchMethod[1] TestSlim.>>", result);
 }
 
 TEST(StatementExecutor, shouldNotAllowACallToaNonexistentInstance)
 {
-	char* result = StatementExecutor_Call(statementExecutor, "noSuchInstance", "noArgs", args);
+	const char* result = StatementExecutor_Call(statementExecutor, "noSuchInstance", "noArgs", args);
 	STRCMP_EQUAL("__EXCEPTION__:message:<<NO_INSTANCE noSuchInstance.>>", result);	
 }
 
 TEST(StatementExecutor, shouldNotAllowAMakeOnANonexistentClass)
 {
-	char * result = StatementExecutor_Make(statementExecutor, "instanceName", "NoSuchClass", empty);
+	const char* result = StatementExecutor_Make(statementExecutor, "instanceName", "NoSuchClass", empty);
 	STRCMP_EQUAL("__EXCEPTION__:message:<<NO_CLASS NoSuchClass.>>", result);	
 }
 
 TEST(StatementExecutor, canCallaMethodThatReturnsAValue) {
-	char* result = StatementExecutor_Call(statementExecutor, "test_slim", "returnValue", args);
+	const char* result = StatementExecutor_Call(statementExecutor, "test_slim", "returnValue", args);
 	STRCMP_EQUAL("value", result);
 }
 
@@ -84,7 +84,7 @@ TEST(StatementExecutor, canCallaMethodThatTakesASlimList)
 
 	SlimList_AddString(args, "hello world");
 	
-	char* result = StatementExecutor_Call(statementExecutor, "test_slim", "echo", args);
+	const char* result = StatementExecutor_Call(statementExecutor, "test_slim", "echo", args);
 	STRCMP_EQUAL("hello world", result);
 }
 
@@ -94,7 +94,7 @@ TEST(StatementExecutor, WhereCalledFunctionHasUnderscoresSeparatingNameParts)
 	SlimList_AddString(args, "hello world");
 
 	StatementExecutor_Call(statementExecutor, "test_slim", "setArg", args);
-	char* result = StatementExecutor_Call(statementExecutor, "test_slim", "getArgFromFunctionWithUnderscores", empty);
+	const char* result = StatementExecutor_Call(statementExecutor, "test_slim", "getArgFromFunctionWithUnderscores", empty);
 	STRCMP_EQUAL("hello world", result);
 }
 
@@ -107,8 +107,8 @@ TEST(StatementExecutor, canCallTwoInstancesOfTheSameFixture)
 	StatementExecutor_Make(statementExecutor, "test_slim2", "TestSlim", empty);
 	StatementExecutor_Call(statementExecutor, "test_slim", "setArg", args);
 	StatementExecutor_Call(statementExecutor, "test_slim2", "setArg", args2);
-	char* one = StatementExecutor_Call(statementExecutor, "test_slim", "getArg", empty);
-	char* two = StatementExecutor_Call(statementExecutor, "test_slim2", "getArg", empty);
+	const char* one = StatementExecutor_Call(statementExecutor, "test_slim", "getArg", empty);
+	const char* two = StatementExecutor_Call(statementExecutor, "test_slim2", "getArg", empty);
 	STRCMP_EQUAL("one", one);
 	STRCMP_EQUAL("two", two);
 	SlimList_Destroy(args2);
@@ -123,8 +123,8 @@ TEST(StatementExecutor, canCreateTwoDifferentFixtures)
 	StatementExecutor_Make(statementExecutor, "test_slim2", "TestSlimAgain", empty);	
 	StatementExecutor_Call(statementExecutor, "test_slim", "setArg", args);	
 	StatementExecutor_Call(statementExecutor, "test_slim2", "setArgAgain", args2);
-	char* one = StatementExecutor_Call(statementExecutor, "test_slim", "getArg", empty);
-	char* two = StatementExecutor_Call(statementExecutor, "test_slim2", "getArgAgain", empty);
+	const char* one = StatementExecutor_Call(statementExecutor, "test_slim", "getArg", empty);
+	const char* two = StatementExecutor_Call(statementExecutor, "test_slim2", "getArgAgain", empty);
 	STRCMP_EQUAL("one", one);
 	STRCMP_EQUAL("two", two);
 	SlimList_Destroy(args2);
@@ -133,7 +133,7 @@ TEST(StatementExecutor, canReplaceSymbolsWithTheirValue)
 {
 	StatementExecutor_SetSymbol(statementExecutor, "v", "bob");
 	SlimList_AddString(args, "hi $v.");
-	char * result = StatementExecutor_Call(statementExecutor, "test_slim", "echo", args);
+	const char* result = StatementExecutor_Call(statementExecutor, "test_slim", "echo", args);
 	LONGS_EQUAL(strlen("hi bob."), strlen(result))
     STRCMP_EQUAL("hi bob.", result)   
 }
@@ -180,12 +180,12 @@ TEST(StatementExecutor, canReplaceSymbolsInSubLists)
 	SlimList* subList = SlimList_Create();
 	SlimList_AddString(subList, "Hi $v2.");
 	SlimList_AddList(args, subList);
-	char* result = StatementExecutor_Call(statementExecutor, "test_slim", "echo", args);
+	const char* result = StatementExecutor_Call(statementExecutor, "test_slim", "echo", args);
 	CHECK(result != NULL);
 	SlimList* returnedList = SlimList_Deserialize(result);
 	CHECK(NULL != returnedList);
 	LONGS_EQUAL(1, SlimList_GetLength(returnedList));
-	char* element = SlimList_GetStringAt(returnedList, 0);
+	const char* element = SlimList_GetStringAt(returnedList, 0);
 	STRCMP_EQUAL("Hi doug.", element);
 	SlimList_Destroy(subList);	
 	SlimList_Destroy(returnedList);
@@ -199,7 +199,7 @@ TEST(StatementExecutor, canReplaceSymbolsInSubSubLists)
 	SlimList_AddString(subSubList, "Hi $v2.");
 	SlimList_AddList(subList, subSubList);
 	SlimList_AddList(args, subList);
-	char* result = StatementExecutor_Call(statementExecutor, "test_slim", "echo", args);
+	const char* result = StatementExecutor_Call(statementExecutor, "test_slim", "echo", args);
 	CHECK(result != NULL);
 	SlimList* returnedSubList = SlimList_Deserialize(result);
 	CHECK(NULL != returnedSubList);
@@ -207,7 +207,7 @@ TEST(StatementExecutor, canReplaceSymbolsInSubSubLists)
 	SlimList* returnedSubSubList = SlimList_GetListAt(returnedSubList, 0);
 	CHECK(NULL != returnedSubSubList);
 	LONGS_EQUAL(1, SlimList_GetLength(returnedSubSubList));	
-	char* element = SlimList_GetStringAt(returnedSubSubList, 0);
+	const char* element = SlimList_GetStringAt(returnedSubSubList, 0);
 	CHECK(NULL != element);
 	STRCMP_EQUAL("Hi doug.", element);
 	SlimList_Destroy(subSubList);
@@ -218,21 +218,21 @@ TEST(StatementExecutor, canReplaceSymbolsInSubSubLists)
 TEST(StatementExecutor, canCreateFixtureWithSymbolAsClassName)
 {
 	StatementExecutor_SetSymbol(statementExecutor, "fixtureName", "Test_Slim");
-	char* makeResponse = StatementExecutor_Make(statementExecutor, "instanceName", "$fixtureName", empty);
+	const char* makeResponse = StatementExecutor_Make(statementExecutor, "instanceName", "$fixtureName", empty);
 	STRCMP_EQUAL("OK", makeResponse);
 }
 
 TEST(StatementExecutor, shouldNotAllowAMakeOnANonexistentClassReferencedBySymbol)
 {
 	StatementExecutor_SetSymbol(statementExecutor, "fixtureName", "NoSuchClass");
-	char* makeResponse = StatementExecutor_Make(statementExecutor, "instanceName", "$fixtureName", empty);
+	const char* makeResponse = StatementExecutor_Make(statementExecutor, "instanceName", "$fixtureName", empty);
 	STRCMP_EQUAL("__EXCEPTION__:message:<<NO_CLASS $fixtureName.>>", makeResponse);
 }
 
 TEST(StatementExecutor, canCreateFixtureWithSymbolInClassName)
 {
 	StatementExecutor_SetSymbol(statementExecutor, "test", "Test");
-	char* makeResponse = StatementExecutor_Make(statementExecutor, "instanceName", "$test_Slim", empty);
+	const char* makeResponse = StatementExecutor_Make(statementExecutor, "instanceName", "$test_Slim", empty);
 	STRCMP_EQUAL("OK", makeResponse);
 }
 
@@ -240,7 +240,7 @@ TEST(StatementExecutor, canCreateFixtureWithMultipleSymbolsInClassName)
 {
 	StatementExecutor_SetSymbol(statementExecutor, "test", "Test");
 	StatementExecutor_SetSymbol(statementExecutor, "slim", "Slim");
-	char* makeResponse = StatementExecutor_Make(statementExecutor, "instanceName", "$test_$slim", empty);
+	const char* makeResponse = StatementExecutor_Make(statementExecutor, "instanceName", "$test_$slim", empty);
 	STRCMP_EQUAL("OK", makeResponse);
 }
 
@@ -249,7 +249,7 @@ TEST(StatementExecutor, canCreateFixtureWithArguments)
 	SlimList* constructionArgs = SlimList_Create();
 	SlimList_AddString(constructionArgs, "hi");
 	StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", constructionArgs);
-	char* result = StatementExecutor_Call(statementExecutor, "test_slim", "getConstructionArg", empty);
+	const char* result = StatementExecutor_Call(statementExecutor, "test_slim", "getConstructionArg", empty);
 	STRCMP_EQUAL("hi", result);
 	
 	SlimList_Destroy(constructionArgs);
@@ -261,7 +261,7 @@ TEST(StatementExecutor, canCreateFixtureWithArgumentsThatHaveSymbols)
 	SlimList* constructionArgs = SlimList_Create();
 	SlimList_AddString(constructionArgs, "hi $name");
 	StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", constructionArgs);
-	char* result = StatementExecutor_Call(statementExecutor, "test_slim", "getConstructionArg", empty);
+	const char* result = StatementExecutor_Call(statementExecutor, "test_slim", "getConstructionArg", empty);
 	STRCMP_EQUAL("hi doug", result);
 	
 	SlimList_Destroy(constructionArgs);
@@ -275,7 +275,7 @@ TEST(StatementExecutor, canCreateFixtureWithArgumentsThatHaveMultipleSymbols)
 	SlimList* constructionArgs = SlimList_Create();
 	SlimList_AddString(constructionArgs, "hi $fname $lname");
 	StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", constructionArgs);
-	char* result = StatementExecutor_Call(statementExecutor, "test_slim", "getConstructionArg", empty);
+	const char* result = StatementExecutor_Call(statementExecutor, "test_slim", "getConstructionArg", empty);
 	STRCMP_EQUAL("hi doug bradbury", result);
 	
 	SlimList_Destroy(constructionArgs);
@@ -287,7 +287,7 @@ TEST(StatementExecutor, fixtureConstructionFailsWithUserErrorMessage)
 	SlimList_AddString(constructionArgs, "hi doug");
 	SlimList_AddString(constructionArgs, "ho doug");
 	
-	char* result = StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", constructionArgs);
+	const char* result = StatementExecutor_Make(statementExecutor, "test_slim", "TestSlim", constructionArgs);
 	STRCMP_EQUAL("__EXCEPTION__:message:<<COULD_NOT_INVOKE_CONSTRUCTOR TestSlim xxx.>>", result);
 	
 	SlimList_Destroy(constructionArgs);
@@ -298,13 +298,13 @@ TEST(StatementExecutor, fixtureReferencedBySymbolConstructionFailsWithUserErrorM
 	StatementExecutor_SetSymbol(statementExecutor, "fixtureName", "Test_Slim");
 	SlimList_AddString(args, "arg0");
 	SlimList_AddString(args, "arg1");
-	char* makeResponse = StatementExecutor_Make(statementExecutor, "instanceName", "$fixtureName", args);
+	const char* makeResponse = StatementExecutor_Make(statementExecutor, "instanceName", "$fixtureName", args);
 	STRCMP_EQUAL("__EXCEPTION__:message:<<COULD_NOT_INVOKE_CONSTRUCTOR $fixtureName xxx.>>", makeResponse);
 }
 
 TEST(StatementExecutor, fixtureCanReturnError) 
 {
-	char* result = StatementExecutor_Call(statementExecutor, "test_slim", "returnError", args);
+	const char* result = StatementExecutor_Call(statementExecutor, "test_slim", "returnError", args);
 	STRCMP_EQUAL("__EXCEPTION__:message:<<my exception.>>", result);	
 }
 
@@ -312,7 +312,7 @@ TEST(StatementExecutor, canCallFixtureDeclaredBackwards)
 {
 	StatementExecutor_Make(statementExecutor, "backwardsTestSlim", "TestSlimDeclaredLate", empty);
 	SlimList_AddString(args, "hi doug");
-	char* result = StatementExecutor_Call(statementExecutor, "backwardsTestSlim", "echo", args);
+	const char* result = StatementExecutor_Call(statementExecutor, "backwardsTestSlim", "echo", args);
 	STRCMP_EQUAL("hi doug", result);
 }
 
@@ -320,13 +320,13 @@ TEST(StatementExecutor, canCallFixtureNotDeclared)
 {
 	StatementExecutor_Make(statementExecutor, "undeclaredTestSlim", "TestSlimUndeclared", empty);
 	SlimList_AddString(args, "hi doug");
-	char* result = StatementExecutor_Call(statementExecutor, "undeclaredTestSlim", "echo", args);
+	const char* result = StatementExecutor_Call(statementExecutor, "undeclaredTestSlim", "echo", args);
 	STRCMP_EQUAL("hi doug", result);
 }
 
 TEST(StatementExecutor, canHaveNullResult)
 {
-	char* result = StatementExecutor_Call(statementExecutor, "test_slim", "null", args);
+	const char* result = StatementExecutor_Call(statementExecutor, "test_slim", "null", args);
 	POINTERS_EQUAL(0, result);  
 }
 
@@ -389,17 +389,17 @@ TEST_GROUP(StatementExecutorWithLibraryInstances)
         delete reinterpret_cast<MockFixture*>(mockFixture);
     }
 
-    static char* invokeMethod1(void* mockFixture, SlimList* args)
+    static const char* invokeMethod1(void* mockFixture, SlimList* args)
     {
         return reinterpret_cast<MockFixture*>(mockFixture)->method1(args);
     }
 
-    static char* invokeMethod2(void* mockFixture, SlimList* args)
+    static const char* invokeMethod2(void* mockFixture, SlimList* args)
     {
         return reinterpret_cast<MockFixture*>(mockFixture)->method2(args);
     }
 
-    static char* invokeMethod3(void* mockFixture, SlimList* args)
+    static const char* invokeMethod3(void* mockFixture, SlimList* args)
     {
         return reinterpret_cast<MockFixture*>(mockFixture)->method3(args);
     }
@@ -442,7 +442,7 @@ TEST(StatementExecutorWithLibraryInstances, callsMethodOnInstanceFirst)
 
     StatementExecutor_Make(statementExecutor, "standardInstance", "MockFixtureWith1Method", noArgs);
     StatementExecutor_Make(statementExecutor, "libraryInstance", "MockFixtureWith2Methods", noArgs);
-    char* result = StatementExecutor_Call(statementExecutor, "standardInstance", "method1", noArgs);
+    const char* result = StatementExecutor_Call(statementExecutor, "standardInstance", "method1", noArgs);
 
     STRCMP_EQUAL("OK", result);
     mock().checkExpectations();
@@ -464,7 +464,7 @@ TEST(StatementExecutorWithLibraryInstances, callsMethodOnLibraryInstanceWhenNotF
 
     StatementExecutor_Make(statementExecutor, "standardInstance", "MockFixtureWith1Method", noArgs);
     StatementExecutor_Make(statementExecutor, "libraryInstance", "MockFixtureWith2Methods", noArgs);
-    char* result = StatementExecutor_Call(statementExecutor, "standardInstance", "method2", noArgs);
+    const char* result = StatementExecutor_Call(statementExecutor, "standardInstance", "method2", noArgs);
 
     STRCMP_EQUAL("OK", result);
     mock().checkExpectations();
@@ -490,7 +490,7 @@ TEST(StatementExecutorWithLibraryInstances, callsMethodOnTopOfLibraryInstanceSta
     StatementExecutor_Make(statementExecutor, "standardInstance", "MockFixtureWith1Method", noArgs);
     StatementExecutor_Make(statementExecutor, "libraryInstanceA", "MockFixtureWith3Methods", noArgs);
     StatementExecutor_Make(statementExecutor, "libraryInstanceB", "MockFixtureWith2Methods", noArgs);
-    char* result = StatementExecutor_Call(statementExecutor, "standardInstance", "method2", noArgs);
+    const char* result = StatementExecutor_Call(statementExecutor, "standardInstance", "method2", noArgs);
 
     STRCMP_EQUAL("OK", result);
     mock().checkExpectations();
@@ -516,7 +516,7 @@ TEST(StatementExecutorWithLibraryInstances, callsMethodOnBottomOfLibraryInstance
     StatementExecutor_Make(statementExecutor, "standardInstance", "MockFixtureWith1Method", noArgs);
     StatementExecutor_Make(statementExecutor, "libraryInstanceA", "MockFixtureWith3Methods", noArgs);
     StatementExecutor_Make(statementExecutor, "libraryInstanceB", "MockFixtureWith2Methods", noArgs);
-    char* result = StatementExecutor_Call(statementExecutor, "standardInstance", "method3", noArgs);
+    const char* result = StatementExecutor_Call(statementExecutor, "standardInstance", "method3", noArgs);
 
     STRCMP_EQUAL("OK", result);
     mock().checkExpectations();
@@ -538,7 +538,7 @@ TEST(StatementExecutorWithLibraryInstances, callMethodThatDoesNotExistOnGivenIns
     StatementExecutor_Make(statementExecutor, "standardInstance", "MockFixtureWith1Method", noArgs);
     StatementExecutor_Make(statementExecutor, "libraryInstanceA", "MockFixtureWith3Methods", noArgs);
     StatementExecutor_Make(statementExecutor, "libraryInstanceB", "MockFixtureWith2Methods", noArgs);
-    char* result = StatementExecutor_Call(statementExecutor, "standardInstance", "method4", noArgs);
+    const char* result = StatementExecutor_Call(statementExecutor, "standardInstance", "method4", noArgs);
 
     STRCMP_EQUAL("__EXCEPTION__:message:<<NO_METHOD_IN_CLASS method4[0] MockFixtureWith1Method.>>", result);
     mock().checkExpectations();

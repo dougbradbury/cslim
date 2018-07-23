@@ -24,7 +24,7 @@ void ListExecutor_Destroy(ListExecutor* self)
     free(self);
 }
 
-static void AddResult(SlimList* list, char* id, char* result)
+static void AddResult(SlimList* list, const char* id, const char* result)
 {
 	SlimList* pair = SlimList_Create();	
 	SlimList_AddString(pair, id);
@@ -33,39 +33,40 @@ static void AddResult(SlimList* list, char* id, char* result)
 	SlimList_Destroy(pair);	
 }
 
-char* InvalidCommand(SlimList* instruction) {
-	char* id = SlimList_GetStringAt(instruction, 0);
-	char* command = SlimList_GetStringAt(instruction, 1);
+const char* InvalidCommand(SlimList* instruction) {
+	const char* id = SlimList_GetStringAt(instruction, 0);
+	const char* command = SlimList_GetStringAt(instruction, 1);
 	static char msg[128];
 	snprintf(msg, (size_t)128, "__EXCEPTION__:message:<<INVALID_STATEMENT: [\"%s\", \"%s\"].>>", id, command);
 	return CSlim_BuyString(msg);
 }
 
-char* MalformedInstruction(SlimList* instruction) {
+const char* MalformedInstruction(SlimList* instruction) {
 	static char msg[128];
 	
-	char* listAsAString = SlimList_ToString(instruction);
+	const char* listAsAString = SlimList_ToString(instruction);
 	snprintf(msg, (size_t)128, "__EXCEPTION__:message:<<MALFORMED_INSTRUCTION %s.>>", listAsAString);
 	CSlim_DestroyString(listAsAString);
 
 	return CSlim_BuyString(msg);
 }
 
-char* Import() {
+const char* Import() {
 	return CSlim_BuyString("OK");
 }
 
-char* Make(ListExecutor* self, SlimList* instruction) {
-	char* instanceName = SlimList_GetStringAt(instruction, 2);
-	char* className = SlimList_GetStringAt(instruction, 3);
+const char* Make(ListExecutor* self, SlimList* instruction) {
+    const char *instanceName, *className, *result;
+	instanceName = SlimList_GetStringAt(instruction, 2);
+	className = SlimList_GetStringAt(instruction, 3);
 	SlimList* args = SlimList_GetTailAt(instruction, 4);
-	char * result = CSlim_BuyString(StatementExecutor_Make(self->executor, instanceName, className, args));
+	result = CSlim_BuyString(StatementExecutor_Make(self->executor, instanceName, className, args));
 	SlimList_Destroy(args);
 	return result;
 }
 
-char* Call(ListExecutor* self, SlimList* instruction) {
-  char *instanceName, *methodName, *result;
+const char* Call(ListExecutor* self, SlimList* instruction) {
+  const char *instanceName, *methodName, *result;
   SlimList* args;
 	if (SlimList_GetLength(instruction) < 4)
 		return MalformedInstruction(instruction);
@@ -77,8 +78,8 @@ char* Call(ListExecutor* self, SlimList* instruction) {
 	return result;
 }
 
-char* CallAndAssign(ListExecutor* self, SlimList* instruction) {
-  char *symbolName, *instanceName, *methodName, *result;
+const char* CallAndAssign(ListExecutor* self, SlimList* instruction) {
+  const char *symbolName, *instanceName, *methodName, *result;
   SlimList* args;
 	if (SlimList_GetLength(instruction) < 5)
 		return MalformedInstruction(instruction);
@@ -92,8 +93,8 @@ char* CallAndAssign(ListExecutor* self, SlimList* instruction) {
 	return result;
 }
 
-char* Dispatch(ListExecutor* self, SlimList* instruction) {
-	char* command = SlimList_GetStringAt(instruction, 1);
+const char* Dispatch(ListExecutor* self, SlimList* instruction) {
+	const char* command = SlimList_GetStringAt(instruction, 1);
 	if (strcmp(command, "import") == 0)
 		return Import();
 	else if (strcmp(command, "make") == 0)
@@ -113,11 +114,11 @@ SlimList* ListExecutor_Execute(ListExecutor* self, SlimList* instructions)
 	SlimListIterator* iterator = SlimList_CreateIterator(instructions);
 	while (SlimList_Iterator_HasItem(iterator)) {
 		SlimList* instruction = SlimList_Iterator_GetList(iterator);
-		char* id = SlimList_GetStringAt(instruction, 0);
-		char* result = Dispatch(self, instruction);
+		const char* id = SlimList_GetStringAt(instruction, 0);
+		const char* result = Dispatch(self, instruction);
 		AddResult(results, id, result);
 
-		free(result);
+		CSlim_DestroyString(result);
 		SlimList_Iterator_Advance(&iterator);
 	}
 

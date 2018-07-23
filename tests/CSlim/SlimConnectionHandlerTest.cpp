@@ -19,7 +19,7 @@ extern "C"
     char const * recvPtr;
     SlimList* sendReturnCodes;
   };
-  int mock_send_func(void * voidSelf, char * msg, int length)
+  int mock_send_func(void * voidSelf, const char * msg, int length)
   {
     MockComLink * self = (MockComLink*)voidSelf;
     strncpy(self->lastSendMsg + self->lastSendIndex, msg, length);
@@ -29,7 +29,7 @@ extern "C"
 
     if (SlimList_GetLength(self->sendReturnCodes) > 0)
     {
-    	char* resultAsAString = SlimList_GetStringAt(self->sendReturnCodes, 0);
+        const char* resultAsAString = SlimList_GetStringAt(self->sendReturnCodes, 0);
     	result = atoi(resultAsAString);
 
     	SlimList_PopHead(self->sendReturnCodes);

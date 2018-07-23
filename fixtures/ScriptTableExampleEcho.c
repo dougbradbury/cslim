@@ -21,7 +21,7 @@ void Echo_Destroy(void *self)
     free(self);
 }
 
-static char* echo(void* void_self, SlimList* args)
+static const char* echo(void* void_self, SlimList* args)
 {
     if (SlimList_GetLength(args) != 1)
     {
@@ -29,9 +29,9 @@ static char* echo(void* void_self, SlimList* args)
     }
 
     Echo* self = (Echo*)void_self;
-    char* stringToEcho = SlimList_GetStringAt(args, 0);
-    strncpy(self->result, stringToEcho, 32);
-    self->result[31] = '\0';
+    const char* stringToEcho = SlimList_GetStringAt(args, 0);
+    strncpy(self->result, stringToEcho, sizeof(self->result));
+    self->result[sizeof(self->result)-1] = '\0';
     return self->result;
 }
 

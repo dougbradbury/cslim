@@ -25,7 +25,7 @@ void EmployeePayRecordsRow_Destroy(void* void_self)
 	free(self);
 }
 
-static char* query(void* void_self, SlimList* args) {
+static const char* query(void* void_self, SlimList* args) {
 	EmployeePayRecordsRow* self = (EmployeePayRecordsRow*)void_self;
 
 	SlimList* id = SlimList_Create();

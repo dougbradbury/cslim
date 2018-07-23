@@ -20,7 +20,7 @@ void TcpComLink_Destroy(TcpComLink* self)
     free(self);
 }
 
-int TcpComLink_send(void * voidSelf, char * msg, int length)
+int TcpComLink_send(void * voidSelf, const char * msg, int length)
 {
 	TcpComLink * self = (TcpComLink *)voidSelf;
     int total = 0;        // how many bytes we've sent

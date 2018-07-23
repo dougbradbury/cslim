@@ -25,7 +25,7 @@ void TcpComLink_Destroy(TcpComLink* self)
 }
 
 
-int TcpComLink_send(void * voidSelf, char * msg, int length)
+int TcpComLink_send(void * voidSelf, const char * msg, int length)
 {
   TcpComLink * self = (TcpComLink *)voidSelf;
   self->client->write((uint8_t*)(msg), length);
