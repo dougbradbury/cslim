@@ -56,13 +56,16 @@ extern "C"
     return result;
   }
 
-  char * slimResponse;
   char sentSlimMessage[32];
   void * sentMsgHandler;
   char * mock_handle_slim_message(void* self, char * message)
   {
     strcpy(sentSlimMessage, message);
     sentMsgHandler = self;
+
+    static char * slimResponse = NULL;
+    slimResponse = (char*)malloc(8 * sizeof(char));
+    strcpy(slimResponse, "ghijklm");
     return slimResponse;
   }
 
@@ -111,9 +114,6 @@ TEST(SlimConnectionHandler, ShouldReadMessageAndCallSlimHandler)
 {
   comLink.recvStream = "000006:abcdef000003:bye";
   comLink.recvPtr = comLink.recvStream;
-
-  slimResponse = (char*)cpputest_malloc(8);
-  strcpy(slimResponse, "ghijklm");
 
   SlimConnectionHandler_Run(slimConnectionHandler);
 
