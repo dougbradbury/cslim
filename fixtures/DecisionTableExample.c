@@ -4,10 +4,14 @@
 #include "SlimList.h"
 #include "Fixtures.h"
 
+#if defined(_MSC_VER) && (_MSC_VER <= 1800) // Visual Studio 2013
+#define snprintf _snprintf
+#endif
+
 typedef struct Division
 {
-	float numerator;
-	float denominator;
+	double numerator;
+	double denominator;
 	char result[32];
 } Division;
 
@@ -39,7 +43,7 @@ static char* setDenominator(void* void_self, SlimList* args) {
 
 static char* Quotient(void* void_self, SlimList* args) {
 	Division* self = (Division*)void_self;
-	float quotient = self->numerator / self->denominator;
+	double quotient = self->numerator / self->denominator;
 	snprintf(self->result, 32, "%g", quotient);
 	return self->result;
 }
