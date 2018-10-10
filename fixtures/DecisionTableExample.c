@@ -23,13 +23,13 @@ void Division_Destroy(void* void_self)
 	free(void_self);
 }
 
-static char* setNumerator(void* void_self, SlimList* args) {
+static const char* setNumerator(void* void_self, SlimList* args) {
 	Division* self = (Division*)void_self;
 	self->numerator = atof(SlimList_GetStringAt(args, 0));
 	return "";
 }
 
-static char* setDenominator(void* void_self, SlimList* args) {
+static const char* setDenominator(void* void_self, SlimList* args) {
 	Division* self = (Division*)void_self;
 	self->denominator = atof(SlimList_GetStringAt(args, 0));
 	if (self->denominator == 0.0)
@@ -37,7 +37,7 @@ static char* setDenominator(void* void_self, SlimList* args) {
 	return "";
 }
 
-static char* Quotient(void* void_self, SlimList* args) {
+static const char* Quotient(void* void_self, SlimList* args) {
 	Division* self = (Division*)void_self;
 	float quotient = self->numerator / self->denominator;
 	snprintf(self->result, 32, "%g", quotient);
@@ -45,17 +45,17 @@ static char* Quotient(void* void_self, SlimList* args) {
 }
 
 //These are optional.  If they aren't declared, they are ignored
-static char* execute(void* void_self, SlimList* args) {
+static const char* execute(void* void_self, SlimList* args) {
     return "";
 }
 
-static char* reset(void* void_self, SlimList* args) {
+static const char* reset(void* void_self, SlimList* args) {
 	Division* self = (Division*)void_self;
     self->denominator = 0.0f;
     self->numerator = 0.0f;
     return "";
 }
-static char* table(void* void_self, SlimList* args) {
+static const char* table(void* void_self, SlimList* args) {
     return "";
 }
 

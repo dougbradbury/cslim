@@ -7,7 +7,7 @@
 struct TestSlim
 {
     int noArgsCalled;
-	char* arg;
+	const char* arg;
 	char constructionArg[50];
 	char echoBuf[50];
 };
@@ -37,53 +37,53 @@ int TestSlim_noArgsCalled(TestSlim* executor) {
 	return executor->noArgsCalled;		
 }
 
-static char* noArgs(void* self, SlimList* args) {
+static const char* noArgs(void* self, SlimList* args) {
 	TestSlim* me = (TestSlim*)self;
 	me->noArgsCalled = 1;
 	return "/__VOID__/";
 }
 
-static char* returnValue(void* self, SlimList* args) {
+static const char* returnValue(void* self, SlimList* args) {
 	return "value";
 }
 
-static char* oneArg(void* self, SlimList* args) {
-	char * value = SlimList_GetStringAt(args, 0);
+static const char* oneArg(void* self, SlimList* args) {
+	const char * value = SlimList_GetStringAt(args, 0);
 	return value;
 }
 
-static char* add(void* self, SlimList* args) {
+static const char* add(void* self, SlimList* args) {
 	static char buf[50];	
 	snprintf(buf, 50, "%s%s", SlimList_GetStringAt(args, 0), SlimList_GetStringAt(args, 1));
 	return buf;
 }
 
-static char* null(void* self, SlimList* args) {
+static const char* null(void* self, SlimList* args) {
 	return NULL;
 }
 
-static char* setArg(void* self, SlimList* args) {
+static const char* setArg(void* self, SlimList* args) {
 	TestSlim* me = (TestSlim*)self;
 	me->arg = SlimList_GetStringAt(args, 0);
 	return "/__VOID__/";
 }
  
-static char* getArg(void* self, SlimList* args) {
+static const char* getArg(void* self, SlimList* args) {
 	TestSlim* me = (TestSlim*)self;
 	return me->arg;
 }
 
-static char* getArg_From_Function_With_Underscores(void* self, SlimList* args) {
+static const char* getArg_From_Function_With_Underscores(void* self, SlimList* args) {
 	TestSlim* me = (TestSlim*)self;
 	return me->arg;
 }
 
-static char* getConstructionArg(void* self, SlimList* args) {
+static const char* getConstructionArg(void* self, SlimList* args) {
 	TestSlim* me = (TestSlim*)self;	
 	return me->constructionArg;
 }
 
-static char* returnError(void* self, SlimList* args) {
+static const char* returnError(void* self, SlimList* args) {
 	return StatementExecutor_FixtureError("my exception");
 }
 

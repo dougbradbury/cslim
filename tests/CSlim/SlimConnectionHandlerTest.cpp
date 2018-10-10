@@ -1,5 +1,8 @@
 #include "CppUTest/TestHarness.h"
+
 #include "SlimList.h"
+#include "SlimConnectionHandler.h"
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -7,7 +10,6 @@
 
 extern "C"
 {
-  #include "SlimConnectionHandler.h"
   #include "CppUTest/TestHarness_c.h"
   
   struct MockComLink {
@@ -17,7 +19,7 @@ extern "C"
     char const * recvPtr;
     SlimList* sendReturnCodes;
   };
-  int mock_send_func(void * voidSelf, char * msg, int length)
+  int mock_send_func(void * voidSelf, const char * msg, int length)
   {
     MockComLink * self = (MockComLink*)voidSelf;
     strncpy(self->lastSendMsg + self->lastSendIndex, msg, length);
@@ -27,7 +29,7 @@ extern "C"
 
     if (SlimList_GetLength(self->sendReturnCodes) > 0)
     {
-    	char* resultAsAString = SlimList_GetStringAt(self->sendReturnCodes, 0);
+        const char* resultAsAString = SlimList_GetStringAt(self->sendReturnCodes, 0);
     	result = atoi(resultAsAString);
 
     	SlimList_PopHead(self->sendReturnCodes);

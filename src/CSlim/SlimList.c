@@ -12,7 +12,7 @@ typedef struct Node Node;
 
 struct Node {
 	Node* next;
-	char* string;
+	const char* string;
 	SlimList* list;
 };
 
@@ -48,7 +48,7 @@ void SlimList_Destroy(SlimList* self)
 
 static void SlimList_DestroyNode(Node* node) {
 	if (node->string)
-		free(node->string);
+		free((void*)node->string);
 
 	if (node->list)
 		SlimList_Destroy(node->list);
@@ -158,7 +158,7 @@ SlimList* SlimList_Iterator_GetList(SlimListIterator* iterator)
 	return iterator->list;
 }
 
-char* SlimList_GetStringAt(SlimList* self, int index)
+const char* SlimList_GetStringAt(SlimList* self, int index)
 {
 	Node* node = SlimList_GetNodeAt(self, index);
 	if(node == 0)
@@ -167,7 +167,7 @@ char* SlimList_GetStringAt(SlimList* self, int index)
 	return SlimList_Iterator_GetString(node);
 }
 
-char* SlimList_Iterator_GetString(SlimListIterator* iterator)
+const char* SlimList_Iterator_GetString(SlimListIterator* iterator)
 {
 	assert(iterator != NULL);
 	return iterator->string;
@@ -175,48 +175,48 @@ char* SlimList_Iterator_GetString(SlimListIterator* iterator)
 
 double SlimList_GetDoubleAt(SlimList* self, int index)
 {
-  char* speed_s = SlimList_GetStringAt(self, index);
+  const char* speed_s = SlimList_GetStringAt(self, index);
   return atof(speed_s);
 }
 
-static char * parseHashCell(char ** cellStart)
+static const char * parseHashCell(const char ** cellStart)
 {
-	char * cellValue = *cellStart + strlen("<td>");
-	char * cellStop = strstr(cellValue, "</td>");
+	const char * cellValue = *cellStart + strlen("<td>");
+	const char * cellStop = strstr(cellValue, "</td>");
 
 	int length = (int)(cellStop - cellValue);
 	char * buf = (char*)malloc(length + 1);
 	strncpy(buf, cellValue, length);
-	buf[length] = 0;
+	buf[length] = '\0';
 	
 	*cellStart = strstr(cellStop + strlen("<td>"), "<td>");
 	
 	return buf;
 }
 
-static SlimList* parseHashEntry(char * row)
+static SlimList* parseHashEntry(const char * row)
 {
 		SlimList * element = SlimList_Create();
 
-		char * cellStart = strstr(row, "<td>");
+		const char * cellStart = strstr(row, "<td>");
 
-		char* hashKey = parseHashCell(&cellStart);
+		const char * hashKey = parseHashCell(&cellStart);
 		SlimList_AddString(element, hashKey);
-		free(hashKey);
+		free((void*)hashKey);
 
-		char * hashValue = parseHashCell(&cellStart);
+		const char * hashValue = parseHashCell(&cellStart);
 		SlimList_AddString(element, hashValue);
-		free(hashValue);
+		free((void*)hashValue);
 		
 		return element;
 }
 
-static SlimList* SlimList_deserializeHash(char * serializedHash)
+static SlimList* SlimList_deserializeHash(const char * serializedHash)
 {	
   SlimList *element;
   SlimList *hash = SlimList_Create();
   
-  char * row = strstr(serializedHash, "<tr>");
+  const char * row = strstr(serializedHash, "<tr>");
   while (row != NULL)
 	{
 		element = parseHashEntry(row);
@@ -243,8 +243,8 @@ void SlimList_Iterator_Replace(SlimListIterator* iterator, const char* replaceme
 		SlimList_Destroy(iterator->list);
 		iterator->list = 0;
 	}
-	char* newString = CSlim_BuyString(replacementString);
-	free(iterator->string);
+	const char* newString = CSlim_BuyString(replacementString);
+	free((void*)iterator->string);
 	iterator->string = newString;
 }
 
@@ -285,8 +285,8 @@ SlimList* SlimList_GetTailAt(SlimList* self, int index)
 	return tail;
 }
 
-char* SlimList_ToString(SlimList* self) {
-	char* result = CSlim_CreateEmptyString();
+const char* SlimList_ToString(SlimList* self) {
+	const char* result = CSlim_CreateEmptyString();
 	CSlim_ConcatenateString(&result, "[");
 
 	SlimListIterator* iterator = SlimList_CreateIterator(self);
@@ -294,7 +294,7 @@ char* SlimList_ToString(SlimList* self) {
 		SlimList* sublist = SlimList_Iterator_GetList(iterator);
 
 		if (sublist != NULL) {
-			char* subListAsAString = SlimList_ToString(sublist);
+			const char* subListAsAString = SlimList_ToString(sublist);
 			CSlim_ConcatenateString(&result, subListAsAString);
 			CSlim_DestroyString(subListAsAString);
 		} else {

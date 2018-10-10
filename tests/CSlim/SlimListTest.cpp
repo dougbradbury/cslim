@@ -2,11 +2,8 @@
 #include <string.h>
 #include <iostream>
 
-extern "C"
-{
 #include "SlimList.h"
 #include "SlimUtil.h"
-}
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTest/TestHarness_c.h"
@@ -162,7 +159,7 @@ TEST(SlimList, getDouble)
 
 TEST(SlimList, ToStringForEmptyList)
 {
-	char* listAsAString = SlimList_ToString(slimList);
+	const char* listAsAString = SlimList_ToString(slimList);
 	STRCMP_EQUAL("[]", listAsAString);
 	CSlim_DestroyString(listAsAString);
 }
@@ -171,7 +168,7 @@ TEST(SlimList, toStringForSimpleList)
 {
 	SlimList_AddString(slimList, "a");
 	SlimList_AddString(slimList, "b");
-	char* stringVersionOfList = SlimList_ToString(slimList);
+	const char* stringVersionOfList = SlimList_ToString(slimList);
 
 	STRCMP_EQUAL("[\"a\", \"b\"]", stringVersionOfList);
 
@@ -180,10 +177,10 @@ TEST(SlimList, toStringForSimpleList)
 
 TEST(SlimList, toStringDoesNotHaveASideEffectWhichChangesResultsFromPriorCalls)
 {
-	char* priorString = SlimList_ToString(slimList);
+	const char* priorString = SlimList_ToString(slimList);
 
 	SlimList_AddString(slimList, "a");
-	char* listWithAnElementAsASting = SlimList_ToString(slimList);
+	const char* listWithAnElementAsASting = SlimList_ToString(slimList);
 
 	int areStringsTheSame = (strcmp(priorString, listWithAnElementAsASting) == 0);
 	CHECK_FALSE(areStringsTheSame);
@@ -203,7 +200,7 @@ TEST(SlimList, recursiveToString)
 
 	SlimList_AddList(slimList, sublist);
 
-	char* listAsAString = SlimList_ToString(slimList);
+	const char* listAsAString = SlimList_ToString(slimList);
 	STRCMP_EQUAL("[\"a\", \"b\", [\"3\", \"4\"]]", listAsAString);
 	CSlim_DestroyString(listAsAString);
 
@@ -220,7 +217,7 @@ TEST(SlimList, toStringForLongList)
 		SlimList_AddString(slimList, "a");
 	}
 
-	char* listAsAString = SlimList_ToString(slimList);
+	const char* listAsAString = SlimList_ToString(slimList);
 	CSlim_DestroyString(listAsAString);
 }
 
@@ -274,9 +271,7 @@ TEST(SlimList, iteratorGetString)
 	SlimList_AddString(slimList, contents);
 	SlimListIterator* iterator = SlimList_CreateIterator(slimList);
 
-	char *actual =  SlimList_Iterator_GetString(iterator);
+	const char *actual =  SlimList_Iterator_GetString(iterator);
 	STRCMP_EQUAL(contents, actual);
 }
-
-
 

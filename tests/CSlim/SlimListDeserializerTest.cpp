@@ -2,12 +2,9 @@
 #include <string.h>
 #include <iostream>
 
-extern "C"
-{
 #include "SlimList.h"
 #include "SlimListDeserializer.h"
 #include "SlimListSerializer.h"
-}
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTest/TestHarness_c.h"
@@ -136,7 +133,7 @@ TEST(SlimListDeserializer, getStringWhereThereIsAList)
 	SlimList_AddList(slimList, embeddedList);
 	serializedList = SlimList_Serialize(slimList);
 	deserializedList = SlimList_Deserialize(serializedList);
-	char * string = SlimList_GetStringAt(deserializedList, 0);
+	const char * string = SlimList_GetStringAt(deserializedList, 0);
 
 	STRCMP_EQUAL("[000001:000007:element:]", string);
 	// POINTERS_EQUAL(0, string); ?????????????????????????????????????

@@ -5,13 +5,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-static char* stringForNullNode = "null";
+static const char* stringForNullNode = "null";
 
 enum {LIST_OVERHEAD=9, ELEMENT_OVERHEAD=8};
 
-static char* GetStringWithNullAsANormalString(SlimListIterator* iterator)
+static const char* GetStringWithNullAsANormalString(SlimListIterator* iterator)
 {
-	char* nodeString = SlimList_Iterator_GetString(iterator);
+	const char* nodeString = SlimList_Iterator_GetString(iterator);
 
 	if (nodeString == NULL)
 		nodeString = stringForNullNode;

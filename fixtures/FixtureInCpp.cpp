@@ -42,19 +42,19 @@ void Multiplication_Destroy(void* void_self)
 	free(self);
 }
 
-static char* setMultiplicand1(void* void_self, SlimList* args) {
+static const char* setMultiplicand1(void* void_self, SlimList* args) {
 	Multiplication* self = (Multiplication*)void_self;
 	self->multiplication.m1 = atof(SlimList_GetStringAt(args, 0));
 	return self->result;
 }
 
-static char* setMultiplicand2(void* void_self, SlimList* args) {
+static const char* setMultiplicand2(void* void_self, SlimList* args) {
 	Multiplication* self = (Multiplication*)void_self;
 	self->multiplication.m2 = atof(SlimList_GetStringAt(args, 0));
 	return self->result;
 }
 
-static char* Product(void* void_self, SlimList* args) {
+static const char* Product(void* void_self, SlimList* args) {
 	Multiplication* self = (Multiplication*)void_self;
 	float product = self->multiplication.product();
 	snprintf(self->result, 32, "%g", product);

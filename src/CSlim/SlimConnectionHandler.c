@@ -8,14 +8,14 @@
 
 struct SlimConnectionHandler
 {
-	com_func_t sendFunc;
-	com_func_t recvFunc;
+	com_func_send_t sendFunc;
+	com_func_recv_t recvFunc;
 	void * comLink;
 	handler_func_t slimHandlerFunc;
   void * slimHandler;
 };
 
-SlimConnectionHandler* SlimConnectionHandler_Create(com_func_t sendFunction, com_func_t recvFunction, void * comLink)
+SlimConnectionHandler* SlimConnectionHandler_Create(com_func_send_t sendFunction, com_func_recv_t recvFunction, void * comLink)
 {
 	SlimConnectionHandler* self = (SlimConnectionHandler*)malloc(sizeof(SlimConnectionHandler));
 	memset(self, 0, sizeof(SlimConnectionHandler));

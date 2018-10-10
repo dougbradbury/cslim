@@ -25,7 +25,7 @@ void ExceptionsExample_Destroy(void* void_self)
 	free(void_self);
 }
 
-static char* setTrouble(void* void_self, SlimList* args) {
+static const char* setTrouble(void* void_self, SlimList* args) {
 	return SLIM_EXCEPTION("You stink");
 }
 

@@ -1,10 +1,8 @@
 #include "CppUTest/TestHarness.h"
-#include <stdio.h>
 
-extern "C"
-{
 #include "SymbolTable.h"
-}
+
+#include <stdio.h>
 
 TEST_GROUP(SymbolTable)
 {
