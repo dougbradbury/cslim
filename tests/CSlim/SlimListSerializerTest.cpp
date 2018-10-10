@@ -75,8 +75,8 @@ TEST(SlimListSerializer, canCopyAList)
 	STRCMP_EQUAL(serialCopy, serialSlimList);
 
 	SlimList_Destroy(copy);
-	free(serialSlimList);
-	free(serialCopy);
+	SlimList_Release(serialSlimList);
+	SlimList_Release(serialCopy);
 
 }
 
