@@ -3,12 +3,9 @@
 #include <stdio.h>
 #include "SlimList.h"
 #include "Fixtures.h"
+#include "compatibility.h"
 
-#if defined(_MSC_VER) && (_MSC_VER <= 1800) // Visual Studio 2013
-#define snprintf _snprintf
-#endif
-
-class cMultiplication 
+class cMultiplication
 {
 public:
 	cMultiplication(){};
@@ -19,7 +16,7 @@ public:
 	}
 	double m1;
 	double m2;
-	char result[32];	
+	char result[32];
 };
 
 #ifndef CPP_COMPILING
@@ -66,7 +63,7 @@ static const char* Product(void* void_self, SlimList* args) {
 }
 
 
-SLIM_CREATE_FIXTURE(Multiplication) 
+SLIM_CREATE_FIXTURE(Multiplication)
 	SLIM_FUNCTION(setMultiplicand1)
 	SLIM_FUNCTION(setMultiplicand2)
 	SLIM_FUNCTION(Product)
@@ -74,4 +71,4 @@ SLIM_END
 
 #ifndef CPP_COMPILING
 }
-#endif  
+#endif

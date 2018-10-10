@@ -4,10 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-#if defined(_MSC_VER) && (_MSC_VER <= 1800) // Visual Studio 2013
-#define snprintf _snprintf
-#endif
+#include "compatibility.h"
 
 struct ListExecutor
 {
@@ -29,11 +26,11 @@ void ListExecutor_Destroy(ListExecutor* self)
 
 static void AddResult(SlimList* list, const char* id, const char* result)
 {
-	SlimList* pair = SlimList_Create();	
+	SlimList* pair = SlimList_Create();
 	SlimList_AddString(pair, id);
 	SlimList_AddString(pair, result);
 	SlimList_AddList(list, pair);
-	SlimList_Destroy(pair);	
+	SlimList_Destroy(pair);
 }
 
 const char* InvalidCommand(SlimList* instruction) {
@@ -46,7 +43,7 @@ const char* InvalidCommand(SlimList* instruction) {
 
 const char* MalformedInstruction(SlimList* instruction) {
 	static char msg[128];
-	
+
 	const char* listAsAString = SlimList_ToString(instruction);
 	snprintf(msg, (size_t)128, "__EXCEPTION__:message:<<MALFORMED_INSTRUCTION %s.>>", listAsAString);
 	CSlim_DestroyString(listAsAString);

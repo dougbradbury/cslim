@@ -7,15 +7,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-
-#if defined(_MSC_VER) && (_MSC_VER <= 1800) // Visual Studio 2013
-#define snprintf _snprintf
-#endif
+#include "compatibility.h"
 
 extern "C"
 {
   #include "CppUTest/TestHarness_c.h"
-  
+
   struct MockComLink {
     char lastSendMsg[32];
     int lastSendIndex;
@@ -68,7 +65,7 @@ extern "C"
     sentMsgHandler = self;
     return slimResponse;
   }
-  
+
   void AddSendResult(MockComLink * self, int result)
   {
 	  char string[22];
@@ -85,14 +82,14 @@ TEST_GROUP(SlimConnectionHandler)
     void setup()
     {
       slimConnectionHandler = SlimConnectionHandler_Create(&mock_send_func, &mock_recv_func, (void*)&comLink);
-      memset(comLink.lastSendMsg, 0, 32);    
+      memset(comLink.lastSendMsg, 0, 32);
       comLink.lastSendIndex = 0;
       mockMessageHandler = (void*)0x123456;
 
       comLink.sendReturnCodes = SlimList_Create();
       SlimConnectionHandler_RegisterSlimMessageHandler(slimConnectionHandler, mockMessageHandler, &mock_handle_slim_message);
     }
-    
+
     void teardown()
     {
        SlimConnectionHandler_Destroy(slimConnectionHandler);
@@ -101,12 +98,12 @@ TEST_GROUP(SlimConnectionHandler)
 };
 
 TEST(SlimConnectionHandler, ShouldSendVersion)
-{  
+{
   comLink.recvStream = "000003:bye";
   comLink.recvPtr = comLink.recvStream;
 
   SlimConnectionHandler_Run(slimConnectionHandler);
-  
+
   STRCMP_EQUAL("Slim -- V0.2\n", comLink.lastSendMsg);
 }
 
@@ -114,12 +111,12 @@ TEST(SlimConnectionHandler, ShouldReadMessageAndCallSlimHandler)
 {
   comLink.recvStream = "000006:abcdef000003:bye";
   comLink.recvPtr = comLink.recvStream;
-  
+
   slimResponse = (char*)cpputest_malloc(8);
   strcpy(slimResponse, "ghijklm");
-  
+
   SlimConnectionHandler_Run(slimConnectionHandler);
-  
+
   STRCMP_EQUAL("Slim -- V0.2\n000007:ghijklm", comLink.lastSendMsg);
   STRCMP_EQUAL("abcdef", sentSlimMessage);
   CHECK_EQUAL(mockMessageHandler, sentMsgHandler);

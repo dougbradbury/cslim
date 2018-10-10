@@ -2,10 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-
-#if defined(_MSC_VER) && (_MSC_VER <= 1800) // Visual Studio 2013
-#define snprintf _snprintf
-#endif
+#include "compatibility.h"
 
 //static local variables
 struct TestSlim
@@ -22,13 +19,13 @@ void* TestSlim_Create(StatementExecutor* executor, SlimList* args)
 		StatementExecutor_ConstructorError(executor, "xxx");
 		return NULL;
 	}
-	
+
 	TestSlim* self = (TestSlim*)malloc(sizeof(TestSlim));
 	memset(self, 0, sizeof(TestSlim));
-	
+
 	if (SlimList_GetLength(args) == 1)
 		strncpy(self->constructionArg, SlimList_GetStringAt(args, 0), 50);
-		
+
 	return self;
 }
 
@@ -38,7 +35,7 @@ void TestSlim_Destroy(void* self)
 }
 
 int TestSlim_noArgsCalled(TestSlim* executor) {
-	return executor->noArgsCalled;		
+	return executor->noArgsCalled;
 }
 
 static const char* noArgs(void* self, SlimList* args) {
@@ -57,7 +54,7 @@ static const char* oneArg(void* self, SlimList* args) {
 }
 
 static const char* add(void* self, SlimList* args) {
-	static char buf[50];	
+	static char buf[50];
 	snprintf(buf, 50, "%s%s", SlimList_GetStringAt(args, 0), SlimList_GetStringAt(args, 1));
 	return buf;
 }
@@ -71,7 +68,7 @@ static const char* setArg(void* self, SlimList* args) {
 	me->arg = SlimList_GetStringAt(args, 0);
 	return "/__VOID__/";
 }
- 
+
 static const char* getArg(void* self, SlimList* args) {
 	TestSlim* me = (TestSlim*)self;
 	return me->arg;
@@ -83,7 +80,7 @@ static const char* getArg_From_Function_With_Underscores(void* self, SlimList* a
 }
 
 static const char* getConstructionArg(void* self, SlimList* args) {
-	TestSlim* me = (TestSlim*)self;	
+	TestSlim* me = (TestSlim*)self;
 	return me->constructionArg;
 }
 
@@ -94,7 +91,7 @@ static const char* returnError(void* self, SlimList* args) {
 void TestSlim_Register(StatementExecutor* executor)
 {
 	StatementExecutor_RegisterFixture(executor, "TestSlim", TestSlim_Create, TestSlim_Destroy);
-	StatementExecutor_RegisterMethod(executor, "TestSlim", "returnValue", returnValue);	
+	StatementExecutor_RegisterMethod(executor, "TestSlim", "returnValue", returnValue);
 	StatementExecutor_RegisterMethod(executor, "TestSlim", "noArgs", noArgs);
 	StatementExecutor_RegisterMethod(executor, "TestSlim", "echo", oneArg);
 	StatementExecutor_RegisterMethod(executor, "TestSlim", "add", add);
@@ -104,15 +101,15 @@ void TestSlim_Register(StatementExecutor* executor)
 	StatementExecutor_RegisterMethod(executor, "TestSlim", "getArg_From_Function_With_Underscores", getArg_From_Function_With_Underscores);
 	StatementExecutor_RegisterMethod(executor, "TestSlim", "getConstructionArg", getConstructionArg);
 	StatementExecutor_RegisterMethod(executor, "TestSlim", "returnError", returnError);
-	
-	
+
+
 	StatementExecutor_RegisterFixture(executor, "TestSlimAgain", TestSlim_Create, TestSlim_Destroy);
 	StatementExecutor_RegisterMethod(executor, "TestSlimAgain", "setArgAgain", setArg);
 	StatementExecutor_RegisterMethod(executor, "TestSlimAgain", "getArgAgain", getArg);
-	
+
 	StatementExecutor_RegisterMethod(executor, "TestSlimDeclaredLate", "echo", oneArg);
 	StatementExecutor_RegisterFixture(executor, "TestSlimDeclaredLate", TestSlim_Create, TestSlim_Destroy);
-	
+
 	StatementExecutor_RegisterMethod(executor, "TestSlimUndeclared", "echo", oneArg);
 }
 

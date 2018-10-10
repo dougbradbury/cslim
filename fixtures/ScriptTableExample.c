@@ -4,10 +4,7 @@
 
 #include "Fixtures.h"
 #include "SlimList.h"
-
-#if defined(_MSC_VER) && (_MSC_VER <= 1800) // Visual Studio 2013
-#define snprintf _snprintf
-#endif
+#include "compatibility.h"
 
 typedef struct Count
 {
@@ -42,6 +39,6 @@ static const char* counter(void* void_self, SlimList* args) {
 
 SLIM_CREATE_FIXTURE(Count)
 	SLIM_FUNCTION(count)
-	SLIM_FUNCTION(counter)	
+	SLIM_FUNCTION(counter)
 SLIM_END
 
