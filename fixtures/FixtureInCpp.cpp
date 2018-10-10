@@ -4,17 +4,21 @@
 #include "SlimList.h"
 #include "Fixtures.h"
 
+#if defined(_MSC_VER) && (_MSC_VER <= 1800) // Visual Studio 2013
+#define snprintf _snprintf
+#endif
+
 class cMultiplication 
 {
 public:
 	cMultiplication(){};
 	~cMultiplication(){};
-	float product()
+	double product()
 	{
 		return m1*m2;
 	}
-	float m1;
-	float m2;
+	double m1;
+	double m2;
 	char result[32];	
 };
 
@@ -56,7 +60,7 @@ static const char* setMultiplicand2(void* void_self, SlimList* args) {
 
 static const char* Product(void* void_self, SlimList* args) {
 	Multiplication* self = (Multiplication*)void_self;
-	float product = self->multiplication.product();
+	double product = self->multiplication.product();
 	snprintf(self->result, 32, "%g", product);
 	return self->result;
 }
