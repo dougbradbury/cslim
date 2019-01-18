@@ -1,0 +1,18 @@
+os: linux
+sudo: required
+dist: xenial
+language: cpp
+
+addons:
+  apt:
+    sources:
+      - george-edison55-precise-backports
+    packages:
+      - cmake-data
+      - cmake
+
+script:
+  - mkdir build-dir && cd build-dir
+  - cmake -DCMAKE_INSTALL_PREFIX="$(pwd)/root" ..
+  - make
+  - make install
