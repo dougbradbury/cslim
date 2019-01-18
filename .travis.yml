@@ -8,10 +8,15 @@ addons:
     sources:
       - george-edison55-precise-backports
     packages:
+      - python3
+      - python3-pip
       - cmake-data
       - cmake
 
 script:
+  - pip3 install -U conan
+  - conan
+  - conan --version
   - mkdir build-dir && cd build-dir
   - cmake -DCMAKE_INSTALL_PREFIX="$(pwd)/root" ..
   - make
