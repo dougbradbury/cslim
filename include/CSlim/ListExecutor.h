@@ -12,8 +12,8 @@ extern "C" {
 typedef struct ListExecutor ListExecutor;
 
 ListExecutor* ListExecutor_Create(StatementExecutor*);
-void ListExecutor_Destroy(ListExecutor*);
-SlimList* ListExecutor_Execute(ListExecutor*, SlimList*);
+void          ListExecutor_Destroy(ListExecutor*);
+SlimList*     ListExecutor_Execute(ListExecutor*, SlimList*);
 
 #ifndef CPP_COMPILING
 #ifdef __cplusplus

@@ -10,8 +10,8 @@ extern "C" {
 #include "SlimList.h"
 
 char* SlimList_Serialize(SlimList*);
-void SlimList_Release(char *serializedResults);
-int SlimList_SerializedLength(SlimList*);
+void  SlimList_Release(char* serializedResults);
+int   SlimList_SerializedLength(SlimList*);
 
 #ifndef CPP_COMPILING
 #ifdef __cplusplus
