@@ -1,0 +1,43 @@
+version: "{branch}-ci-{build}"
+
+image:
+  - Visual Studio 2017
+
+environment:
+  matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      CMAKE_GENERATOR: "Visual Studio 15 2017 Win64"
+      PYTHON: "C:\Python37-x64"
+      PYTHON_ARCH: "64"
+
+install:
+    - "python -m pip install --upgrade pip"
+    - "python -m pip install --upgrade conan"
+    - "conan"
+    - "conan profile new --detect default"
+    - "conan profile list"
+    - "conan profile show default"
+    - "cmake --version"
+
+build_script:
+    - git clone "https://github.com/cpputest/conan-cpputest.git"
+    - ps: |
+        cd conan-cpputest
+        conan create . dougbradbury/testing
+        cd ..
+    - ps: |
+        $conanfile_content = @"
+        [build_requires]
+        CppUTest/master@dougbradbury/testing
+        
+        [generators]
+        cmake
+        "@
+        Set-Content -Path "conanfile.txt" -Value $conanfile_content
+        mkdir "build-dir"
+        cd "build-dir"
+        conan install .. --build=missing -pr=default
+        cd ..
+    - ps: cmake -E chdir "build-dir" cmake -G "$($(Get-Item Env:CMAKE_GENERATOR).Value)" --config RelWithDebInfo -DCMAKE_INSTALL_PREFIX="$($(get-location).Path)/root" ..
+    - ps: cmake --build "build-dir" --config RelWithDebInfo
+    - ps: cmake --build "build-dir" --target install --config RelWithDebInfo
