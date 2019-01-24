@@ -16,9 +16,9 @@ extern "C" {
 typedef struct SocketServer SocketServer;
 
 SocketServer* SocketServer_Create(void);
-void SocketServer_Destroy(SocketServer*);
-extern int SocketServer_Run(SocketServer* self, char * port);
-extern void SocketServer_register_handler(SocketServer* self, int (*handlerFunction)(int));
+void          SocketServer_Destroy(SocketServer*);
+extern int    SocketServer_Run(SocketServer* self, char* port);
+extern void   SocketServer_register_handler(SocketServer* self, int (*handlerFunction)(int));
 
 #ifndef CPP_COMPILING
 #ifdef __cplusplus
@@ -26,4 +26,4 @@ extern void SocketServer_register_handler(SocketServer* self, int (*handlerFunct
 #endif
 #endif
 
-#endif  // D_SocketServer_H
+#endif // D_SocketServer_H

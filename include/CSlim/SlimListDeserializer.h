@@ -7,7 +7,7 @@ extern "C" {
 #endif
 #endif
 
-SlimList* SlimList_Deserialize(char const *);
+SlimList* SlimList_Deserialize(char const*);
 
 #ifndef CPP_COMPILING
 #ifdef __cplusplus

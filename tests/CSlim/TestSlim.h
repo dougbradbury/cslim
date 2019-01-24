@@ -17,8 +17,8 @@ typedef struct TestSlim TestSlim;
 // #include "SlimList.h"
 
 void* TestSlim_Create(StatementExecutor* executor, SlimList* args);
-void TestSlim_Destroy(void*);
-void TestSlim_Register(StatementExecutor*);
+void  TestSlim_Destroy(void*);
+void  TestSlim_Register(StatementExecutor*);
 
 int TestSlim_noArgsCalled(TestSlim* executor);
 
@@ -28,4 +28,4 @@ int TestSlim_noArgsCalled(TestSlim* executor);
 #endif
 #endif
 
-#endif  // D_TestSlim_H
+#endif // D_TestSlim_H

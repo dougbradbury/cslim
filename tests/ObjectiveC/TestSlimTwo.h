@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 
-@interface TestSlimTwo : NSObject {
-    
+@interface TestSlimTwo : NSObject
+{
 }
 
 @end

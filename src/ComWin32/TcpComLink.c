@@ -4,48 +4,52 @@
 //static local variables
 struct TcpComLink
 {
-    SOCKET Socket;
+  SOCKET Socket;
 };
 
 TcpComLink* TcpComLink_Create(int socket)
 {
-	TcpComLink* self = (TcpComLink*)malloc(sizeof(TcpComLink));
-	memset(self, 0, sizeof(TcpComLink));
-	self->Socket = socket;
-	return self;
+  TcpComLink* self = (TcpComLink*)malloc(sizeof(TcpComLink));
+  memset(self, 0, sizeof(TcpComLink));
+  self->Socket = socket;
+  return self;
 }
 
 void TcpComLink_Destroy(TcpComLink* self)
 {
-    free(self);
+  free(self);
 }
 
-int TcpComLink_send(void * voidSelf, const char * msg, int length)
+int TcpComLink_send(void* voidSelf, const char* msg, int length)
 {
-	TcpComLink * self = (TcpComLink *)voidSelf;
-    int total = 0;        // how many bytes we've sent
-    int bytesleft = length; // how many we have left to send
-    int n;
+  TcpComLink* self = (TcpComLink*)voidSelf;
+  int         total = 0;          // how many bytes we've sent
+  int         bytesleft = length; // how many we have left to send
+  int         n;
 
-    while(total < length) {
-        n = send(self->Socket, msg+total, bytesleft, 0);
-        if (n == -1) { break; }
-        total += n;
-        bytesleft -= n;
+  while (total < length)
+  {
+    n = send(self->Socket, msg + total, bytesleft, 0);
+    if (n == -1)
+    {
+      break;
     }
+    total += n;
+    bytesleft -= n;
+  }
 
-    return total;
-} 
+  return total;
+}
 
-int TcpComLink_recv(void * voidSelf, char * buffer, int length)
+int TcpComLink_recv(void* voidSelf, char* buffer, int length)
 {
-	TcpComLink * self = (TcpComLink *)voidSelf;
+  TcpComLink* self = (TcpComLink*)voidSelf;
 
-	//No MSG_WAITALL flag in winsock2 ????
-	int bytesReceived = 0;
-	while (bytesReceived < length)
-	{
-		bytesReceived += recv(self->Socket, buffer + bytesReceived, length - bytesReceived, 0);
-	}
-	return bytesReceived;
+  //No MSG_WAITALL flag in winsock2 ????
+  int bytesReceived = 0;
+  while (bytesReceived < length)
+  {
+    bytesReceived += recv(self->Socket, buffer + bytesReceived, length - bytesReceived, 0);
+  }
+  return bytesReceived;
 }
