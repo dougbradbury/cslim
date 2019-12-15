@@ -19,3 +19,7 @@ CSlim.tmproj
 *.pdb
 *.lib
 build-cli
+
+.idea/
+# Ignore your build directory e.g. cmake-build-debug
+cmake-**/
